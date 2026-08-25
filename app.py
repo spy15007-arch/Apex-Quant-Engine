@@ -7,7 +7,6 @@ st.set_page_config(page_title="Master Quant Engine", layout="wide", page_icon="�
 
 # --- DATA LOADING FUNCTIONS ---
 def load_data(file_path):
-    """Safely loads CSV files, returning an empty DataFrame if it doesn't exist yet."""
     if os.path.exists(file_path):
         try:
             return pd.read_csv(file_path)
@@ -16,28 +15,24 @@ def load_data(file_path):
     return pd.DataFrame()
 
 def load_markdown(file_path):
-    """Safely loads the AI markdown report."""
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as f:
             return f.read()
     return "*AI Analysis is pending or no qualifying setups were found today.*"
 
-# --- PORTFOLIO ACTION FUNCTION ---
+# --- PORTFOLIO ACTION FUNCTIONS ---
 def add_to_portfolio(stock_row):
     file_path = "portfolio.csv"
     if os.path.exists(file_path):
         pf = pd.read_csv(file_path)
     else:
-        # Create it if it doesn't exist
         pf = pd.DataFrame(columns=['Stock', 'RawStock', 'Entry', 'Qty', 'Current_SL', 'T1', 'T2', 'T3', 'Status', 'Sector'])
     
-    # Safety Check: Is it already active in the portfolio?
     if not pf.empty and (pf['RawStock'] == stock_row['RawStock']).any():
         if 'Active' in pf.loc[pf['RawStock'] == stock_row['RawStock'], 'Status'].values:
             st.toast(f"⚠️ {stock_row['RawStock']} is already in your Active Portfolio!", icon="⚠️")
             return
             
-    # Create the new trade entry
     new_trade = pd.DataFrame([{
         'Stock': stock_row['Stock'],
         'RawStock': stock_row['RawStock'],
@@ -48,28 +43,35 @@ def add_to_portfolio(stock_row):
         'T2': stock_row['EqT2'],
         'T3': stock_row['EqT3'],
         'Status': 'Active',
-        'Sector': 'Unknown' # The background scanner will populate this on the next run
+        'Sector': 'Unknown' 
     }])
     
-    # Save back to CSV
     pf = pd.concat([pf, new_trade], ignore_index=True)
     pf.to_csv(file_path, index=False)
     st.toast(f"✅ Successfully added {stock_row['RawStock']} to your Portfolio Tracking Engine!", icon="✅")
+
+def remove_from_portfolio(raw_stock):
+    """Deletes a stock from the portfolio.csv file."""
+    file_path = "portfolio.csv"
+    if os.path.exists(file_path):
+        pf = pd.read_csv(file_path)
+        # Filter out the stock we want to delete
+        pf = pf[pf['RawStock'] != raw_stock]
+        pf.to_csv(file_path, index=False)
+        st.toast(f"🗑️ Removed {raw_stock} from Portfolio!", icon="✅")
 
 # --- UI LAYOUT & DESIGN ---
 st.title("📈 Institutional Quant Dashboard")
 st.markdown("Automated Multi-Timeframe Structural Breakout & Retest Scanner")
 
-# Create sleek navigation tabs
 tab1, tab2, tab3, tab4 = st.tabs(["📊 Market Scans", "👑 Index Scalps", "💼 Active Portfolio", "🤖 AI Deep Dive"])
 
-# --- TAB 1: MARKET SCANS ---
+# --- TAB 1: MARKET SCANS (Mobile Optimized) ---
 with tab1:
     st.header("Validated Equity Setups")
     df_setups = load_data("all_setups.csv")
     
     if not df_setups.empty:
-        # Allow filtering by Horizon (Swing, BTST, Intraday, Pre-Breakout)
         horizons = df_setups['Horizon'].unique().tolist()
         selected_horizons = st.multiselect("Filter by Timeframe/Horizon:", horizons, default=horizons)
         
@@ -77,16 +79,16 @@ with tab1:
         
         if not filtered_df.empty:
             for index, row in filtered_df.iterrows():
-                # Wrap each setup in a clean container
                 with st.container():
-                    col1, col2 = st.columns([8, 1]) # Ratio to give the table more space
+                    col1, col2 = st.columns([3, 1]) 
                     with col1:
-                        # Clean up the display (Hide 'RawStock' backend ID)
-                        display_df = pd.DataFrame([row]).drop(columns=['RawStock'], errors='ignore')
-                        st.dataframe(display_df, use_container_width=True, hide_index=True)
+                        st.markdown(f"### {row['Stock']}")
+                        st.markdown(f"**{row['Tag']}** (Score: {row['Score']}/10) | Qty: {row['Qty']} | Risk: ₹{row['Risk']}")
+                        st.markdown(f"**Entry:** {row.get('EntryZone', row['Entry'])} | **SL:** ₹{row['EqSL']}")
+                        st.markdown(f"**Targets:** T1:₹{row['EqT1']} | T2:₹{row['EqT2']} | T3:₹{row['EqT3']}")
                     with col2:
-                        st.write("") # Visual spacing to align the button
-                        # 1-Click Interactive Button
+                        st.write("")
+                        st.write("")
                         if st.button(f"➕ Track", key=f"add_{row.get('RawStock', index)}_{index}"):
                             add_to_portfolio(row)
                     st.divider()
@@ -99,13 +101,12 @@ with tab1:
 with tab2:
     st.header("Index Options (5M Scalps)")
     df_index = load_data("index_setups.csv")
-    
     if not df_index.empty:
         st.dataframe(df_index.drop(columns=['RawStock'], errors='ignore'), use_container_width=True, hide_index=True)
     else:
         st.info("No Index Scalp setups found. Waiting for live market hours and momentum.")
 
-# --- TAB 3: ACTIVE PORTFOLIO ---
+# --- TAB 3: ACTIVE PORTFOLIO (Mobile Optimized with Delete Button) ---
 with tab3:
     st.header("Active Trailing Portfolio")
     st.markdown("> *These trades are monitored by the backend ATR Trailing Stop Engine.*")
@@ -117,8 +118,22 @@ with tab3:
         
         st.subheader(f"🟢 Active Trades ({len(active_pf)})")
         if not active_pf.empty:
-            # Display cleanly without the backend RawStock column
-            st.dataframe(active_pf.drop(columns=['RawStock'], errors='ignore'), use_container_width=True, hide_index=True)
+            for index, row in active_pf.iterrows():
+                with st.container():
+                    col1, col2 = st.columns([3, 1])
+                    with col1:
+                        st.markdown(f"### {row['Stock']}")
+                        st.markdown(f"**Sector:** {row.get('Sector', 'Unknown')}")
+                        st.markdown(f"**Entry:** ₹{row['Entry']} | **Qty:** {row['Qty']} | **Current SL:** ₹{row['Current_SL']}")
+                        st.markdown(f"**Targets:** T1:₹{row['T1']} | T2:₹{row['T2']} | T3:₹{row['T3']}")
+                    with col2:
+                        st.write("")
+                        st.write("")
+                        # The Delete Button
+                        if st.button("❌ Remove", key=f"remove_{row['RawStock']}_{index}"):
+                            remove_from_portfolio(row['RawStock'])
+                            st.rerun() # Instantly refreshes the page to remove the deleted card
+                    st.divider()
         else:
             st.info("No active trades currently.")
             
@@ -128,7 +143,7 @@ with tab3:
             else:
                 st.write("No closed trades yet.")
     else:
-        st.info("Your portfolio is currently empty. Click '+ Track' on a setup in the Market Scans tab to add one!")
+        st.info("Your portfolio is currently empty. Click '➕ Track' on a setup in the Market Scans tab to add one!")
 
 # --- TAB 4: AI DEEP DIVE ---
 with tab4:
