@@ -17,6 +17,19 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
+# Maps NSE Indices to standard yfinance sector names for matching
+SECTOR_INDICES = {
+    "^CNXAUTO": "Consumer Cyclical",
+    "^CNXIT": "Technology",
+    "^CNXMETAL": "Basic Materials",
+    "^CNXREALTY": "Real Estate",
+    "^CNXENERGY": "Energy",
+    "^CNXPHARMA": "Healthcare",
+    "^CNXFMCG": "Consumer Defensive",
+    "^CNXINFRA": "Industrials",
+    "^NSEBANK": "Financial Services"
+}
+
 def send_telegram_message(message):
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
         print("⚠️ Telegram token or Chat ID is missing!")
@@ -105,6 +118,38 @@ def get_complete_nse_universe():
         except Exception: continue
     if len(symbols) > 300: return sorted(list(symbols))
     return sorted(list(set(STATIC_FNO + EXTENDED_UNIVERSE_FALLBACK)))
+
+def calculate_leading_sectors(nifty_return_20d):
+    """
+    Downloads sector index data and ranks leading sectors by 20-day Relative Strength vs NIFTY 50.
+    """
+    leading_sectors = set()
+    try:
+        sec_tickers = list(SECTOR_INDICES.keys())
+        print("📡 Calculating Top-Down Sector Relative Strength...")
+        data = yf.download(sec_tickers, period="3mo", interval="1d", progress=False, threads=True)
+        if not data.empty:
+            closes = data['Close'] if isinstance(data.columns, pd.MultiIndex) else data
+            sector_scores = {}
+            for ticker, yf_sec_name in SECTOR_INDICES.items():
+                if ticker in closes.columns:
+                    s_series = closes[ticker].dropna()
+                    if len(s_series) >= 25:
+                        s_ret_20d = float(s_series.iloc[-1] / s_series.iloc[-20] - 1)
+                        s_ema20 = float(s_series.ewm(span=20).mean().iloc[-1])
+                        s_close = float(s_series.iloc[-1])
+                        
+                        rs_vs_nifty = s_ret_20d - nifty_return_20d
+                        if rs_vs_nifty > 0 and s_close >= s_ema20:
+                            sector_scores[yf_sec_name] = rs_vs_nifty
+            
+            sorted_sectors = sorted(sector_scores.items(), key=lambda x: x[1], reverse=True)
+            leading_sectors = {s[0] for s in sorted_sectors[:4]}
+            print(f"🌟 Leading Sectors Identified: {', '.join(leading_sectors) if leading_sectors else 'None (Weak Market)'}")
+    except Exception as e:
+        print(f"⚠️ Sector computation skipped: {e}")
+        
+    return leading_sectors
 
 def download_in_chunks(tickers, chunk_size=300):
     closes_list, highs_list, lows_list, vols_list = [], [], [], []
@@ -252,11 +297,11 @@ def check_ascending_trendline_support(df_w_c, df_w_l, df_w_h, lookback_weeks=40)
         lows = df_w_l.tail(lookback_weeks).values
         n = len(lows)
         
-        # 1. Identify Anchor Low (L1) in the first half of the window
+        # 1. Identify Anchor Low (L1)
         idx1 = int(np.argmin(lows[: int(n * 0.55)]))
         l1 = lows[idx1]
         
-        # 2. Identify Secondary Higher Low (L2) in the intermediate window
+        # 2. Identify Secondary Higher Low (L2)
         idx2_search = lows[idx1 + 4 : n - 1]
         if len(idx2_search) < 3:
             return False, 0.0
@@ -264,11 +309,11 @@ def check_ascending_trendline_support(df_w_c, df_w_l, df_w_h, lookback_weeks=40)
         idx2 = idx1 + 4 + int(np.argmin(idx2_search))
         l2 = lows[idx2]
         
-        # Must be a Higher Low (L2 > L1) and have enough bar separation
+        # Must be a Higher Low
         if l2 <= l1 or (idx2 - idx1) < 5:
             return False, 0.0
             
-        # 3. Calculate Trendline Slope & Project to Current Bar
+        # 3. Calculate Trendline Slope & Project
         slope = (l2 - l1) / (idx2 - idx1)
         curr_idx = n - 1
         projected_tl = l2 + slope * (curr_idx - idx2)
@@ -276,10 +321,9 @@ def check_ascending_trendline_support(df_w_c, df_w_l, df_w_h, lookback_weeks=40)
         curr_close = float(df_w_c.iloc[-1])
         curr_low = float(df_w_l.iloc[-1])
         
-        # 4. Proximity & Floor Validation: Low touches within 2.5%, Close holds above 98.5%
+        # 4. Proximity & Floor Validation
         is_testing = (curr_low <= projected_tl * 1.025) and (curr_close >= projected_tl * 0.985)
         
-        # Ensure intermediate candles did not heavily violate the trendline 
         intermediate_lows = lows[idx1:curr_idx]
         x_vals = np.arange(idx1, curr_idx)
         line_vals = l1 + slope * (x_vals - idx1)
@@ -465,6 +509,9 @@ def run():
             if n_close > n_ema20 and n_ema20 > n_ema50: nifty_regime = "Bullish"
             elif n_close < n_ema50: nifty_regime = "Bearish"
 
+    # Fetch Top-Down Sector Matrix early to save API calls
+    leading_sectors = calculate_leading_sectors(nifty_return_20d)
+
     universe = get_complete_nse_universe()
     closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=400)
     if closes.empty: return
@@ -589,6 +636,7 @@ def run():
             sqz_on, sqz_fired = check_ttm_squeeze(df_c, df_h, df_l)
 
             # --- MASTER TAG LOGIC ---
+            hor, sl_m, tag = "", 0.0, ""
             if is_trendline_retest: hor, sl_m, tag = "Swing", 1.2, "📈 Rising Support Retest"
             elif is_base_ignition: hor, sl_m, tag = "Pre-Breakout", 0.8, "🌱 Base Ignition"
             elif sqz_fired: hor, sl_m, tag = "Pre-Breakout", 1.0, "🔥 Squeeze Breakout"
@@ -603,10 +651,10 @@ def run():
             if is_rsi_div: tag += " (📉 +RSI Div)"
             if is_super_trend: tag += " 🏆 Super-Trend"
 
+            # Check if stock physically passes the final trend constraints
             if (close_p > d_ema and close_p > w_ema and check_structure_hh_hl(df_h, df_l)) and ((macd_val > macd_sig) if hor not in ["Pre-Breakout", "Swing"] else True) and (45 <= rsi_val <= 85) and (is_relative_strong if hor not in ["Pre-Breakout", "Swing"] else True):
                 t1, t2, t3, t4, t5 = calculate_dynamic_targets(close_p, atr, df_h, df_l, "Bullish", is_squeeze)
                 eq_sl = round(close_p - sl_m * atr, 1)
-                
                 if (close_p - eq_sl) <= 0: continue
                 
                 score = min(10, sum([
@@ -620,6 +668,16 @@ def run():
                     1 if is_rsi_div else 0,
                     1 if is_super_trend else 0
                 ]))
+
+                # --- SECTOR LEADER BOOST ---
+                # We only ping Yahoo API for the few stocks that physically pass all math checks to save 90% of processing time
+                try:
+                    stock_sector = yf.Ticker(ticker).info.get('sector', 'Unknown')
+                    if stock_sector in leading_sectors:
+                        score = min(10, score + 1)
+                        tag += " 🚀 Sector-Leader"
+                except: pass
+                # ---------------------------
                 
                 active_base_capital = BASE_CAPITAL_PER_TRADE * 0.5 if nifty_regime == "Bearish" else BASE_CAPITAL_PER_TRADE
                 
