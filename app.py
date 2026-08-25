@@ -1,182 +1,138 @@
 import streamlit as st
 import pandas as pd
-import yfinance as yf
-import plotly.graph_objects as go
 import os
-from streamlit_autorefresh import st_autorefresh
 
-st.set_page_config(page_title="ISTS Pro Dashboard", page_icon="📈", layout="wide")
-st_autorefresh(interval=60000, limit=None, key="live_chart_refresh") 
+# --- PAGE CONFIGURATION ---
+st.set_page_config(page_title="Master Quant Engine", layout="wide", page_icon="📈")
 
-@st.cache_data(ttl=60)
-def load_report(filepath):
-    if os.path.exists(filepath):
-        with open(filepath, "r", encoding="utf-8") as f:
-            content = f.read().strip()
-            if content: return content
-    return f"⚠️ **Report file pending generation:** `{filepath}`\nRun the GitHub Actions scanner to generate."
-
-@st.cache_data(ttl=60)
-def load_csv(filepath):
-    if os.path.exists(filepath): return pd.read_csv(filepath)
+# --- DATA LOADING FUNCTIONS ---
+def load_data(file_path):
+    """Safely loads CSV files, returning an empty DataFrame if it doesn't exist yet."""
+    if os.path.exists(file_path):
+        try:
+            return pd.read_csv(file_path)
+        except:
+            return pd.DataFrame()
     return pd.DataFrame()
 
-st.sidebar.title("ISTS Pro Terminal")
-page = st.sidebar.radio("Navigation", ["Dashboard", "Scan Market", "Active Trade Tracker", "Budget Scanner (< ₹500)"])
+def load_markdown(file_path):
+    """Safely loads the AI markdown report."""
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return f.read()
+    return "*AI Analysis is pending or no qualifying setups were found today.*"
 
-if page == "Dashboard":
-    st.title("Institutional Quant Trading System (ISTS Pro)")
-    st.markdown("Live Market Top-Down MTF Momentum, AI Research & Options Engine")
+# --- PORTFOLIO ACTION FUNCTION ---
+def add_to_portfolio(stock_row):
+    file_path = "portfolio.csv"
+    if os.path.exists(file_path):
+        pf = pd.read_csv(file_path)
+    else:
+        # Create it if it doesn't exist
+        pf = pd.DataFrame(columns=['Stock', 'RawStock', 'Entry', 'Qty', 'Current_SL', 'T1', 'T2', 'T3', 'Status', 'Sector'])
     
-    nifty_df = yf.download("^NSEI", period="60d", interval="1d", progress=False)
-    regime = "Calculating..."
-    if not nifty_df.empty:
-        if isinstance(nifty_df.columns, pd.MultiIndex): nifty_df.columns = nifty_df.columns.get_level_values(0)
-        c = nifty_df['Close'].dropna()
-        n20, n50, n_p = c.ewm(span=20).mean().iloc[-1], c.ewm(span=50).mean().iloc[-1], c.iloc[-1]
-        if n_p > n20 and n20 > n50: regime = "🟢 BULLISH"
-        elif n_p < n50: regime = "🔴 BEARISH (50% Sizing)"
-        else: regime = "🟡 NEUTRAL"
-
-    col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Market Regime", regime, "Nifty 50 Trend Filter")
-    col2.metric("Scan Universe", "1800+ NSE Equities", "Liquidity Protected")
-    col3.metric("Research Engine", "AI 14-Pillar Deep Dive", "Gemini 3.6 Active")
-    col4.metric("Strategy Engine", "TTM Squeeze & Trailing SL", "Scalp/Swing/Pre")
-
-elif page == "Active Trade Tracker":
-    st.title("🗂️ Active Trade Tracker & ATR Trailing Stop Engine")
-    st.markdown("Log your open positions here. The scanner monitors and automatically trails your Stop Loss.")
-    
-    pf_file = "portfolio.csv"
-    if not os.path.exists(pf_file):
-        pd.DataFrame(columns=['Stock', 'RawStock', 'Entry', 'Qty', 'Current_SL', 'T1', 'T2', 'T3', 'Status']).to_csv(pf_file, index=False)
-    
-    edited_pf = st.data_editor(pd.read_csv(pf_file), num_rows="dynamic", use_container_width=True)
-    if st.button("💾 Save Portfolio Settings", type="primary"):
-        edited_pf.to_csv(pf_file, index=False)
-        st.success("Portfolio saved! The GitHub Action will now monitor and trail your Stop Losses.")
-
-elif page == "Scan Market":
-    st.title("🚀 Master Quant Scanner & Institutional Reports")
-    st.markdown("Displays Live 1800+ Universe Scans, TTM Squeezes, and Automated AI Fundamental Research.")
-
-    df_all_setups = load_csv("all_setups.csv")
-    df_index_setups = load_csv("index_setups.csv")
-
-    st.markdown("---")
-    st.subheader("📊 Market Intelligence & Quantitative Reports")
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "💥 Soon to Breakout", "⚡ Intraday", "🌙 BTST", "📈 Swing Retest", "🔬 AI Deep Dive"
-    ])
-    
-    with tab1: st.markdown(load_report("prebreakout_report.md"), unsafe_allow_html=True)
-    with tab2: st.markdown(load_report("intraday_report.md"), unsafe_allow_html=True)
-    with tab3: st.markdown(load_report("btst_report.md"), unsafe_allow_html=True)
-    with tab4: st.markdown(load_report("swing_report.md"), unsafe_allow_html=True)
-    with tab5: st.markdown(load_report("deep_dive_analysis.md"), unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.subheader("🔍 Native Real-Time Chart Analysis")
-    
-    df_all_merged = pd.concat([df_index_setups, df_all_setups]) if not df_all_setups.empty else df_index_setups
-    
-    if not df_all_merged.empty and 'Stock' in df_all_merged.columns:
-        c1, c2, c3 = st.columns([2, 1, 1])
-        with c1: selected_stock = st.selectbox("Select asset to load native chart:", df_all_merged['Stock'].tolist())
-        
-        stock_row = df_all_merged[df_all_merged['Stock'] == selected_stock].iloc[0]
-        raw_sym = str(stock_row['RawStock']).strip()
-        
-        # FIXED: Automatically sets default timeframe to 5m for index options, and 1d for Stocks
-        default_tf_index = 0 if "NIFTY" in raw_sym else 4 
-        
-        with c2: selected_tf = st.selectbox("Timeframe:", ["5m", "15m", "30m", "1h", "1d"], index=default_tf_index)
-        with c3:
-            st.write("")
-            st.write("")
-            if st.button("🔄 Reload Chart", use_container_width=True): st.cache_data.clear()
-
-        yf_sym = "^NSEI" if raw_sym == "NIFTY" else ("^NSEBANK" if raw_sym == "BANKNIFTY" else f"{raw_sym}.NS")
-        tv_link_sym = f"NSE:{raw_sym}"
-        fetch_period = "3mo" if selected_tf == "1d" else "5d"
-        
-        with st.spinner(f"Fetching live {selected_tf} candlestick data..."):
-            chart_data = yf.Ticker(yf_sym).history(period=fetch_period, interval=selected_tf)
-            if not chart_data.empty:
-                fig = go.Figure(data=[go.Candlestick(x=chart_data.index, open=chart_data['Open'], high=chart_data['High'], low=chart_data['Low'], close=chart_data['Close'], increasing_line_color='#00ff00', decreasing_line_color='#ff0000')])
-                range_breaks = [dict(bounds=["sat", "mon"])]
-                if selected_tf != "1d": range_breaks.append(dict(bounds=[15.5, 9.25], pattern="hour")) 
-                fig.update_xaxes(rangebreaks=range_breaks)
-                fig.update_layout(title=f"{selected_stock} - Native {selected_tf} Chart", yaxis_title="Price (₹)", template="plotly_dark", height=550, margin=dict(l=10, r=10, t=40, b=10), xaxis_rangeslider_visible=False)
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.warning("Live chart data temporarily unavailable.")
-
-        st.markdown("### ⚡ Execute Broker Trade")
-        b1, b2, b3 = st.columns(3)
-        with b1: st.link_button("🟠 Trade on Dhan", "https://web.dhan.co/", use_container_width=True)
-        with b2: st.link_button("🔵 Trade on Angel One", "https://trade.angelone.in/", use_container_width=True)
-        with b3: st.link_button("📈 Open Full Chart on TV", f"https://in.tradingview.com/chart/?symbol={tv_link_sym}", use_container_width=True)
-
-        st.markdown("---")
-        st.subheader(f"🧮 Position Size & Risk Calculator: {selected_stock}")
-        st.caption(f"**Trigger Tag:** {stock_row.get('Tag', 'N/A')} | **Volume Velocity:** {stock_row.get('Vol vs 50d', 'N/A')}x 50-Day Avg")
-        
-        c1, c2, c3 = st.columns(3)
-        capital = c1.number_input("Account Capital (₹)", min_value=10000, value=500000, step=25000)
-        risk_pct = c2.number_input("Risk Limit per Trade (%)", min_value=0.25, max_value=5.0, value=1.0, step=0.25)
-        entry_p = float(stock_row['Entry'])
-        sl_p = c3.number_input("Stop Loss Price (₹)", min_value=1.0, value=float(stock_row['EqSL']), step=1.0)
-        
-        risk_per_share = abs(entry_p - sl_p)
-        if risk_per_share > 0:
-            max_risk = (capital * risk_pct) / 100.0
-            qty = int(max_risk / risk_per_share)
-            if "NIFTY" in raw_sym:
-                lot_size = 25 if "BANK" not in raw_sym else 15
-                qty = max(lot_size, (qty // lot_size) * lot_size)
-                st.info(f"💡 Index detected. Adjusted to nearest lot size ({lot_size} qty).")
+    # Safety Check: Is it already active in the portfolio?
+    if not pf.empty and (pf['RawStock'] == stock_row['RawStock']).any():
+        if 'Active' in pf.loc[pf['RawStock'] == stock_row['RawStock'], 'Status'].values:
+            st.toast(f"⚠️ {stock_row['RawStock']} is already in your Active Portfolio!", icon="⚠️")
+            return
             
-            m1, m2, m3, m4 = st.columns(4)
-            m1.metric("Quantity to Trade", f"{qty} units")
-            m2.metric("Total Investment", f"₹{(qty * entry_p):,.2f}")
-            m3.metric("Max Capital at Risk", f"₹{max_risk:,.2f}")
-            runner_tgt = float(stock_row.get('EqT5', stock_row.get('EqT3', entry_p)))
-            m4.metric("Max Runner Profit (T5)", f"₹{(qty * abs(runner_tgt - entry_p)):,.2f}")
+    # Create the new trade entry
+    new_trade = pd.DataFrame([{
+        'Stock': stock_row['Stock'],
+        'RawStock': stock_row['RawStock'],
+        'Entry': stock_row['Entry'],
+        'Qty': stock_row['Qty'],
+        'Current_SL': stock_row['EqSL'],
+        'T1': stock_row['EqT1'],
+        'T2': stock_row['EqT2'],
+        'T3': stock_row['EqT3'],
+        'Status': 'Active',
+        'Sector': 'Unknown' # The background scanner will populate this on the next run
+    }])
+    
+    # Save back to CSV
+    pf = pd.concat([pf, new_trade], ignore_index=True)
+    pf.to_csv(file_path, index=False)
+    st.toast(f"✅ Successfully added {stock_row['RawStock']} to your Portfolio Tracking Engine!", icon="✅")
 
-elif page == "Budget Scanner (< ₹500)":
-    st.title("💡 Sub-₹500 Budget Quant Scanner")
-    budget_limit = st.number_input("Max Stock Price (₹)", min_value=50, max_value=1000, value=500, step=50)
+# --- UI LAYOUT & DESIGN ---
+st.title("📈 Institutional Quant Dashboard")
+st.markdown("Automated Multi-Timeframe Structural Breakout & Retest Scanner")
 
-    df_all_setups = load_csv("all_setups.csv")
-    if not df_all_setups.empty:
-        budget_res = df_all_setups[df_all_setups['Entry'] <= budget_limit].copy()
-        if not budget_res.empty:
-            budget_res.insert(0, '#', range(1, len(budget_res) + 1)) 
-            st.success(f"Found {len(budget_res)} quant setups under ₹{budget_limit}!")
-            
-            st.subheader(f"🏆 Top Budget Quant Setups Under ₹{budget_limit}")
-            b_cols = ['#', 'Stock', 'Tag', 'Vol vs 50d', 'Score', 'Entry', 'EqSL', 'EqT1', 'EqT2', 'EqT3', 'Opt']
-            b_cols = [c for c in b_cols if c in budget_res.columns]
-            st.dataframe(budget_res[b_cols], use_container_width=True, hide_index=True)
+# Create sleek navigation tabs
+tab1, tab2, tab3, tab4 = st.tabs(["📊 Market Scans", "👑 Index Scalps", "💼 Active Portfolio", "🤖 AI Deep Dive"])
 
-            st.markdown("---")
-            st.subheader("🔍 Budget Position & Share Quantity Calculator")
-            selected_stock = st.selectbox("Select stock to evaluate:", budget_res['Stock'].tolist())
-            stock_row = budget_res[budget_res['Stock'] == selected_stock].iloc[0]
-
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown(f"**Stock:** `{selected_stock}`")
-                st.markdown(f"**Trigger:** {stock_row.get('Tag', 'N/A')}")
-                st.markdown(f"**Entry Price:** ₹{stock_row['Entry']}")
-                st.markdown(f"**Score / 10:** 🔥 {stock_row['Score']}")
-                st.markdown(f"**Option Recommendation:** `{stock_row['Opt']}` at ₹{stock_row.get('Prem', 'N/A')}")
-            with col2:
-                trade_capital = st.number_input("Allocated Capital (₹)", min_value=5000, value=50000, step=5000)
-                shares_qty = int(trade_capital // float(stock_row['Entry']))
-                st.metric("Affordable Shares", f"{shares_qty} shares")
-                st.metric("Total Investment Required", f"₹{round(shares_qty * float(stock_row['Entry']), 2):,.2f}")
+# --- TAB 1: MARKET SCANS ---
+with tab1:
+    st.header("Validated Equity Setups")
+    df_setups = load_data("all_setups.csv")
+    
+    if not df_setups.empty:
+        # Allow filtering by Horizon (Swing, BTST, Intraday, Pre-Breakout)
+        horizons = df_setups['Horizon'].unique().tolist()
+        selected_horizons = st.multiselect("Filter by Timeframe/Horizon:", horizons, default=horizons)
+        
+        filtered_df = df_setups[df_setups['Horizon'].isin(selected_horizons)]
+        
+        if not filtered_df.empty:
+            for index, row in filtered_df.iterrows():
+                # Wrap each setup in a clean container
+                with st.container():
+                    col1, col2 = st.columns([8, 1]) # Ratio to give the table more space
+                    with col1:
+                        # Clean up the display (Hide 'RawStock' backend ID)
+                        display_df = pd.DataFrame([row]).drop(columns=['RawStock'], errors='ignore')
+                        st.dataframe(display_df, use_container_width=True, hide_index=True)
+                    with col2:
+                        st.write("") # Visual spacing to align the button
+                        # 1-Click Interactive Button
+                        if st.button(f"➕ Track", key=f"add_{row.get('RawStock', index)}_{index}"):
+                            add_to_portfolio(row)
+                    st.divider()
         else:
-            st.warning(f"No setups found under ₹{budget_limit} today.")
+            st.info("No setups match the selected timeframe filters.")
+    else:
+        st.success("No quantitative setups passed the institutional guardrails today. Capital protected.")
+
+# --- TAB 2: INDEX SCALPS ---
+with tab2:
+    st.header("Index Options (5M Scalps)")
+    df_index = load_data("index_setups.csv")
+    
+    if not df_index.empty:
+        st.dataframe(df_index.drop(columns=['RawStock'], errors='ignore'), use_container_width=True, hide_index=True)
+    else:
+        st.info("No Index Scalp setups found. Waiting for live market hours and momentum.")
+
+# --- TAB 3: ACTIVE PORTFOLIO ---
+with tab3:
+    st.header("Active Trailing Portfolio")
+    st.markdown("> *These trades are monitored by the backend ATR Trailing Stop Engine.*")
+    df_portfolio = load_data("portfolio.csv")
+    
+    if not df_portfolio.empty:
+        active_pf = df_portfolio[df_portfolio['Status'] == 'Active']
+        closed_pf = df_portfolio[df_portfolio['Status'] == 'Closed']
+        
+        st.subheader(f"🟢 Active Trades ({len(active_pf)})")
+        if not active_pf.empty:
+            # Display cleanly without the backend RawStock column
+            st.dataframe(active_pf.drop(columns=['RawStock'], errors='ignore'), use_container_width=True, hide_index=True)
+        else:
+            st.info("No active trades currently.")
+            
+        with st.expander("View Closed / Stopped Out Trades"):
+            if not closed_pf.empty:
+                st.dataframe(closed_pf.drop(columns=['RawStock'], errors='ignore'), use_container_width=True, hide_index=True)
+            else:
+                st.write("No closed trades yet.")
+    else:
+        st.info("Your portfolio is currently empty. Click '+ Track' on a setup in the Market Scans tab to add one!")
+
+# --- TAB 4: AI DEEP DIVE ---
+with tab4:
+    st.header("🔬 Institutional Fundamental Analysis")
+    st.markdown("> *Powered by Gemini 1.5 Pro Quantitative AI*")
+    ai_report = load_markdown("deep_dive_analysis.md")
+    st.markdown(ai_report)
