@@ -241,6 +241,58 @@ def check_ttm_squeeze(df_c, df_h, df_l, period=20):
         return bool(sqz_series.iloc[-1]), bool(sqz_series.iloc[-5:-1].any() and not sqz_series.iloc[-1])
     except: return False, False
 
+def check_ascending_trendline_support(df_w_c, df_w_l, df_w_h, lookback_weeks=40):
+    """
+    Detects Weekly Ascending Trendline Support Retests based on structural pivot lows.
+    """
+    try:
+        if len(df_w_c) < lookback_weeks:
+            return False, 0.0
+        
+        lows = df_w_l.tail(lookback_weeks).values
+        n = len(lows)
+        
+        # 1. Identify Anchor Low (L1) in the first half of the window
+        idx1 = int(np.argmin(lows[: int(n * 0.55)]))
+        l1 = lows[idx1]
+        
+        # 2. Identify Secondary Higher Low (L2) in the intermediate window
+        idx2_search = lows[idx1 + 4 : n - 1]
+        if len(idx2_search) < 3:
+            return False, 0.0
+            
+        idx2 = idx1 + 4 + int(np.argmin(idx2_search))
+        l2 = lows[idx2]
+        
+        # Must be a Higher Low (L2 > L1) and have enough bar separation
+        if l2 <= l1 or (idx2 - idx1) < 5:
+            return False, 0.0
+            
+        # 3. Calculate Trendline Slope & Project to Current Bar
+        slope = (l2 - l1) / (idx2 - idx1)
+        curr_idx = n - 1
+        projected_tl = l2 + slope * (curr_idx - idx2)
+        
+        curr_close = float(df_w_c.iloc[-1])
+        curr_low = float(df_w_l.iloc[-1])
+        
+        # 4. Proximity & Floor Validation: Low touches within 2.5%, Close holds above 98.5%
+        is_testing = (curr_low <= projected_tl * 1.025) and (curr_close >= projected_tl * 0.985)
+        
+        # Ensure intermediate candles did not heavily violate the trendline 
+        intermediate_lows = lows[idx1:curr_idx]
+        x_vals = np.arange(idx1, curr_idx)
+        line_vals = l1 + slope * (x_vals - idx1)
+        violations = np.sum(intermediate_lows < line_vals * 0.97)
+        
+        if is_testing and violations <= 1:
+            return True, round(projected_tl, 2)
+            
+    except Exception:
+        pass
+        
+    return False, 0.0
+
 def get_index_options_ideas():
     indices = {'^NSEI': 'NIFTY 50', '^NSEBANK': 'BANK NIFTY'}
     results = []
@@ -372,7 +424,6 @@ Format EXACTLY as:
 ### 14. Executive Summary
 """
         try:
-            # UPGRADED TO PRO MODEL FOR DEEPER ANALYSIS
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             if res.status_code == 200: all_dossiers.append(res.json()['candidates'][0]['content']['parts'][0]['text'])
@@ -442,6 +493,10 @@ def run():
         pf.to_csv(portfolio_file, index=False)
         if trail_alerts: send_telegram_message("🔔 *ATR TRAILING STOP ENGINE*\n\n" + "\n".join(trail_alerts))
 
+    closes_weekly = closes.resample('W').last().dropna(how='all')
+    highs_weekly = highs.resample('W').max().dropna(how='all')
+    lows_weekly = lows.resample('W').min().dropna(how='all')
+    
     ema_50_daily, ema_20_daily, ema_200_daily = closes.ewm(span=50).mean(), closes.ewm(span=20).mean(), closes.ewm(span=200).mean()
     vol_50d_avg_daily = volumes.rolling(50).mean()
     delta = closes.diff()
@@ -450,7 +505,7 @@ def run():
     macd_daily = closes.ewm(span=12, adjust=False).mean() - closes.ewm(span=26, adjust=False).mean()
     macd_signal_daily = macd_daily.ewm(span=9, adjust=False).mean()
     atr_daily = pd.DataFrame(np.maximum((highs - lows).values, np.maximum((highs - closes.shift(1)).abs().values, (lows - closes.shift(1)).abs().values)), index=highs.index, columns=highs.columns).ewm(alpha=1/14).mean()
-    ema_50_weekly = closes.resample('W').last().dropna(how='all').ewm(span=50).mean()
+    ema_50_weekly = closes_weekly.ewm(span=50).mean()
 
     valid_setups = []
     for ticker in closes.columns:
@@ -499,6 +554,15 @@ def run():
             recent_vol_avg, recent_range_avg = float(volumes[ticker].tail(3).mean()), float((highs[ticker].tail(3) - lows[ticker].tail(3)).mean())
             recent_high = float(highs[ticker].tail(20).max())
             
+            # --- WEEKLY TRENDLINE SUPPORT CHECK ---
+            try:
+                df_w_c = closes_weekly[ticker].dropna()
+                df_w_l = lows_weekly[ticker].dropna()
+                df_w_h = highs_weekly[ticker].dropna()
+                is_trendline_retest, tl_val = check_ascending_trendline_support(df_w_c, df_w_l, df_w_h)
+            except:
+                is_trendline_retest, tl_val = False, 0.0
+            
             min_std_20 = float(std_20_series.tail(20).min())
             is_base_contracted = (std_20 <= min_std_20 * 1.1) if min_std_20 > 0 else False
             is_base_ignition = (is_base_contracted) and (prev_close < prev_ema20) and (close_p > d_ema20) and (1.0 <= vol_vs <= 2.5) and (45 <= rsi_val <= 65)
@@ -524,7 +588,9 @@ def run():
             is_rsi_div = check_bullish_divergence(df_c, rsi_daily[ticker].dropna())
             sqz_on, sqz_fired = check_ttm_squeeze(df_c, df_h, df_l)
 
-            if is_base_ignition: hor, sl_m, tag = "Pre-Breakout", 0.8, "🌱 Base Ignition"
+            # --- MASTER TAG LOGIC ---
+            if is_trendline_retest: hor, sl_m, tag = "Swing", 1.2, "📈 Rising Support Retest"
+            elif is_base_ignition: hor, sl_m, tag = "Pre-Breakout", 0.8, "🌱 Base Ignition"
             elif sqz_fired: hor, sl_m, tag = "Pre-Breakout", 1.0, "🔥 Squeeze Breakout"
             elif sqz_on and is_pre_breakout: hor, sl_m, tag = "Pre-Breakout", 1.0, "🗜️ TTM Squeeze Coil"
             elif is_pre_breakout: hor, sl_m, tag = "Pre-Breakout", 1.0, "💥 Pre-Breakout Coil"
@@ -570,7 +636,12 @@ def run():
 
                 is_pullback_candle = (close_p < prev_close) or ((recent_daily_high - close_p) > 0.35 * atr)
                 
-                if "Base Ignition" in tag:
+                if "Rising Support Retest" in tag:
+                    ez_low = round(tl_val * 0.99, 1)
+                    ez_high = round(close_p, 1)
+                    best_entry = round(tl_val * 1.01, 1)
+                    eq_sl = round(tl_val - 0.75 * atr, 1)
+                elif "Base Ignition" in tag:
                     ez_low = round(d_ema20, 1)
                     ez_high = round(close_p, 1)
                     best_entry = round(close_p, 1)
