@@ -1,42 +1,33 @@
-# ⚡ Intraday Report (Top 25) — 26 Aug 2026 | 10:50 AM (Intraday)
+# ⚡ Intraday Report (Top 25) — 26 Aug 2026 | 03:25 PM (BTST/Afternoon)
 
-> **Market Regime Filter:** 🟡 Neutral (Breadth: 50.5% > 50EMA) | **System:** 1800+ Mega Universe
-
-## 👑 Index Options (5M Scalps)
-
-| # | Index Signal | Price | Option | Buy Above | Targets | SL |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| 1 | **NIFTY 50 (Call)** | ₹24317.35 | **24300 CE** | **₹82.6** | T1: ₹90.3<br>T2: ₹98.5<br>T3: ₹107.0<br>T4: ₹116.0<br>T5: ₹125.4+ | ₹73.5 |
-| 2 | **BANK NIFTY (Call)** | ₹57917.65 | **57900 CE** | **₹131.66** | T1: ₹157.2<br>T2: ₹185.4<br>T3: ₹216.1<br>T4: ₹249.1<br>T5: ₹284.4+ | ₹103.6 |
-
----
+> **Market Regime Filter:** 🟡 Neutral (Breadth: 50.9% > 50EMA) | **System:** 1800+ Mega Universe
 
 ## 📊 Validated Setups & Options
 
 | # | Stock | Setup Type | Entry Zone (Bracket) | Score | Qty | Risk | Execution Strategy & Targets |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| 1 | **SKIPPER (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹539.3 - ₹550.4 (🎯 ₹542.6)** | 🔥 10/10 | 184 | ₹3275.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹560.0 // T2:₹574.9 // T3:₹593.5 |
-| 2 | **SIGACHI (↑)** | 🚀 Volume Breakout 🏆 Super-Trend 🚀 Sector-Leader (⭐ 2x Size) | **₹34.4 - ₹35.2 (🎯 ₹34.6)** | 🔥 9/10 | 2896 | ₹3851.68 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹36.4 // T2:₹37.8 // T3:₹39.7 |
-| 3 | **IIFL (↑)** | 🚀 Volume Breakout 🚀 Sector-Leader (⭐ 2x Size) | **₹628.3 - ₹658.5 (🎯 ₹633.7)** | 🔥 9/10 | 151 | ₹2650.05 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹679.7 // T2:₹696.1 // T3:₹717.3 |
-| 4 | **WELCORP (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹1976.5 - ₹2305.3 (🎯 ₹1998.0)** | 🔥 8/10 | 43 | ₹2962.7 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2432.8 // T2:₹2524.8 // T3:₹2652.4 |
-| 5 | **GOKULAGRO (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹256.5 - ₹261.2 (🎯 ₹257.9)** | 🔥 8/10 | 388 | ₹2894.48 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹266.1 // T2:₹272.8 // T3:₹281.4 |
-| 6 | **RATNAMANI (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹2421.4 - ₹2662.3 (🎯 ₹2450.4)** | 🔥 8/10 | 37 | ₹3429.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2791.1 // T2:₹2888.4 // T3:₹3017.2 |
-| 7 | **UTTAMSUGAR (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹282.4 - ₹317.6 (🎯 ₹286.7)** | 🔥 8/10 | 314 | ₹4323.78 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹340.9 // T2:₹358.0 // T3:₹381.4 |
-| 8 | **DWARKESH (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹46.8 - ₹53.8 (🎯 ₹47.6)** | 🔥 8/10 | 1858 | ₹4477.78 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹57.8 // T2:₹60.8 // T3:₹64.8 |
-| 9 | **IFCI (↑)** | 🚀 Volume Breakout 🚀 Sector-Leader (⭐ 2x Size) | **₹86.3 - ₹87.7 (🎯 ₹86.7)** | 🔥 8/10 | 1154 | ₹2654.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹89.7 // T2:₹92.0 // T3:₹95.1 |
-| 10 | **QPOWER (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹1242.7 - ₹1277.3 (🎯 ₹1256.4)** | 🔥 8/10 | 78 | ₹3408.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1334.1 // T2:₹1377.6 // T3:₹1434.5 |
-| 11 | **APOLLOPIPE (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹559.7 - ₹647.5 (🎯 ₹565.8)** | 🔥 8/10 | 154 | ₹3049.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹679.1 // T2:₹702.4 // T3:₹734.0 |
-| 12 | **PAYTM (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹1715.5 - ₹1741.0 (🎯 ₹1723.1)** | 🔥 8/10 | 58 | ₹2360.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1790.0 // T2:₹1840.6 // T3:₹1910.0 |
-| 13 | **LENSKART (↑)** | 🚀 Volume Breakout 🚀 Sector-Leader (⭐ 2x Size) | **₹610.3 - ₹648.0 (🎯 ₹615.3)** | 🔥 8/10 | 154 | ₹2456.3 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹669.6 // T2:₹686.0 // T3:₹707.6 |
-| 14 | **BDL (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹1328.3 - ₹1348.8 (🎯 ₹1338.4)** | 🔥 8/10 | 74 | ₹2397.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1388.0 // T2:₹1418.4 // T3:₹1457.7 |
-| 15 | **URBANCO (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹148.5 - ₹171.4 (🎯 ₹150.1)** | 🔥 8/10 | 583 | ₹2944.15 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹179.2 // T2:₹185.1 // T3:₹192.9 |
-| 16 | **KWIL (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹47.2 - ₹48.4 (🎯 ₹47.6)** | 🔥 8/10 | 2106 | ₹3938.22 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹50.9 // T2:₹53.3 // T3:₹56.7 |
-| 17 | **AVADHSUGAR (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹820.3 - ₹843.1 (🎯 ₹827.1)** | 🔥 8/10 | 121 | ₹4410.45 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹888.3 // T2:₹934.6 // T3:₹998.0 |
-| 18 | **PITTIENG (↑)** | 🚀 Volume Breakout | **₹1027.4 - ₹1130.7 (🎯 ₹1037.6)** | 🔥 7/10 | 44 | ₹1438.8 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1176.2 // T2:₹1210.6 // T3:₹1256.2 |
-| 19 | **BAJAJHIND (↑)** | 🚀 Volume Breakout | **₹19.8 - ₹22.5 (🎯 ₹20.1)** | 🔥 7/10 | 2222 | ₹2222.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹24.1 // T2:₹25.3 // T3:₹26.9 |
-| 20 | **MAHSEAMLES (↑)** | 🚀 Volume Breakout | **₹609.8 - ₹638.5 (🎯 ₹614.1)** | 🔥 7/10 | 78 | ₹1064.7 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹656.9 // T2:₹671.0 // T3:₹689.5 |
-| 21 | **MAWANASUG (↑)** | 🚀 Volume Breakout 🏆 Super-Trend ⚠️ Micro-Risk | **₹126.7 - ₹144.0 (🎯 ₹128.9)** | 🔥 7/10 | 173 | ₹1214.46 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹154.6 // T2:₹162.5 // T3:₹173.1 |
-| 22 | **DEVYANI (↑)** | 🚀 Volume Breakout | **₹137.3 - ₹152.8 (🎯 ₹138.6)** | 🔥 7/10 | 327 | ₹1357.05 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹159.8 // T2:₹165.0 // T3:₹172.1 |
-| 23 | **TI (↑)** | 🚀 Volume Breakout | **₹536.1 - ₹563.2 (🎯 ₹540.6)** | 🔥 7/10 | 88 | ₹1280.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹586.4 // T2:₹603.6 // T3:₹626.8 |
-| 24 | **JUBLFOOD (↑)** | 🚀 Volume Breakout | **₹486.8 - ₹511.5 (🎯 ₹490.4)** | 🔥 7/10 | 97 | ₹1105.8 | <b>Equity Targets:</b> T1:₹528.4 // T2:₹541.1 // T3:₹558.0<br><b>Option:</b> 510 CE (Buy > ₹14.91)<br><b>Opt Targets:</b> T1:₹25.8 // T2:₹35.8 // T3:₹50.7 |
-| 25 | **OMAXE (↑)** | 🚀 Volume Breakout | **₹95.0 - ₹105.1 (🎯 ₹96.5)** | 🔥 7/10 | 475 | ₹2189.75 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹110.7 // T2:₹115.0 // T3:₹120.6 |
+| 1 | **MOLDTKPAC (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹688.7 - ₹709.4 (🎯 ₹694.7)** | 🔥 10/10 | 140 | ₹2674.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹729.7 // T2:₹745.9 // T3:₹766.1 |
+| 2 | **INDSWFTLAB (↑)** | 🚀 Volume Breakout 🏆 Super-Trend 🚀 Sector-Leader (⭐ 2x Size) | **₹293.9 - ₹367.0 (🎯 ₹298.6)** | 🔥 9/10 | 272 | ₹4161.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹393.4 // T2:₹412.6 // T3:₹439.0 |
+| 3 | **SINDHUTRAD (↑)** | 🚀 Volume Breakout (📉 +RSI Div) ⚠️ Micro-Risk | **₹24.2 - ₹25.2 (🎯 ₹24.5)** | 🔥 9/10 | 992 | ₹892.8 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹26.0 // T2:₹26.7 // T3:₹27.5 |
+| 4 | **NITINSPIN (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹573.2 - ₹625.5 (🎯 ₹579.5)** | 🔥 9/10 | 159 | ₹3235.65 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹651.0 // T2:₹670.6 // T3:₹696.1 |
+| 5 | **WELCORP (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹1977.2 - ₹2313.0 (🎯 ₹1998.7)** | 🔥 8/10 | 43 | ₹2962.7 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2440.5 // T2:₹2532.5 // T3:₹2660.1 |
+| 6 | **BAJAJHIND (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹19.7 - ₹21.7 (🎯 ₹20.0)** | 🔥 8/10 | 4608 | ₹4608.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹23.3 // T2:₹24.5 // T3:₹26.2 |
+| 7 | **GOKULAGRO (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹233.9 - ₹245.6 (🎯 ₹236.3)** | 🔥 8/10 | 407 | ₹3133.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹254.3 // T2:₹261.2 // T3:₹269.9 |
+| 8 | **UTTAMSUGAR (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹282.0 - ₹313.1 (🎯 ₹286.3)** | 🔥 8/10 | 319 | ₹4367.11 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹336.5 // T2:₹353.5 // T3:₹376.9 |
+| 9 | **RATNAMANI (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹2419.6 - ₹2642.9 (🎯 ₹2448.5)** | 🔥 8/10 | 37 | ₹3429.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2771.7 // T2:₹2869.0 // T3:₹2997.8 |
+| 10 | **DWARKESH (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹46.8 - ₹54.0 (🎯 ₹47.6)** | 🔥 8/10 | 1852 | ₹4574.44 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹58.0 // T2:₹61.0 // T3:₹65.0 |
+| 11 | **AEROFLEX (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹534.1 - ₹546.2 (🎯 ₹537.8)** | 🔥 8/10 | 186 | ₹3599.1 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹561.4 // T2:₹580.5 // T3:₹605.3 |
+| 12 | **SETL (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹329.0 - ₹336.1 (🎯 ₹331.2)** | 🔥 8/10 | 302 | ₹3427.7 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹344.4 // T2:₹355.2 // T3:₹369.1 |
+| 13 | **SURAKSHA (↑)** | 🚀 Volume Breakout 🚀 Sector-Leader (⭐ 2x Size) | **₹336.9 - ₹344.4 (🎯 ₹339.1)** | 🔥 8/10 | 295 | ₹3540.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹355.5 // T2:₹368.4 // T3:₹385.5 |
+| 14 | **NETWEB (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹5017.4 - ₹5282.7 (🎯 ₹5080.3)** | 🔥 8/10 | 18 | ₹3618.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹5576.7 // T2:₹5797.0 // T3:₹6091.0 |
+| 15 | **RPEL (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹1465.5 - ₹1720.0 (🎯 ₹1484.3)** | 🔥 8/10 | 58 | ₹3497.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1814.6 // T2:₹1884.6 // T3:₹1979.2 |
+| 16 | **AVALON (↑)** | 🚀 Volume Breakout 🏆 Super-Trend (⭐ 2x Size) | **₹2242.9 - ₹2298.4 (🎯 ₹2259.6)** | 🔥 8/10 | 44 | ₹3911.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2378.9 // T2:₹2473.1 // T3:₹2597.9 |
+| 17 | **IFCI (↑)** | 🚀 Volume Breakout 🚀 Sector-Leader (⭐ 2x Size) | **₹78.6 - ₹85.9 (🎯 ₹79.3)** | 🔥 8/10 | 1164 | ₹2630.64 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹89.0 // T2:₹91.3 // T3:₹94.5 |
+| 18 | **QPOWER (↑)** | 🚀 Volume Breakout (⭐ 2x Size) | **₹1244.5 - ₹1296.4 (🎯 ₹1258.2)** | 🔥 8/10 | 77 | ₹3372.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1353.3 // T2:₹1396.9 // T3:₹1453.8 |
+| 19 | **RGL (↑)** | 🚀 Volume Breakout | **₹125.3 - ₹151.0 (🎯 ₹127.1)** | 🔥 7/10 | 331 | ₹1906.56 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹159.9 // T2:₹166.5 // T3:₹175.4 |
+| 20 | **WEL (↑)** | 🚀 Volume Breakout | **₹132.5 - ₹156.6 (🎯 ₹134.8)** | 🔥 7/10 | 319 | ₹2341.46 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹165.8 // T2:₹172.9 // T3:₹182.0 |
+| 21 | **GPPL (↑)** | 🚀 Volume Breakout | **₹158.0 - ₹169.5 (🎯 ₹159.0)** | 🔥 7/10 | 295 | ₹932.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹174.1 // T2:₹177.6 // T3:₹182.2 |
+| 22 | **OMAXE (↑)** | 🚀 Volume Breakout | **₹95.4 - ₹110.2 (🎯 ₹97.0)** | 🔥 7/10 | 453 | ₹2242.35 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹116.4 // T2:₹121.2 // T3:₹127.4 |
+| 23 | **KRBL (↑)** | 🚀 Volume Breakout | **₹446.2 - ₹454.3 (🎯 ₹448.6)** | 🔥 7/10 | 111 | ₹1454.1 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹467.1 // T2:₹481.5 // T3:₹500.7 |
+| 24 | **STYLEBAAZA (↑)** | 🚀 Volume Breakout | **₹408.1 - ₹417.6 (🎯 ₹411.0)** | 🔥 7/10 | 121 | ₹1839.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹439.3 // T2:₹460.4 // T3:₹489.7 |
+| 25 | **ARIS (↑)** | 🚀 Volume Breakout | **₹147.8 - ₹150.4 (🎯 ₹148.6)** | 🔥 7/10 | 337 | ₹1412.03 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹153.2 // T2:₹157.1 // T3:₹162.0 |
