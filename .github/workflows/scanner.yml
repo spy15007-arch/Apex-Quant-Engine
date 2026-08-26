@@ -2,46 +2,43 @@ name: Master Quant Scanner
 
 on:
   schedule:
-    # 🌅 Morning Intraday & Scalp Scan: 9:30 AM IST (04:00 UTC) Monday-Friday
-    - cron: '0 4 * * 1-5'
-    # 🌇 Afternoon Swing, BTST & Base Ignition Scan: 2:40 PM IST (09:10 UTC) Monday-Friday
-    - cron: '10 9 * * 1-5'
-  workflow_dispatch: # Allows you to manually click "Run workflow" in GitHub anytime
+    # Morning Scan: 9:28 AM IST (Bypasses the 9:30 AM global queue)
+    - cron: '58 3 * * 1-5'
+    
+    # Afternoon Scan: 2:43 PM IST (Bypasses the 2:45 PM global queue)
+    - cron: '13 9 * * 1-5'
+    
+  # Keeps the manual trigger button active for you
+  workflow_dispatch: 
 
 jobs:
   run-scanner:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # CRITICAL: Allows the bot to save CSVs and JSON memory back to the repo
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-          cache: 'pip' # Caches dependencies to make the run much faster
-
-      - name: Install Required Libraries
-        run: |
-          python -m pip install --upgrade pip
-          pip install yfinance pandas numpy scipy requests
-
-      - name: Execute Master Scanner Engine
-        env:
-          # Pulls your secure API keys from GitHub Secrets
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python master_scanner.py
-
-      - name: Save and Commit Results
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add .
-          # This line checks if any files were changed (like sent_alerts.json). 
-          # If yes, it commits them. If no, it completes gracefully without crashing.
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update scanner reports and alerts memory" && git push)
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Execute Master Scanner Engine
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: python master_scanner.py
+      
+    - name: Save and Commit Results
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update scanner reports and alerts memory" && git push)
