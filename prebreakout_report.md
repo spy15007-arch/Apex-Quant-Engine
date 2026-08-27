@@ -1,33 +1,33 @@
-# 💥 Soon to Breakout Report (Top 25) — 27 Aug 2026 | 01:21 PM (Manual Override)
+# 💥 Soon to Breakout Report (Top 25) — 27 Aug 2026 | 08:28 PM (BTST/Afternoon)
 
-> **Market Regime Filter:** 🟡 Neutral (Breadth: 48.9% > 50EMA) | **System:** 1800+ Mega Universe
+> **Market Regime Filter:** 🟡 Neutral (Breadth: 47.5% > 50EMA) | **System:** 1800+ Mega Universe
 
 ## 📊 Validated Setups & Options
 
 | # | Stock | Setup Type | Entry Zone (Bracket) | Score | Qty | Risk | Execution Strategy & Targets |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| 1 | **ELECTCAST (↑)** | 🔥 Squeeze Breakout | **₹73.4 - ₹79.0 (🎯 ₹74.0)** | 🔥 10/10 | 632 | ₹1542.08 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹81.4 // T2:₹83.2 // T3:₹85.6 |
-| 2 | **GILLANDERS (↑)** | 🔥 Squeeze Breakout | **₹106.0 - ₹108.5 (🎯 ₹106.7)** | 🔥 10/10 | 469 | ₹2345.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹111.2 // T2:₹114.8 // T3:₹119.5 |
-| 3 | **UDS (↑)** | 🔥 Squeeze Breakout | **₹221.7 - ₹225.5 (🎯 ₹222.9)** | 🔥 10/10 | 224 | ₹1680.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹229.0 // T2:₹234.2 // T3:₹240.7 |
-| 4 | **GUJTHEM (↑)** | 🔥 Squeeze Breakout (📉 +RSI Div) 🚀 Sector-Leader | **₹373.0 - ₹408.0 (🎯 ₹377.1)** | 🔥 10/10 | 122 | ₹2025.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹424.1 // T2:₹436.6 // T3:₹452.7 |
-| 5 | **CDSL (↑)** | 🔥 Squeeze Breakout | **₹1362.6 - ₹1419.2 (🎯 ₹1370.3)** | 🔥 10/10 | 35 | ₹1085.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1447.2 // T2:₹1469.3 // T3:₹1497.3 |
-| 6 | **CLEDUCATE (↑)** | 🔥 Squeeze Breakout 🏆 Super-Trend | **₹65.7 - ₹67.1 (🎯 ₹66.1)** | 🔥 10/10 | 757 | ₹2195.3 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹68.6 // T2:₹70.7 // T3:₹73.4 |
-| 7 | **VIDHIING (↑)** | 🔥 Squeeze Breakout (📉 +RSI Div) | **₹322.3 - ₹350.0 (🎯 ₹326.3)** | 🔥 10/10 | 142 | ₹2272.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹363.5 // T2:₹374.2 // T3:₹387.7 |
-| 8 | **ADANIENT (↑)** | 🔥 Squeeze Breakout | **₹3153.5 - ₹3185.9 (🎯 ₹3163.2)** | 🔥 10/10 | 15 | ₹972.0 | <b>Equity Targets:</b> T1:₹3213.3 // T2:₹3256.2 // T3:₹3309.5<br><b>Option:</b> 3150 CE (Buy > ₹65.51)<br><b>Opt Targets:</b> T1:₹99.4 // T2:₹131.7 // T3:₹176.8 |
-| 9 | **EMAMIPAP (↑)** | 🔥 Squeeze Breakout (📉 +RSI Div) | **₹120.0 - ₹122.4 (🎯 ₹120.7)** | 🔥 10/10 | 414 | ₹1945.8 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹124.6 // T2:₹127.9 // T3:₹132.0 |
-| 10 | **DLF (↑)** | 🔥 Squeeze Breakout | **₹681.8 - ₹689.6 (🎯 ₹684.1)** | 🔥 10/10 | 73 | ₹1149.75 | <b>Equity Targets:</b> T1:₹696.2 // T2:₹706.5 // T3:₹719.4<br><b>Option:</b> 680 CE (Buy > ₹14.2)<br><b>Opt Targets:</b> T1:₹22.8 // T2:₹30.9 // T3:₹42.4 |
-| 11 | **ASPINWALL (↑)** | 🔥 Squeeze Breakout | **₹245.0 - ₹264.8 (🎯 ₹247.6)** | 🔥 10/10 | 188 | ₹1910.08 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹273.9 // T2:₹281.1 // T3:₹290.2 |
-| 12 | **NIRLON (↑)** | 🗜️ TTM Squeeze Coil | **₹626.4 - ₹633.5 (🎯 ₹630.1)** | 🔥 10/10 | 78 | ₹1138.8 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹644.1 // T2:₹653.0 // T3:₹663.6 |
-| 13 | **SHIVATEX (↑)** | 🗜️ TTM Squeeze Coil | **₹170.4 - ₹173.9 (🎯 ₹171.4)** | 🔥 10/10 | 292 | ₹2014.8 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹175.5 // T2:₹179.2 // T3:₹183.6 |
-| 14 | **PARADEEP (↑)** | 🔥 Squeeze Breakout | **₹150.1 - ₹161.9 (🎯 ₹151.5)** | 🔥 10/10 | 308 | ₹1617.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹166.6 // T2:₹170.3 // T3:₹175.0 |
-| 15 | **KTKBANK (↑)** | 💥 Pre-Breakout Coil 🏆 Super-Trend 🚀 Sector-Leader | **₹311.9 - ₹331.9 (🎯 ₹314.4)** | 🔥 10/10 | 150 | ₹1477.5 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹342.8 // T2:₹351.1 // T3:₹362.1 |
-| 16 | **ESAFSFB (↑)** | 💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend | **₹44.1 - ₹45.2 (🎯 ₹44.4)** | 🔥 10/10 | 1128 | ₹2470.32 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹46.2 // T2:₹47.8 // T3:₹49.7 |
-| 17 | **FEDFINA (↑)** | 🔥 Squeeze Breakout 🚀 Sector-Leader | **₹154.1 - ₹158.4 (🎯 ₹155.2)** | 🔥 10/10 | 315 | ₹1382.85 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹161.9 // T2:₹164.8 // T3:₹168.3 |
-| 18 | **SAMBHV (↑)** | 🔥 Squeeze Breakout | **₹122.5 - ₹124.7 (🎯 ₹123.8)** | 🔥 10/10 | 401 | ₹2065.15 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹128.9 // T2:₹132.3 // T3:₹136.6 |
-| 19 | **SHIVAUM (↑)** | 🔥 Squeeze Breakout 🏆 Super-Trend | **₹443.4 - ₹451.6 (🎯 ₹445.9)** | 🔥 10/10 | 112 | ₹1820.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹458.5 // T2:₹469.3 // T3:₹482.8 |
-| 20 | **CHALET (↑)** | 🔥 Squeeze Breakout | **₹854.1 - ₹908.5 (🎯 ₹860.5)** | 🔥 10/10 | 55 | ₹1402.5 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹934.2 // T2:₹954.0 // T3:₹979.6 |
-| 21 | **MOSCHIP (↑)** | 🔥 Squeeze Breakout | **₹209.5 - ₹220.2 (🎯 ₹211.2)** | 🔥 10/10 | 227 | ₹1559.49 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹225.3 // T2:₹229.6 // T3:₹234.7 |
-| 22 | **RUBICON (↑)** | 💥 Pre-Breakout Coil 🏆 Super-Trend 🚀 Sector-Leader | **₹1663.6 - ₹1840.4 (🎯 ₹1682.1)** | 🔥 10/10 | 27 | ₹2003.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1918.7 // T2:₹1978.4 // T3:₹2056.7 |
-| 23 | **GLOBAL (↑)** | 🗜️ TTM Squeeze Coil | **₹110.3 - ₹112.6 (🎯 ₹111.0)** | 🔥 10/10 | 451 | ₹2101.66 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹116.2 // T2:₹120.3 // T3:₹125.7 |
-| 24 | **JMA (↑)** | 🔥 Squeeze Breakout (📉 +RSI Div) | **₹87.2 - ₹90.0 (🎯 ₹88.0)** | 🔥 10/10 | 555 | ₹1670.55 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹92.3 // T2:₹94.1 // T3:₹96.4 |
-| 25 | **NPST (↑)** | 🗜️ TTM Squeeze Coil | **₹1570.7 - ₹1648.1 (🎯 ₹1590.0)** | 🔥 10/10 | 30 | ₹2319.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1711.3 // T2:₹1762.2 // T3:₹1825.4 |
+| 1 | **ELECTCAST (↑)** | 🔥 Squeeze Breakout | **₹73.4 - ₹79.0 (🎯 ₹74.0)** | 🔥 10/10 | 632 | ₹1573.68 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹81.4 // T2:₹83.2 // T3:₹85.6 |
+| 2 | **UDS (↑)** | 🔥 Squeeze Breakout | **₹211.6 - ₹221.8 (🎯 ₹213.4)** | 🔥 10/10 | 225 | ₹1624.5 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹228.3 // T2:₹233.4 // T3:₹239.9 |
+| 3 | **INOXINDIA (↑)** | 🔥 Squeeze Breakout 🏆 Super-Trend | **₹1944.3 - ₹2177.9 (🎯 ₹1965.3)** | 🔥 10/10 | 22 | ₹1845.8 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2258.7 // T2:₹2321.4 // T3:₹2402.2 |
+| 4 | **ADANIENT (↑)** | 🔥 Squeeze Breakout | **₹3162.5 - ₹3195.1 (🎯 ₹3172.3)** | 🔥 10/10 | 15 | ₹979.5 | <b>Equity Targets:</b> T1:₹3223.0 // T2:₹3266.3 // T3:₹3320.3<br><b>Option:</b> 3150 CE (Buy > ₹70.99)<br><b>Opt Targets:</b> T1:₹106.6 // T2:₹140.1 // T3:₹186.6 |
+| 5 | **CDSL (↑)** | 🔥 Squeeze Breakout | **₹1361.8 - ₹1410.8 (🎯 ₹1369.5)** | 🔥 10/10 | 35 | ₹1088.5 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1438.9 // T2:₹1461.0 // T3:₹1489.1 |
+| 6 | **ORKLAINDIA (↑)** | 🔥 Squeeze Breakout (📉 +RSI Div) | **₹604.3 - ₹612.8 (🎯 ₹606.9)** | 🔥 10/10 | 82 | ₹1402.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹620.9 // T2:₹632.8 // T3:₹647.7 |
+| 7 | **DLF (↑)** | 🔥 Squeeze Breakout | **₹664.8 - ₹676.2 (🎯 ₹668.7)** | 🔥 10/10 | 73 | ₹1149.75 | <b>Equity Targets:</b> T1:₹689.0 // T2:₹699.3 // T3:₹712.2<br><b>Option:</b> 680 CE (Buy > ₹10.37)<br><b>Opt Targets:</b> T1:₹17.7 // T2:₹25.1 // T3:₹35.9 |
+| 8 | **CHALET (↑)** | 🔥 Squeeze Breakout | **₹854.2 - ₹910.3 (🎯 ₹860.6)** | 🔥 10/10 | 54 | ₹1382.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹936.0 // T2:₹955.8 // T3:₹981.5 |
+| 9 | **FEDFINA (↑)** | 🔥 Squeeze Breakout | **₹154.0 - ₹157.9 (🎯 ₹155.1)** | 🔥 10/10 | 316 | ₹1403.04 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹161.5 // T2:₹164.4 // T3:₹167.9 |
+| 10 | **PARADEEP (↑)** | 🔥 Squeeze Breakout | **₹150.0 - ₹160.6 (🎯 ₹151.3)** | 🔥 10/10 | 311 | ₹1632.75 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹165.3 // T2:₹169.0 // T3:₹173.7 |
+| 11 | **ESAFSFB (↑)** | 💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend | **₹40.9 - ₹44.0 (🎯 ₹41.5)** | 🔥 10/10 | 1137 | ₹2580.99 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹45.9 // T2:₹47.5 // T3:₹49.5 |
+| 12 | **SKFINDUS (↑)** | 🗜️ TTM Squeeze Coil | **₹2735.1 - ₹2891.6 (🎯 ₹2762.4)** | 🔥 10/10 | 17 | ₹1851.3 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2975.8 // T2:₹3044.5 // T3:₹3128.7 |
+| 13 | **MOSCHIP (↑)** | 🔥 Squeeze Breakout | **₹209.4 - ₹219.4 (🎯 ₹211.1)** | 🔥 10/10 | 227 | ₹1557.22 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹224.5 // T2:₹228.8 // T3:₹233.9 |
+| 14 | **VOEPL (↑)** | 🔥 Squeeze Breakout (📉 +RSI Div) | **₹503.2 - ₹572.7 (🎯 ₹511.2)** | 🔥 10/10 | 87 | ₹2784.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹600.3 // T2:₹622.2 // T3:₹649.8 |
+| 15 | **PERSISTENT (↑)** | 🗜️ TTM Squeeze Coil (📉 +RSI Div) | **₹5640.0 - ₹5710.1 (🎯 ₹5661.0)** | 🔥 10/10 | 8 | ₹1121.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹5764.5 // T2:₹5854.3 // T3:₹5964.9 |
+| 16 | **TBZ (↑)** | 💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend | **₹268.1 - ₹306.1 (🎯 ₹272.2)** | 🔥 10/10 | 163 | ₹2722.1 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹322.3 // T2:₹334.8 // T3:₹350.9 |
+| 17 | **AGI (↑)** | 🔥 Squeeze Breakout | **₹716.7 - ₹737.7 (🎯 ₹722.3)** | 🔥 10/10 | 67 | ₹1520.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹755.5 // T2:₹770.0 // T3:₹787.8 |
+| 18 | **VGUARD (↑)** | 🔥 Squeeze Breakout | **₹324.4 - ₹331.5 (🎯 ₹326.9)** | 🔥 10/10 | 150 | ₹1515.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹340.7 // T2:₹348.0 // T3:₹357.2 |
+| 19 | **GANESHBE (↑)** | 🗜️ TTM Squeeze Coil (📉 +RSI Div) 🏆 Super-Trend | **₹124.5 - ₹127.4 (🎯 ₹125.4)** | 🔥 10/10 | 399 | ₹2350.11 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹129.6 // T2:₹133.2 // T3:₹137.7 |
+| 20 | **GHCLTEXTIL (↑)** | 🔥 Squeeze Breakout (📉 +RSI Div) 🏆 Super-Trend | **₹120.5 - ₹125.4 (🎯 ₹121.8)** | 🔥 10/10 | 398 | ₹2133.28 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹129.5 // T2:₹132.9 // T3:₹137.1 |
+| 21 | **ACUTAAS (↑)** | 🔥 Squeeze Breakout 🏆 Super-Trend | **₹3316.2 - ₹3381.2 (🎯 ₹3335.7)** | 🔥 10/10 | 15 | ₹1950.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹3425.4 // T2:₹3504.8 // T3:₹3601.0 |
+| 22 | **SHANKARA (↑)** | 🔥 Squeeze Breakout (📉 +RSI Div) ⚠️ Micro-Risk | **₹142.2 - ₹146.9 (🎯 ₹143.0)** | 🔥 9/10 | 170 | ₹535.5 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹149.7 // T2:₹151.9 // T3:₹154.7 |
+| 23 | **EMAMIPAP (↑)** | 🗜️ TTM Squeeze Coil (📉 +RSI Div) ⚠️ Micro-Risk | **₹112.6 - ₹120.4 (🎯 ₹113.7)** | 🔥 9/10 | 207 | ₹968.76 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹124.5 // T2:₹127.7 // T3:₹131.8 |
+| 24 | **NILKAMAL (↑)** | 💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend | **₹1888.5 - ₹2081.6 (🎯 ₹1911.9)** | 🔥 9/10 | 24 | ₹2251.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2175.6 // T2:₹2248.0 // T3:₹2342.0 |
+| 25 | **CYIENTDLM (↑)** | 💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend | **₹807.1 - ₹823.6 (🎯 ₹812.0)** | 🔥 9/10 | 61 | ₹2006.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹843.0 // T2:₹868.1 // T3:₹900.7 |
