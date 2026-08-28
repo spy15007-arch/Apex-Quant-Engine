@@ -234,26 +234,35 @@ def check_ttm_squeeze(df_c, df_h, df_l, period=20):
     except: return False, False
 
 def check_ascending_trendline_support(df_w_c, df_w_l, df_w_h, lookback_weeks=40):
+    """Calculates Trendline coordinates and returns (True, Current_Value, Anchor_Date, Anchor_Low_Value)"""
     try:
-        if len(df_w_c) < lookback_weeks: return False, 0.0
+        if len(df_w_c) < lookback_weeks: return False, 0.0, None, None
         lows = df_w_l.tail(lookback_weeks).values
+        dates = df_w_l.tail(lookback_weeks).index
         n = len(lows)
+        
         idx1 = int(np.argmin(lows[: int(n * 0.55)]))
         l1 = lows[idx1]
+        d1 = dates[idx1].strftime('%Y-%m-%d')
+        
         idx2_search = lows[idx1 + 4 : n - 1]
-        if len(idx2_search) < 3: return False, 0.0
+        if len(idx2_search) < 3: return False, 0.0, None, None
         idx2 = idx1 + 4 + int(np.argmin(idx2_search))
         l2 = lows[idx2]
-        if l2 <= l1 or (idx2 - idx1) < 5: return False, 0.0
+        
+        if l2 <= l1 or (idx2 - idx1) < 5: return False, 0.0, None, None
         slope = (l2 - l1) / (idx2 - idx1)
         curr_idx = n - 1
         projected_tl = l2 + slope * (curr_idx - idx2)
         curr_close, curr_low = float(df_w_c.iloc[-1]), float(df_w_l.iloc[-1])
+        
         is_testing = (curr_low <= projected_tl * 1.025) and (curr_close >= projected_tl * 0.985)
         violations = np.sum(lows[idx1:curr_idx] < (l1 + slope * (np.arange(idx1, curr_idx) - idx1)) * 0.97)
-        if is_testing and violations <= 1: return True, round(projected_tl, 2)
+        
+        if is_testing and violations <= 1: 
+            return True, round(projected_tl, 2), d1, round(l1, 2)
     except: pass
-    return False, 0.0
+    return False, 0.0, None, None
 
 def get_index_options_ideas():
     indices = {'^NSEI': 'NIFTY 50', '^NSEBANK': 'BANK NIFTY'}
@@ -441,8 +450,9 @@ def run():
             prev_ema20 = float(ema_20_daily.iloc[-2][ticker]) if len(ema_20_daily) > 1 else d_ema20
             
             recent_vol_avg, recent_range_avg, recent_high = float(volumes[ticker].tail(3).mean()), float((highs[ticker].tail(3) - lows[ticker].tail(3)).mean()), float(highs[ticker].tail(20).max())
-            try: is_trendline_retest, tl_val = check_ascending_trendline_support(closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna())
-            except: is_trendline_retest, tl_val = False, 0.0
+            
+            try: is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna())
+            except: is_trendline_retest, tl_val, tl_d1, tl_v1 = False, 0.0, None, None
             
             min_std_20 = float(std_20_series.tail(20).min())
             is_base_ignition = (std_20 <= min_std_20 * 1.1 if min_std_20 > 0 else False) and (prev_close < prev_ema20) and (close_p > d_ema20) and (1.0 <= vol_vs <= 2.5) and (45 <= rsi_val <= 65)
@@ -520,11 +530,11 @@ def run():
                 entry_zone_str = f"₹{ez_low} - ₹{ez_high} (🎯 ₹{best_entry})"
                 opt_info = generate_quant_option(symbol, close_p, t1, t2, t3, t4, t5, eq_sl, df_h, df_l, df_c, "Bullish") if symbol in STATIC_FNO else ("N/A (Cash)", "-", "-", "-", "-", "-", "-", "-")
                 
-                valid_setups.append({'Stock': f"{symbol} (↑)", 'RawStock': symbol, 'Horizon': hor, 'Tag': tag, 'Entry': round(close_p, 2), 'EntryZone': entry_zone_str, 'Qty': cash_qty, 'Risk': round(cash_qty * (close_p - eq_sl), 2), 'RSI': round(rsi_val,1), 'Vol vs 50d': vol_vs, 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Opt': opt_info[0], 'Prem': opt_info[1], 'PT1': opt_info[2], 'PT2': opt_info[3], 'PT3': opt_info[4], 'PT4': opt_info[5], 'PT5': opt_info[6], 'OptSL': opt_info[7], 'Score': score})
+                valid_setups.append({'Stock': f"{symbol} (↑)", 'RawStock': symbol, 'Horizon': hor, 'Tag': tag, 'Entry': round(close_p, 2), 'EntryZone': entry_zone_str, 'Qty': cash_qty, 'Risk': round(cash_qty * (close_p - eq_sl), 2), 'RSI': round(rsi_val,1), 'Vol vs 50d': vol_vs, 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Opt': opt_info[0], 'Prem': opt_info[1], 'PT1': opt_info[2], 'PT2': opt_info[3], 'PT3': opt_info[4], 'PT4': opt_info[5], 'PT5': opt_info[6], 'OptSL': opt_info[7], 'Score': score, 'TL_D1': tl_d1, 'TL_V1': tl_v1, 'TL_V2': tl_val})
         except: continue
 
     df_all = pd.DataFrame(valid_setups).drop_duplicates(subset=['Stock']).sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]) if valid_setups else pd.DataFrame()
-    df_all.to_csv("all_setups.csv", index=False) if not df_all.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','Qty','Risk','RSI','Vol vs 50d','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','Score']).to_csv("all_setups.csv", index=False)
+    df_all.to_csv("all_setups.csv", index=False) if not df_all.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','Qty','Risk','RSI','Vol vs 50d','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','Score','TL_D1','TL_V1','TL_V2']).to_csv("all_setups.csv", index=False)
     
     # --- CHART DATA EXTRACTION ---
     chart_data_list = []
