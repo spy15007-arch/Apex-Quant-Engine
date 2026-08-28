@@ -1,8 +1,8 @@
-streamlit
 yfinance
 pandas
 numpy
-requests
-plotly
 scipy
-streamlit-autorefresh
+requests
+streamlit
+plotly
+streamlit-lightweight-charts
