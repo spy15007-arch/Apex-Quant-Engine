@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import os
+import re
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="Master Quant Engine", layout="wide", page_icon="📈")
@@ -22,9 +23,7 @@ def load_markdown(file_path):
 
 # --- PORTFOLIO ACTION FUNCTIONS ---
 def add_to_portfolio(raw_stock, df_source):
-    """Finds the stock in the dataframe and adds it to the tracking portfolio."""
     if raw_stock is None or df_source.empty: return
-    
     stock_row = df_source[df_source['RawStock'] == raw_stock].iloc[0]
     file_path = "portfolio.csv"
     
@@ -56,7 +55,6 @@ def add_to_portfolio(raw_stock, df_source):
     st.toast(f"✅ Successfully added {stock_row['RawStock']} to your Portfolio Tracking Engine!", icon="✅")
 
 def remove_from_portfolio(raw_stock):
-    """Deletes an active trade from the portfolio."""
     file_path = "portfolio.csv"
     if os.path.exists(file_path):
         pf = pd.read_csv(file_path)
@@ -66,80 +64,40 @@ def remove_from_portfolio(raw_stock):
 
 # --- INTERACTIVE TABLE RENDERER ---
 def display_interactive_table(df, tab_name):
-    """Renders a highly interactive dataframe with TradingView links and a quick-add tool."""
     if df.empty:
         st.info(f"No qualifying setups matched the criteria for {tab_name} today.")
         return
 
-    # Generate Direct TradingView URL for the interactive column
     df['Chart'] = "https://in.tradingview.com/chart/?symbol=NSE:" + df['RawStock']
-    
-    # Reorder and filter columns for a pristine tabular view
     display_cols = ['Stock', 'Tag', 'Entry', 'EqSL', 'EqT1', 'EqT2', 'Score', 'Vol vs 50d', 'RSI', 'Chart', 'RawStock']
     display_df = df[[col for col in display_cols if col in df.columns]]
 
-    # Map Streamlit Column Configs (Links, Number Formatting)
     column_config = {
-        "Chart": st.column_config.LinkColumn(
-            "📊 Chart", 
-            display_text="📈 View", 
-            help="Open directly in TradingView"
-        ),
-        "Score": st.column_config.NumberColumn(
-            "Score /10", 
-            help="Institutional Conviction Score", 
-            format="%d ⭐"
-        ),
-        "Entry": st.column_config.NumberColumn(
-            "CMP (₹)", 
-            format="₹%.2f"
-        ),
-        "EqSL": st.column_config.NumberColumn(
-            "Stop Loss", 
-            format="₹%.2f"
-        ),
-        "Vol vs 50d": st.column_config.NumberColumn(
-            "Vol Spike", 
-            format="%.1fx"
-        ),
-        "RawStock": None # Hides the raw ID from the user view but keeps it for the backend
+        "Chart": st.column_config.LinkColumn("📊 Chart", display_text="📈 View", help="Open directly in TradingView"),
+        "Score": st.column_config.NumberColumn("Score /10", help="Institutional Conviction Score", format="%d ⭐"),
+        "Entry": st.column_config.NumberColumn("CMP (₹)", format="₹%.2f"),
+        "EqSL": st.column_config.NumberColumn("Stop Loss", format="₹%.2f"),
+        "Vol vs 50d": st.column_config.NumberColumn("Vol Spike", format="%.1fx"),
+        "RawStock": None 
     }
 
-    # Render the interactive Data Grid
-    st.dataframe(
-        display_df,
-        use_container_width=True,
-        hide_index=True,
-        column_config=column_config
-    )
+    st.dataframe(display_df, use_container_width=True, hide_index=True, column_config=column_config)
 
-    # 1-Click Track to Portfolio tool beneath the table
     st.write("")
     col1, col2 = st.columns([3, 1])
     with col1:
         selected_stock = st.selectbox(f"Select stock to track from {tab_name}:", df['RawStock'].unique(), key=f"sel_{tab_name}")
     with col2:
         st.write("")
-        st.write("") # Visual alignment spacer
+        st.write("") 
         if st.button(f"➕ Add to Portfolio", key=f"btn_{tab_name}", use_container_width=True):
             add_to_portfolio(selected_stock, df)
-
 
 # --- MAIN UI DASHBOARD LAYOUT ---
 st.title("📈 Institutional Quant Dashboard")
 st.markdown("Automated Multi-Timeframe Structural Breakout & Retest Scanner")
 
-# Top Navigation Tabs
-tabs = st.tabs([
-    "💥 Pre-Breakout", 
-    "📈 Swing (1-2 Wk)", 
-    "🌙 Perfect BTST", 
-    "⚡ Intraday", 
-    "💰 Budget (<₹500)", 
-    "👑 Index Scalps", 
-    "💼 Active Portfolio", 
-    "🤖 AI Deep Dive"
-])
+tabs = st.tabs(["💥 Pre-Breakout", "📈 Swing (1-2 Wk)", "🌙 Perfect BTST", "⚡ Intraday", "💰 Budget (<₹500)", "👑 Index Scalps", "💼 Active Portfolio", "🤖 AI Deep Dive"])
 
 df_all = load_data("all_setups.csv")
 
@@ -147,35 +105,24 @@ df_all = load_data("all_setups.csv")
 if not df_all.empty:
     with tabs[0]:
         st.header("💥 Pre-Breakout Coils & Ignitions")
-        st.markdown("> *Volatility contraction patterns preparing for expansion.*")
         display_interactive_table(df_all[df_all['Horizon'] == 'Pre-Breakout'], "Pre-Breakout")
-
     with tabs[1]:
         st.header("📈 Swing Trades (Retest & Rising Support)")
-        st.markdown("> *Multi-day/week holds bouncing off dynamic institutional support.*")
         display_interactive_table(df_all[df_all['Horizon'] == 'Swing'], "Swing Trades")
-
     with tabs[2]:
         st.header("🌙 Perfect BTST (Buy Today, Sell Tomorrow)")
-        st.markdown("> *Extremely strong daily close indicating morning gap-up probability.*")
         display_interactive_table(df_all[df_all['Horizon'] == 'BTST'], "BTST")
-
     with tabs[3]:
         st.header("⚡ Intraday Momentum & Breakouts")
-        st.markdown("> *High volume relative strength intraday breakouts.*")
         display_interactive_table(df_all[df_all['Horizon'] == 'Intraday'], "Intraday")
-
     with tabs[4]:
         st.header("💰 Budget Picks (CMP under ₹500)")
-        st.markdown("> *High-conviction quantitative setups across all timeframes priced under ₹500.*")
-        budget_df = df_all[df_all['Entry'] < 500]
-        display_interactive_table(budget_df, "Budget Stocks")
+        display_interactive_table(df_all[df_all['Entry'] < 500], "Budget Stocks")
 else:
     for i in range(5):
         with tabs[i]:
             st.info("No quantitative setups passed the institutional guardrails today. Capital protected.")
 
-# Index Options Scalps
 with tabs[5]:
     st.header("Index Options (5M Scalps)")
     df_index = load_data("index_setups.csv")
@@ -184,11 +131,9 @@ with tabs[5]:
     else:
         st.info("No Index Scalp setups found. Waiting for live market momentum.")
 
-# Active Portfolio Management
 with tabs[6]:
     st.header("Active Trailing Portfolio")
     df_portfolio = load_data("portfolio.csv")
-    
     if not df_portfolio.empty:
         active_pf = df_portfolio[df_portfolio['Status'] == 'Active']
         closed_pf = df_portfolio[df_portfolio['Status'] == 'Closed']
@@ -196,8 +141,7 @@ with tabs[6]:
         st.subheader(f"🟢 Active Trades ({len(active_pf)})")
         if not active_pf.empty:
             for index, row in active_pf.iterrows():
-                # Utilizing cards here for easy "Delete/Remove" button access
-                with st.container():
+                with st.container(border=True):
                     col1, col2 = st.columns([4, 1])
                     with col1:
                         st.markdown(f"**{row['Stock']}** (Sector: {row.get('Sector', 'Unknown')}) | **Current SL: ₹{row['Current_SL']}**")
@@ -206,7 +150,6 @@ with tabs[6]:
                         if st.button("❌ Remove", key=f"remove_{row['RawStock']}_{index}"):
                             remove_from_portfolio(row['RawStock'])
                             st.rerun() 
-                    st.divider()
         else:
             st.info("No active trades currently.")
             
@@ -216,8 +159,48 @@ with tabs[6]:
     else:
         st.info("Your portfolio is currently empty.")
 
-# AI Deep Dive
+# --- TAB 8: AI DEEP DIVE (NEW PARSING ENGINE) ---
 with tabs[7]:
     st.header("🔬 Institutional Fundamental Analysis")
-    ai_report = load_markdown("deep_dive_analysis.md")
-    st.markdown(ai_report)
+    raw_ai_report = load_markdown("deep_dive_analysis.md")
+    
+    if "Pending Analysis" in raw_ai_report or "No qualifying setups" in raw_ai_report:
+        st.info("AI Analysis is pending or no qualifying setups were found today.")
+    else:
+        # Split the markdown into individual stock reports based on the '---' divider
+        reports = raw_ai_report.split("\n\n---\n\n")
+        
+        for report in reports:
+            if not report.strip(): continue
+            
+            # Extract Stock Title
+            lines = report.strip().split('\n')
+            title = lines[0].replace("# Detailed Stock Analysis:", "").strip() if lines else "Stock Analysis"
+            
+            # Regex extraction for exactly Section 12 and Section 14
+            scorecard_match = re.search(r'### 12\. Final Scorecard(.*?)(?=### 13\.|$)', report, re.DOTALL)
+            summary_match = re.search(r'### 14\. Executive Summary(.*?)(?=###|$)', report, re.DOTALL)
+            
+            scorecard_text = scorecard_match.group(1).strip() if scorecard_match else "Scorecard data formatting error."
+            summary_text = summary_match.group(1).strip() if summary_match else "Summary data formatting error."
+            
+            st.markdown(f"## {title}")
+            
+            # Render side-by-side containers just like the TradingView image overlays
+            col1, col2 = st.columns([1.2, 2]) # Ratio to give summary more reading space
+            
+            with col1:
+                with st.container(border=True):
+                    st.markdown("#### 12. Final Scorecard")
+                    st.markdown(scorecard_text)
+                    
+            with col2:
+                with st.container(border=True):
+                    st.markdown("#### 14. Executive Summary")
+                    st.markdown(summary_text)
+                    
+            # Hide the rest of the 14-pillar report in an expander below the beautiful overlay
+            with st.expander("🔍 Read Full 14-Pillar Fundamental Report"):
+                st.markdown(report)
+                
+            st.divider()
