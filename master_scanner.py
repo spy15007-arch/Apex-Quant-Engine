@@ -18,7 +18,7 @@ BASE_CAPITAL_PER_TRADE = 50000
 HIGH_CONVICTION_MULTIPLIER = 2  
 
 # --- STEALTH BROWSER SESSION FOR YAHOO FINANCE ---
-# This bypasses the 401 "Invalid Crumb" error by disguising the GitHub Action as a standard web browser.
+# This bypasses the 401 "Invalid Crumb" error by disguising the script as a standard web browser.
 yf_session = requests.Session()
 yf_session.headers.update({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
@@ -123,7 +123,7 @@ def calculate_leading_sectors(nifty_return_20d):
     except: pass
     return leading_sectors
 
-def download_in_chunks(tickers, chunk_size=300):
+def download_in_chunks(tickers, chunk_size=50):
     opens_list, closes_list, highs_list, lows_list, vols_list = [], [], [], [], []
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
@@ -143,7 +143,8 @@ def download_in_chunks(tickers, chunk_size=300):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(0.5)
+        # 1-second delay to guarantee we bypass Yahoo's rate limit firewall
+        time.sleep(1.0)
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -380,7 +381,9 @@ def run():
 
     leading_sectors = calculate_leading_sectors(nifty_return_20d)
     universe = get_complete_nse_universe()
-    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=400)
+    
+    # NEW CHUNK SIZE = 50 (Bypasses Yahoo's 401 Rate Limiting)
+    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=50)
     if closes.empty: return
 
     ema_50_daily = closes.ewm(span=50).mean()
