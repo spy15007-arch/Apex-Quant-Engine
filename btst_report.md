@@ -1,27 +1,31 @@
-# 🌙 BTST Report (Top 25) — 28 Aug 2026 | 01:19 AM (Intraday)
+# 🌙 BTST Report (Top 25) — 28 Aug 2026 | 11:45 AM (Manual Override)
 
-> **Market Regime Filter:** 🔴 Bearish - Cash Protection Mode (Breadth: 0.2% > 50EMA) | **System:** 1800+ Mega Universe
+> **Market Regime Filter:** 🟡 Neutral (Breadth: 49.6% > 50EMA) | **System:** 1800+ Mega Universe
 
 ## 📊 Validated Setups & Options
 
 | # | Stock | Setup Type | Entry Zone (Bracket) | Score | Qty | Risk | Execution Strategy & Targets |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| 1 | **NORTHARC (↑)** | 🌙 Strong Close BTST 🚀 Sector-Leader (⭐ 2x Size) | **₹287.0 - ₹293.5 (🎯 ₹289.6)** | 🔥 10/10 | 170 | ₹1785.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹300.7 // T2:₹306.7 // T3:₹313.8 |
-| 2 | **IOLCP (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend 🚀 Sector-Leader (⭐ 2x Size) | **₹183.2 - ₹186.9 (🎯 ₹184.6)** | 🔥 10/10 | 268 | ₹2468.28 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹194.9 // T2:₹201.8 // T3:₹210.7 |
-| 3 | **JINDALSAW (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend (⭐ 2x Size) | **₹272.9 - ₹302.5 (🎯 ₹275.7)** | 🔥 9/10 | 165 | ₹1806.75 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹313.3 // T2:₹321.7 // T3:₹332.5 |
-| 4 | **WABAG (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend (⭐ 2x Size) | **₹2131.0 - ₹2163.4 (🎯 ₹2143.2)** | 🔥 9/10 | 23 | ₹1863.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2223.8 // T2:₹2278.5 // T3:₹2347.0 |
-| 5 | **MENONBE (↑)** | 🌙 Strong Close BTST (📉 +RSI Div) 🏆 Super-Trend ⚠️ Micro-Risk | **₹272.3 - ₹278.4 (🎯 ₹274.5)** | 🔥 9/10 | 45 | ₹690.3 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹292.9 // T2:₹305.1 // T3:₹321.1 |
-| 6 | **RAMRAT (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend (⭐ 2x Size) | **₹517.6 - ₹525.7 (🎯 ₹520.7)** | 🔥 8/10 | 95 | ₹1919.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹544.7 // T2:₹560.7 // T3:₹581.7 |
-| 7 | **HINDCOPPER (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹548.9 - ₹558.4 (🎯 ₹552.5)** | 🔥 8/10 | 89 | ₹2131.55 | <b>Equity Targets:</b> T1:₹578.5 // T2:₹596.1 // T3:₹618.6<br><b>Option:</b> 560 CE (Buy > ₹19.85)<br><b>Opt Targets:</b> T1:₹33.0 // T2:₹45.6 // T3:₹64.1 |
-| 8 | **YATHARTH (↑)** | 🌙 Strong Close BTST 🚀 Sector-Leader (⭐ 2x Size) | **₹956.7 - ₹968.2 (🎯 ₹961.0)** | 🔥 8/10 | 51 | ₹1458.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹995.3 // T2:₹1018.2 // T3:₹1048.3 |
-| 9 | **ANTHEM (↑)** | 🌙 Strong Close BTST 🚀 Sector-Leader (⭐ 2x Size) | **₹915.3 - ₹925.6 (🎯 ₹919.2)** | 🔥 8/10 | 54 | ₹1390.5 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹950.7 // T2:₹971.8 // T3:₹999.4 |
-| 10 | **SUDARSCHEM (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹1125.6 - ₹1234.3 (🎯 ₹1137.4)** | 🔥 8/10 | 40 | ₹1884.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1284.5 // T2:₹1322.8 // T3:₹1373.0 |
-| 11 | **VOGL (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹40.6 - ₹41.4 (🎯 ₹40.9)** | 🔥 8/10 | 1213 | ₹2680.73 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹43.2 // T2:₹44.7 // T3:₹46.7 |
-| 12 | **SOLARINDS (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹19938.0 - ₹20150.0 (🎯 ₹20017.5)** | 🔥 8/10 | 2 | ₹1060.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹20616.5 // T2:₹21018.8 // T3:₹21538.3 |
-| 13 | **INDIAGLYCO (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹1121.5 - ₹1190.5 (🎯 ₹1133.2)** | 🔥 8/10 | 41 | ₹1927.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1229.9 // T2:₹1261.5 // T3:₹1300.9 |
-| 14 | **JINDALSTEL (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹1168.0 - ₹1177.9 (🎯 ₹1171.7)** | 🔥 8/10 | 42 | ₹1037.4 | <b>Equity Targets:</b> T1:₹1197.0 // T2:₹1214.2 // T3:₹1235.8<br><b>Option:</b> 1180 CE (Buy > ₹19.43)<br><b>Opt Targets:</b> T1:₹32.0 // T2:₹44.4 // T3:₹62.4 |
-| 15 | **VOLTAMP (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹10232.8 - ₹10978.5 (🎯 ₹10322.7)** | 🔥 8/10 | 4 | ₹1438.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹11415.8 // T2:₹11741.1 // T3:₹12178.3 |
-| 16 | **TURTLEMINT (↑)** | 🌙 Strong Close BTST 🚀 Sector-Leader (⭐ 2x Size) | **₹144.0 - ₹147.8 (🎯 ₹145.4)** | 🔥 8/10 | 340 | ₹3284.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹156.4 // T2:₹163.8 // T3:₹173.3 |
-| 17 | **HATSUN (↑)** | 🌙 Strong Close BTST | **₹965.6 - ₹1086.6 (🎯 ₹975.4)** | 🔥 7/10 | 23 | ₹895.85 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1129.7 // T2:₹1162.3 // T3:₹1205.4 |
-| 18 | **STYLEBAAZA (↑)** | 🌙 Strong Close BTST | **₹403.2 - ₹410.8 (🎯 ₹406.0)** | 🔥 7/10 | 61 | ₹1159.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹438.2 // T2:₹459.3 // T3:₹488.6 |
-| 19 | **AMBER (↑)** | 🌙 Strong Close BTST | **₹7323.9 - ₹7466.0 (🎯 ₹7371.3)** | 🔥 6/10 | 3 | ₹568.8 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹7618.2 // T2:₹7741.3 // T3:₹7893.6 |
+| 1 | **AYE (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend (⭐ 2x Size) | **₹172.3 - ₹185.0 (🎯 ₹174.4)** | 🔥 10/10 | 540 | ₹4428.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹191.2 // T2:₹196.3 // T3:₹202.4 |
+| 2 | **STLTECH (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend 🚀 Sector-Leader (⭐ 2x Size) | **₹715.3 - ₹727.6 (🎯 ₹719.9)** | 🔥 10/10 | 138 | ₹4257.3 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹753.7 // T2:₹776.5 // T3:₹805.7 |
+| 3 | **COFORGE (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend 🚀 Sector-Leader (⭐ 2x Size) | **₹1954.8 - ₹1974.1 (🎯 ₹1962.0)** | 🔥 9/10 | 50 | ₹2420.0 | <b>Equity Targets:</b> T1:₹2019.9 // T2:₹2058.5 // T3:₹2109.1<br><b>Option:</b> 1960 CE (Buy > ₹43.32)<br><b>Opt Targets:</b> T1:₹77.7 // T2:₹109.8 // T3:₹156.5 |
+| 4 | **AZAD (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend (⭐ 2x Size) | **₹2834.6 - ₹2880.5 (🎯 ₹2851.8)** | 🔥 9/10 | 34 | ₹3896.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2999.6 // T2:₹3097.9 // T3:₹3228.6 |
+| 5 | **MANINFRA (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹121.6 - ₹123.3 (🎯 ₹122.2)** | 🔥 8/10 | 813 | ₹3495.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹127.5 // T2:₹131.0 // T3:₹135.6 |
+| 6 | **RGL (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹135.6 - ₹138.8 (🎯 ₹136.8)** | 🔥 8/10 | 724 | ₹5864.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹147.3 // T2:₹154.3 // T3:₹163.5 |
+| 7 | **MARINE (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend (⭐ 2x Size) | **₹395.8 - ₹402.8 (🎯 ₹398.4)** | 🔥 8/10 | 249 | ₹4369.95 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹424.1 // T2:₹441.0 // T3:₹464.0 |
+| 8 | **EDELWEISS (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹122.6 - ₹125.8 (🎯 ₹123.7)** | 🔥 8/10 | 795 | ₹3641.1 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹129.6 // T2:₹132.7 // T3:₹136.6 |
+| 9 | **KANPRPLA (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹265.2 - ₹271.7 (🎯 ₹267.6)** | 🔥 8/10 | 370 | ₹5938.5 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹285.9 // T2:₹298.2 // T3:₹314.1 |
+| 10 | **MACPOWER (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend (⭐ 2x Size) | **₹1946.6 - ₹1991.1 (🎯 ₹1963.3)** | 🔥 8/10 | 50 | ₹5570.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2097.5 // T2:₹2187.3 // T3:₹2304.8 |
+| 11 | **MERCURYEV (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹38.6 - ₹39.4 (🎯 ₹38.9)** | 🔥 8/10 | 2551 | ₹5076.49 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹40.9 // T2:₹42.2 // T3:₹43.9 |
+| 12 | **NRL (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend (⭐ 2x Size) | **₹124.3 - ₹125.2 (🎯 ₹124.6)** | 🔥 8/10 | 800 | ₹2000.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹128.4 // T2:₹130.9 // T3:₹134.3 |
+| 13 | **RAJSREESUG (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹36.0 - ₹36.9 (🎯 ₹36.3)** | 🔥 8/10 | 2728 | ₹6138.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹39.1 // T2:₹40.9 // T3:₹43.3 |
+| 14 | **SOLARA (↑)** | 🌙 Strong Close BTST 🚀 Sector-Leader (⭐ 2x Size) | **₹621.9 - ₹633.0 (🎯 ₹626.1)** | 🔥 8/10 | 158 | ₹4360.8 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹659.7 // T2:₹682.2 // T3:₹711.8 |
+| 15 | **VOLTAMP (↑)** | 🌙 Strong Close BTST (⭐ 2x Size) | **₹10322.2 - ₹11144.5 (🎯 ₹10412.0)** | 🔥 8/10 | 8 | ₹2876.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹11571.1 // T2:₹11889.9 // T3:₹12316.5 |
+| 16 | **WINDLAS (↑)** | 🌙 Strong Close BTST 🚀 Sector-Leader (⭐ 2x Size) | **₹967.7 - ₹985.2 (🎯 ₹974.3)** | 🔥 8/10 | 101 | ₹4393.5 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1025.1 // T2:₹1059.1 // T3:₹1103.4 |
+| 17 | **XTRANET (↑)** | 🌙 Strong Close BTST 🚀 Sector-Leader (⭐ 2x Size) | **₹192.9 - ₹198.5 (🎯 ₹195.0)** | 🔥 8/10 | 507 | ₹7103.07 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹211.5 // T2:₹222.6 // T3:₹237.0 |
+| 18 | **KNAGRI (↑)** | 🌙 Strong Close BTST | **₹212.5 - ₹216.5 (🎯 ₹214.0)** | 🔥 7/10 | 232 | ₹2317.68 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹223.4 // T2:₹229.9 // T3:₹237.8 |
+| 19 | **NAHARINDUS (↑)** | 🌙 Strong Close BTST | **₹134.7 - ₹137.9 (🎯 ₹135.9)** | 🔥 7/10 | 364 | ₹2839.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹145.1 // T2:₹151.3 // T3:₹159.3 |
+| 20 | **PONNIERODE (↑)** | 🌙 Strong Close BTST | **₹364.4 - ₹392.1 (🎯 ₹369.7)** | 🔥 7/10 | 127 | ₹2692.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹418.8 // T2:₹438.5 // T3:₹465.1 |
+| 21 | **SECMARK (↑)** | 🌙 Strong Close BTST | **₹127.1 - ₹129.6 (🎯 ₹128.1)** | 🔥 7/10 | 387 | ₹2438.1 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹133.5 // T2:₹137.2 // T3:₹141.6 |
+| 22 | **MANAKSTEEL (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend | **₹93.6 - ₹95.2 (🎯 ₹94.2)** | 🔥 6/10 | 527 | ₹2050.03 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹99.5 // T2:₹103.0 // T3:₹107.8 |
+| 23 | **SALSTEEL (↑)** | 🌙 Strong Close BTST 🏆 Super-Trend | **₹71.9 - ₹73.8 (🎯 ₹72.6)** | 🔥 6/10 | 682 | ₹3259.96 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹78.2 // T2:₹82.0 // T3:₹87.0 |

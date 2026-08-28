@@ -1,33 +1,33 @@
-# 📈 Swing Trade Retest Report (Top 25) — 28 Aug 2026 | 01:19 AM (Intraday)
+# 📈 Swing Trade Retest Report (Top 25) — 28 Aug 2026 | 11:45 AM (Manual Override)
 
-> **Market Regime Filter:** 🔴 Bearish - Cash Protection Mode (Breadth: 0.2% > 50EMA) | **System:** 1800+ Mega Universe
+> **Market Regime Filter:** 🟡 Neutral (Breadth: 49.6% > 50EMA) | **System:** 1800+ Mega Universe
 
 ## 📊 Validated Setups & Options
 
 | # | Stock | Setup Type | Entry Zone (Bracket) | Score | Qty | Risk | Execution Strategy & Targets |
 | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| 1 | **FLUOROCHEM (↑)** | 🔄 Breakout Retest (📉 +RSI Div) | **₹4555.4 - ₹4732.1 (🎯 ₹4592.7)** | 🔥 10/10 | 5 | ₹897.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹4864.4 // T2:₹4969.0 // T3:₹5101.3 |
-| 2 | **KROSS (↑)** | 📈 Rising Support Retest (📉 +RSI Div) | **₹200.8 - ₹217.7 (🎯 ₹204.9)** | 🔥 10/10 | 114 | ₹2396.28 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹224.3 // T2:₹229.6 // T3:₹236.1 |
-| 3 | **MRPL (↑)** | 🔄 Breakout Retest (📉 +RSI Div) | **₹171.2 - ₹173.6 (🎯 ₹172.9)** | 🔥 10/10 | 144 | ₹1196.64 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹179.7 // T2:₹184.5 // T3:₹190.6 |
-| 4 | **SCPL (↑)** | 🔄 Breakout Retest (📉 +RSI Div) 🏆 Super-Trend | **₹631.0 - ₹657.2 (🎯 ₹641.0)** | 🔥 10/10 | 38 | ₹1812.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹690.2 // T2:₹716.7 // T3:₹749.7 |
-| 5 | **AUBANK (↑)** | 📈 Rising Support Retest 🚀 Sector-Leader | **₹1075.8 - ₹1113.5 (🎯 ₹1097.5)** | 🔥 9/10 | 22 | ₹983.4 | <b>Equity Targets:</b> T1:₹1137.5 // T2:₹1155.9 // T3:₹1179.9<br><b>Option:</b> 1120 CE (Buy > ₹15.15)<br><b>Opt Targets:</b> T1:₹29.3 // T2:₹43.3 // T3:₹64.5 |
-| 6 | **DATAPATTNS (↑)** | 🔄 Breakout Retest (📉 +RSI Div) | **₹4553.3 - ₹4779.4 (🎯 ₹4604.1)** | 🔥 9/10 | 5 | ₹1219.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹4968.0 // T2:₹5115.7 // T3:₹5304.4 |
-| 7 | **JGCHEM (↑)** | 🔄 Breakout Retest (📉 +RSI Div) 🏆 Super-Trend | **₹575.3 - ₹598.0 (🎯 ₹583.2)** | 🔥 9/10 | 41 | ₹1539.55 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹631.2 // T2:₹656.6 // T3:₹689.9 |
-| 8 | **ATLANTAELE (↑)** | 🔄 Breakout Retest 🏆 Super-Trend | **₹1688.2 - ₹1725.1 (🎯 ₹1710.7)** | 🔥 9/10 | 14 | ₹1513.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1807.2 // T2:₹1871.7 // T3:₹1953.9 |
-| 9 | **COHANCE (↑)** | 🏦 200 MA Retest 🚀 Sector-Leader | **₹449.0 - ₹464.2 (🎯 ₹452.7)** | 🔥 9/10 | 54 | ₹1503.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹477.7 // T2:₹490.0 // T3:₹505.4 |
-| 10 | **GRSE (↑)** | 📈 Rising Support Retest | **₹2530.8 - ₹2630.3 (🎯 ₹2581.9)** | 🔥 9/10 | 9 | ₹1110.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2684.3 // T2:₹2727.8 // T3:₹2781.8 |
-| 11 | **JINDRILL (↑)** | 🔄 Breakout Retest | **₹612.3 - ₹632.5 (🎯 ₹618.6)** | 🔥 9/10 | 39 | ₹1171.95 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹654.0 // T2:₹671.1 // T3:₹692.6 |
-| 12 | **MGL (↑)** | 🏦 200 MA Retest | **₹1096.6 - ₹1118.4 (🎯 ₹1102.7)** | 🔥 9/10 | 22 | ₹1009.8 | <b>Equity Targets:</b> T1:₹1141.8 // T2:₹1162.9 // T3:₹1189.5<br><b>Option:</b> 1120 CE (Buy > ₹22.71)<br><b>Opt Targets:</b> T1:₹38.3 // T2:₹53.7 // T3:₹76.1 |
-| 13 | **NIACL (↑)** | 📈 Rising Support Retest 🚀 Sector-Leader | **₹180.2 - ₹187.1 (🎯 ₹183.9)** | 🔥 8/10 | 133 | ₹1235.57 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹192.8 // T2:₹197.1 // T3:₹202.8 |
-| 14 | **SBFC (↑)** | 📈 Rising Support Retest 🚀 Sector-Leader | **₹93.4 - ₹101.1 (🎯 ₹95.3)** | 🔥 8/10 | 247 | ₹2134.08 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹103.7 // T2:₹105.6 // T3:₹108.2 |
-| 15 | **DYCL (↑)** | 🔄 Breakout Retest 🏆 Super-Trend | **₹430.3 - ₹458.9 (🎯 ₹435.7)** | 🔥 8/10 | 54 | ₹1404.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹478.4 // T2:₹493.8 // T3:₹513.3 |
-| 16 | **GEOJITFSL (↑)** | 🔄 Breakout Retest 🚀 Sector-Leader ⚠️ Micro-Risk | **₹79.1 - ₹80.9 (🎯 ₹79.8)** | 🔥 8/10 | 154 | ₹532.84 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹83.3 // T2:₹85.2 // T3:₹87.6 |
-| 17 | **KOPRAN (↑)** | 🔄 Breakout Retest 🚀 Sector-Leader ⚠️ Micro-Risk | **₹190.9 - ₹194.6 (🎯 ₹193.1)** | 🔥 8/10 | 64 | ₹675.2 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹203.4 // T2:₹210.2 // T3:₹219.0 |
-| 18 | **HEG (↑)** | 🔄 Breakout Retest (📉 +RSI Div) | **₹685.2 - ₹713.5 (🎯 ₹691.4)** | 🔥 8/10 | 35 | ₹1037.75 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹735.4 // T2:₹752.6 // T3:₹774.4 |
-| 19 | **ASTRAL (↑)** | 🏦 200 MA Retest | **₹1490.7 - ₹1529.6 (🎯 ₹1497.6)** | 🔥 8/10 | 16 | ₹832.0 | <b>Equity Targets:</b> T1:₹1561.4 // T2:₹1588.5 // T3:₹1623.9<br><b>Option:</b> 1520 CE (Buy > ₹40.78)<br><b>Opt Targets:</b> T1:₹63.2 // T2:₹83.6 // T3:₹113.5 |
-| 20 | **BDL (↑)** | 🏦 200 MA Retest | **₹1333.0 - ₹1367.1 (🎯 ₹1341.3)** | 🔥 8/10 | 18 | ₹1116.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1402.6 // T2:₹1433.3 // T3:₹1472.9 |
-| 21 | **ELGIEQUIP (↑)** | 🔄 Breakout Retest | **₹602.8 - ₹617.5 (🎯 ₹607.3)** | 🔥 8/10 | 40 | ₹854.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹633.9 // T2:₹646.8 // T3:₹663.1 |
-| 22 | **NEOGEN (↑)** | 🔄 Breakout Retest 🏆 Super-Trend | **₹2143.1 - ₹2183.3 (🎯 ₹2169.4)** | 🔥 8/10 | 11 | ₹1392.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹2286.8 // T2:₹2367.0 // T3:₹2470.5 |
-| 23 | **DPABHUSHAN (↑)** | 🔄 Breakout Retest (📉 +RSI Div) | **₹1422.3 - ₹1506.1 (🎯 ₹1440.4)** | 🔥 8/10 | 16 | ₹1393.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1566.7 // T2:₹1615.2 // T3:₹1675.8 |
-| 24 | **NRBBEARING (↑)** | 🔄 Breakout Retest 🏆 Super-Trend | **₹460.0 - ₹473.6 (🎯 ₹464.6)** | 🔥 8/10 | 52 | ₹1151.8 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹492.3 // T2:₹506.7 // T3:₹525.3 |
-| 25 | **ANDHRSUGAR (↑)** | 🔄 Breakout Retest | **₹95.2 - ₹99.0 (🎯 ₹96.2)** | 🔥 7/10 | 252 | ₹1315.44 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹103.6 // T2:₹107.0 // T3:₹111.6 |
+| 1 | **KOPRAN (↑)** | 🔄 Breakout Retest 🏆 Super-Trend 🚀 Sector-Leader | **₹191.6 - ₹199.1 (🎯 ₹193.8)** | 🔥 10/10 | 251 | ₹2660.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹207.9 // T2:₹214.7 // T3:₹223.6 |
+| 2 | **ARIHANTCAP (↑)** | 🏦 200 MA Retest | **₹76.4 - ₹77.9 (🎯 ₹76.9)** | 🔥 10/10 | 644 | ₹2788.52 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹79.7 // T2:₹81.4 // T3:₹83.5 |
+| 3 | **BVCL (↑)** | 📈 Rising Support Retest | **₹40.2 - ₹44.9 (🎯 ₹41.0)** | 🔥 10/10 | 1114 | ₹6204.98 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹46.3 // T2:₹47.5 // T3:₹49.0 |
+| 4 | **AUSOMENT (↑)** | 🔄 Breakout Retest (📉 +RSI Div) 🏆 Super-Trend | **₹142.2 - ₹148.4 (🎯 ₹144.0)** | 🔥 10/10 | 336 | ₹2936.64 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹153.7 // T2:₹158.1 // T3:₹163.4 |
+| 5 | **LODHA (↑)** | 🔄 Breakout Retest (📉 +RSI Div) | **₹1228.4 - ₹1260.7 (🎯 ₹1237.7)** | 🔥 10/10 | 39 | ₹1739.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1289.9 // T2:₹1313.7 // T3:₹1342.9 |
+| 6 | **KROSS (↑)** | 📈 Rising Support Retest (📉 +RSI Div) | **₹200.8 - ₹216.2 (🎯 ₹204.9)** | 🔥 10/10 | 231 | ₹4509.12 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹222.8 // T2:₹228.1 // T3:₹234.6 |
+| 7 | **SCPL (↑)** | 🔄 Breakout Retest (📉 +RSI Div) 🏆 Super-Trend | **₹632.3 - ₹649.0 (🎯 ₹642.2)** | 🔥 10/10 | 77 | ₹3676.75 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹681.6 // T2:₹707.8 // T3:₹740.4 |
+| 8 | **KFINTECH (↑)** | 🏦 200 MA Retest (📉 +RSI Div) 🚀 Sector-Leader | **₹925.9 - ₹955.8 (🎯 ₹931.3)** | 🔥 10/10 | 52 | ₹2106.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹973.4 // T2:₹990.1 // T3:₹1010.4 |
+| 9 | **INTLCONV (↑)** | 📈 Rising Support Retest | **₹72.6 - ₹82.0 (🎯 ₹74.1)** | 🔥 10/10 | 609 | ₹6699.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹84.5 // T2:₹86.5 // T3:₹89.0 |
+| 10 | **LOYALTEX (↑)** | 📈 Rising Support Retest (📉 +RSI Div) | **₹198.0 - ₹225.6 (🎯 ₹202.0)** | 🔥 10/10 | 221 | ₹8088.6 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹238.3 // T2:₹248.3 // T3:₹261.0 |
+| 11 | **EMAMIPAP (↑)** | 🔄 Breakout Retest (📉 +RSI Div) | **₹112.1 - ₹115.0 (🎯 ₹113.2)** | 🔥 9/10 | 434 | ₹2430.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹119.1 // T2:₹122.4 // T3:₹126.5 |
+| 12 | **ROSSELLIND (↑)** | 🔄 Breakout Retest | **₹57.0 - ₹59.4 (🎯 ₹57.7)** | 🔥 9/10 | 841 | ₹2859.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹61.6 // T2:₹63.4 // T3:₹65.6 |
+| 13 | **LASERPOWER (↑)** | 🔄 Breakout Retest (📉 +RSI Div) | **₹313.2 - ₹321.7 (🎯 ₹317.4)** | 🔥 9/10 | 155 | ₹3131.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹337.1 // T2:₹349.2 // T3:₹364.6 |
+| 14 | **ATLANTAELE (↑)** | 🔄 Breakout Retest 🏆 Super-Trend | **₹1688.5 - ₹1704.7 (🎯 ₹1704.7)** | 🔥 9/10 | 29 | ₹3134.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1786.1 // T2:₹1850.2 // T3:₹1931.7 |
+| 15 | **SENORES (↑)** | 🔄 Breakout Retest 🏆 Super-Trend 🚀 Sector-Leader | **₹1456.3 - ₹1474.1 (🎯 ₹1470.3)** | 🔥 9/10 | 33 | ₹2207.7 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹1531.0 // T2:₹1574.7 // T3:₹1631.5 |
+| 16 | **RUBYMILLS (↑)** | 🔄 Breakout Retest 🏆 Super-Trend | **₹382.5 - ₹391.0 (🎯 ₹387.9)** | 🔥 9/10 | 127 | ₹3263.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹409.1 // T2:₹423.6 // T3:₹441.7 |
+| 17 | **SINDHUTRAD (↑)** | 🏦 200 MA Retest | **₹24.1 - ₹24.7 (🎯 ₹24.3)** | 🔥 9/10 | 2030 | ₹3511.9 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹25.4 // T2:₹26.1 // T3:₹26.9 |
+| 18 | **SHRIPISTON (↑)** | 🔄 Breakout Retest | **₹4462.0 - ₹4500.0 (🎯 ₹4500.0)** | 🔥 9/10 | 11 | ₹2068.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹4644.8 // T2:₹4758.3 // T3:₹4903.0 |
+| 19 | **SANDHAR (↑)** | 🔄 Breakout Retest | **₹644.0 - ₹653.8 (🎯 ₹650.4)** | 🔥 9/10 | 76 | ₹2337.0 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹676.6 // T2:₹694.6 // T3:₹717.5 |
+| 20 | **ANANTRAJ (↑)** | 📈 Rising Support Retest (📉 +RSI Div) | **₹579.2 - ₹605.2 (🎯 ₹590.9)** | 🔥 9/10 | 82 | ₹2677.3 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹618.4 // T2:₹629.1 // T3:₹642.3 |
+| 21 | **BEPL (↑)** | 🔄 Breakout Retest 🏆 Super-Trend | **₹121.6 - ₹123.9 (🎯 ₹122.8)** | 🔥 9/10 | 403 | ₹2337.4 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹127.6 // T2:₹130.6 // T3:₹134.2 |
+| 22 | **EPL (↑)** | 🔄 Breakout Retest | **₹246.7 - ₹256.4 (🎯 ₹249.2)** | 🔥 8/10 | 195 | ₹2263.95 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹266.5 // T2:₹274.2 // T3:₹284.3 |
+| 23 | **TAINWALCHM (↑)** | 🔄 Breakout Retest | **₹209.0 - ₹212.1 (🎯 ₹211.7)** | 🔥 8/10 | 235 | ₹3052.65 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹221.9 // T2:₹229.7 // T3:₹239.5 |
+| 24 | **NIACL (↑)** | 📈 Rising Support Retest | **₹180.2 - ₹187.9 (🎯 ₹183.9)** | 🔥 8/10 | 266 | ₹2697.24 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹192.6 // T2:₹196.3 // T3:₹201.0 |
+| 25 | **LATTEYS (↑)** | 🏦 200 MA Retest | **₹21.6 - ₹22.3 (🎯 ₹21.8)** | 🔥 8/10 | 2256 | ₹3744.96 | <b>Mode:</b> Cash Equity Only<br><b>Equity Targets:</b> T1:₹23.2 // T2:₹24.0 // T3:₹25.0 |
