@@ -30,12 +30,10 @@ def add_to_portfolio(raw_stock, df_source):
     stock_row = df_source[df_source['RawStock'] == raw_stock].iloc[0]
     file_path = "portfolio.csv"
     pf = pd.read_csv(file_path) if os.path.exists(file_path) else pd.DataFrame(columns=['Stock', 'RawStock', 'Entry', 'Qty', 'Current_SL', 'T1', 'T2', 'T3', 'Status', 'Sector'])
-    
     if not pf.empty and (pf['RawStock'] == stock_row['RawStock']).any():
         if 'Active' in pf.loc[pf['RawStock'] == stock_row['RawStock'], 'Status'].values:
             st.toast(f"⚠️ {stock_row['RawStock']} is already in your Active Portfolio!", icon="⚠️")
             return
-            
     new_trade = pd.DataFrame([{'Stock': stock_row['Stock'], 'RawStock': stock_row['RawStock'], 'Entry': stock_row['Entry'], 'Qty': stock_row['Qty'], 'Current_SL': stock_row['EqSL'], 'T1': stock_row['EqT1'], 'T2': stock_row['EqT2'], 'T3': stock_row['EqT3'], 'Status': 'Active', 'Sector': 'Unknown'}])
     pf = pd.concat([pf, new_trade], ignore_index=True)
     pf.to_csv(file_path, index=False)
@@ -56,7 +54,6 @@ def display_interactive_table(df, tab_name):
     df['Chart'] = "https://in.tradingview.com/chart/?symbol=NSE:" + df['RawStock']
     display_cols = ['Stock', 'Tag', 'Entry', 'EqSL', 'EqT1', 'EqT2', 'Score', 'Vol vs 50d', 'RSI', 'Chart', 'RawStock']
     display_df = df[[col for col in display_cols if col in df.columns]]
-    
     column_config = {
         "Chart": st.column_config.LinkColumn("📊 Chart", display_text="📈 View", help="Open directly in TradingView"),
         "Score": st.column_config.NumberColumn("Score /10", help="Institutional Conviction Score", format="%d ⭐"),
@@ -158,15 +155,13 @@ with tabs[8]:
         stock_df = df_charts[df_charts['Ticker'] == selected_ticker].copy()
         stock_df['Date'] = pd.to_datetime(stock_df['Date'])
         
-        # Calculate specific EMAs
+        # Calculate EMAs
         stock_df['EMA9'] = stock_df['Close'].ewm(span=9, adjust=False).mean()
         stock_df['EMA21'] = stock_df['Close'].ewm(span=21, adjust=False).mean()
         stock_df['EMA50'] = stock_df['Close'].ewm(span=50, adjust=False).mean()
         
         if engine_choice == "Lightweight Charts (Execution)":
             st.markdown(f"### {selected_ticker} (Execution View)")
-            
-            # Format exactly for the JS lightweight charts wrapper
             lw_candles = json.loads(stock_df[['Date', 'Open', 'High', 'Low', 'Close']].rename(columns={'Date':'time'}).to_json(orient='records'))
             lw_vol = json.loads(stock_df[['Date', 'Volume']].rename(columns={'Date':'time', 'Volume':'value'}).to_json(orient='records'))
             lw_ema9 = json.loads(stock_df[['Date', 'EMA9']].rename(columns={'Date':'time', 'EMA9':'value'}).to_json(orient='records'))
@@ -208,19 +203,33 @@ with tabs[8]:
             fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA21'], line=dict(color='orange', width=1.5), name='21 EMA'), row=1, col=1)
             fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA50'], line=dict(color='purple', width=1.5), name='50 EMA'), row=1, col=1)
             
-            # 2. AUTOMATED RISK/REWARD OVERLAYS
+            # 2. AUTOMATED RISK/REWARD & GEOMETRIC OVERLAYS
             setup_info = df_all[df_all['RawStock'] == selected_ticker]
             if not setup_info.empty:
                 entry_p = float(setup_info.iloc[0]['Entry'])
                 sl_p = float(setup_info.iloc[0]['EqSL'])
                 t1_p = float(setup_info.iloc[0]['EqT1'])
+                tag_name = str(setup_info.iloc[0].get('Tag', ''))
                 
-                # Draw Stop Loss (Red)
+                # Retrieve the newly captured Trendline coordinates
+                tl_d1 = setup_info.iloc[0].get('TL_D1')
+                tl_v1 = setup_info.iloc[0].get('TL_V1')
+                tl_v2 = setup_info.iloc[0].get('TL_V2')
+                
+                # Plot the Yellow Trendline Ray if applicable
+                if pd.notna(tl_d1) and pd.notna(tl_v1) and pd.notna(tl_v2) and "Rising Support" in tag_name:
+                    last_date = stock_df['Date'].iloc[-1]
+                    fig.add_trace(go.Scatter(
+                        x=[tl_d1, last_date], 
+                        y=[float(tl_v1), float(tl_v2)], 
+                        mode='lines', 
+                        line=dict(color='#ffeb3b', width=2.5, dash='dashdot'), 
+                        name='Dynamic Support Line'
+                    ), row=1, col=1)
+                
+                # Draw Static Lines (SL and T1)
                 fig.add_hline(y=sl_p, line_dash="dash", row=1, col=1, line_color="rgba(255, 82, 82, 0.8)", annotation_text=f"SL: ₹{sl_p}", annotation_position="bottom right")
-                # Draw Target 1 (Green)
                 fig.add_hline(y=t1_p, line_dash="dash", row=1, col=1, line_color="rgba(38, 166, 154, 0.8)", annotation_text=f"T1: ₹{t1_p}", annotation_position="top right")
-                # Draw Entry (White/Gray)
-                fig.add_hline(y=entry_p, line_dash="dot", row=1, col=1, line_color="rgba(200, 200, 200, 0.5)", annotation_text=f"CMP: ₹{entry_p}", annotation_position="top left")
 
             # 3. RSI Panel
             fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['RSI'], line=dict(color='#00d1ff', width=1.5), name='RSI 14'), row=2, col=1)
