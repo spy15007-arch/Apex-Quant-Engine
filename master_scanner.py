@@ -309,7 +309,7 @@ def generate_ai_deep_dive(top_candidates):
     if not GEMINI_API_KEY or not top_candidates:
         with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: f.write("# 🔬 Institutional Deep Dive Analysis\n\n*Pending Analysis: Waiting for active market setups.*")
         return
-    print("🤖 Initiating Automated AI 14-Pillar Fundamental Analysis (Local File Only)...")
+    print("🤖 Initiating Automated AI 14-Pillar Fundamental Analysis...")
     all_dossiers = []
     for candidate in top_candidates[:2]:
         sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
@@ -337,8 +337,15 @@ def generate_ai_deep_dive(top_candidates):
         try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
-            if res.status_code == 200: all_dossiers.append(res.json()['candidates'][0]['content']['parts'][0]['text'])
-        except Exception: pass
+            if res.status_code == 200: 
+                all_dossiers.append(res.json()['candidates'][0]['content']['parts'][0]['text'])
+            else:
+                error_msg = f"# Detailed Stock Analysis: API ERROR\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**Google API Error {res.status_code}:**\n{res.text}\n### 14. Executive Summary\nGoogle rejected the AI request."
+                all_dossiers.append(error_msg)
+        except Exception as e:
+            error_msg = f"# Detailed Stock Analysis: SYSTEM ERROR\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**System Exception:**\n{str(e)}\n### 14. Executive Summary\nFailed to connect to Google API."
+            all_dossiers.append(error_msg)
+            
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "# 🔬 Analysis Completed.")
 
