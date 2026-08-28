@@ -17,6 +17,15 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
+# --- STEALTH BROWSER SESSION FOR YAHOO FINANCE ---
+# This bypasses the 401 "Invalid Crumb" error by disguising the GitHub Action as a standard web browser.
+yf_session = requests.Session()
+yf_session.headers.update({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    'Accept': '*/*',
+    'Connection': 'keep-alive'
+})
+
 SECTOR_INDICES = {
     "^CNXAUTO": "Consumer Cyclical",
     "^CNXIT": "Technology",
@@ -97,7 +106,7 @@ def get_complete_nse_universe():
 def calculate_leading_sectors(nifty_return_20d):
     leading_sectors = set()
     try:
-        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True)
+        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True, session=yf_session)
         if not data.empty:
             closes = data['Close'] if isinstance(data.columns, pd.MultiIndex) else data
             sector_scores = {}
@@ -119,7 +128,7 @@ def download_in_chunks(tickers, chunk_size=300):
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
-        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True)
+        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=yf_session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
                 if 'Open' in d.columns.levels[0]: opens_list.append(d['Open'])
@@ -234,7 +243,6 @@ def check_ttm_squeeze(df_c, df_h, df_l, period=20):
     except: return False, False
 
 def check_ascending_trendline_support(df_w_c, df_w_l, df_w_h, lookback_weeks=40):
-    """Calculates Trendline coordinates and returns (True, Current_Value, Anchor_Date, Anchor_Low_Value)"""
     try:
         if len(df_w_c) < lookback_weeks: return False, 0.0, None, None
         lows = df_w_l.tail(lookback_weeks).values
@@ -269,7 +277,7 @@ def get_index_options_ideas():
     results = []
     for ticker, name in indices.items():
         try:
-            data = yf.download(ticker, period="5d", interval="5m", progress=False, threads=False)
+            data = yf.download(ticker, period="5d", interval="5m", progress=False, threads=False, session=yf_session)
             if data.empty: continue
             if isinstance(data.columns, pd.MultiIndex): data.columns = data.columns.get_level_values(0)
             df_c, df_h, df_l = data['Close'].dropna(), data['High'].dropna(), data['Low'].dropna()
@@ -314,7 +322,7 @@ def generate_ai_deep_dive(top_candidates):
     for candidate in top_candidates[:2]:
         sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
         try:
-            info = yf.Ticker(f"{sym}.NS").info
+            info = yf.Ticker(f"{sym}.NS", session=yf_session).info
             pe, sector = info.get('trailingPE', 'N/A'), info.get('sector', 'N/A')
         except: pe, sector = "N/A", "N/A"
         prompt = f"""You are an Elite Institutional Equity Research Analyst. Write a rigorous 14-section institutional research report on **{sym} (NSE: {sym})**. Context: Setup Type: {tag} (Score: {score}/10) | Buy Trigger: ₹{entry} | SL: ₹{eq_sl} | Targets: ₹{t1} | Sector: {sector} | P/E: {pe}. Format EXACTLY as:
@@ -363,7 +371,7 @@ def run():
     market_close = now_ist.replace(hour=15, minute=15, second=0, microsecond=0) 
     minutes_elapsed = 360.0 if (now_ist.weekday() >= 5 or now_ist > market_close or now_ist < market_open) else min(max(1.0, (now_ist - market_open).total_seconds() / 60.0), 360.0)
     
-    nifty_df = yf.download("^NSEI", period="1y", interval="1d", progress=False)
+    nifty_df = yf.download("^NSEI", period="1y", interval="1d", progress=False, session=yf_session)
     nifty_return_20d = 0.0
     if not nifty_df.empty:
         if isinstance(nifty_df.columns, pd.MultiIndex): nifty_df.columns = nifty_df.columns.get_level_values(0)
@@ -396,7 +404,7 @@ def run():
             if row['Status'] != 'Active': continue
             sym, sec = row['RawStock'], row.get('Sector', 'Unknown')
             if sec == 'Unknown' or pd.isna(sec):
-                try: sec = yf.Ticker(f"{sym}.NS").info.get('sector', 'Unknown'); pf.at[i, 'Sector'] = sec
+                try: sec = yf.Ticker(f"{sym}.NS", session=yf_session).info.get('sector', 'Unknown'); pf.at[i, 'Sector'] = sec
                 except: sec = 'Unknown'
             active_sectors_count[sec] = active_sectors_count.get(sec, 0) + 1
             ticker = f"{sym}.NS"
@@ -501,7 +509,7 @@ def run():
                 if score < 6: continue 
 
                 try:
-                    stock_sector = yf.Ticker(ticker).info.get('sector', 'Unknown')
+                    stock_sector = yf.Ticker(ticker, session=yf_session).info.get('sector', 'Unknown')
                     if stock_sector in leading_sectors:
                         score = min(10, score + 1)
                         tag += " 🚀 Sector-Leader"
