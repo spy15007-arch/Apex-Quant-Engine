@@ -9,6 +9,9 @@ import datetime
 import math
 from scipy.stats import norm
 import warnings
+from requests_cache import CacheMixin, SQLiteCache
+from requests_ratelimiter import LimiterMixin, MemoryQueueBucket
+from pyrate_limiter import Duration, RequestRate, Limiter
 warnings.filterwarnings('ignore')
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -17,14 +20,21 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
-# --- STEALTH BROWSER SESSION FOR YAHOO FINANCE ---
-# This bypasses the 401 "Invalid Crumb" error by disguising the script as a standard web browser.
-yf_session = requests.Session()
-yf_session.headers.update({
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-    'Accept': '*/*',
-    'Connection': 'keep-alive'
+# --- THE ULTIMATE YAHOO FINANCE RATE-LIMIT BYPASS ---
+# This creates a custom session that strictly limits requests to 2 per second, 
+# uses a local SQLite cache to prevent redundant pulls, and masks the User-Agent.
+class CachedLimiterSession(CacheMixin, LimiterMixin, requests.Session):
+    pass
+
+session = CachedLimiterSession(
+    limiter=Limiter(RequestRate(2, Duration.SECOND*1)), 
+    bucket_class=MemoryQueueBucket,
+    backend=SQLiteCache("yfinance.cache"),
+)
+session.headers.update({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
 })
+
 
 SECTOR_INDICES = {
     "^CNXAUTO": "Consumer Cyclical",
@@ -106,7 +116,7 @@ def get_complete_nse_universe():
 def calculate_leading_sectors(nifty_return_20d):
     leading_sectors = set()
     try:
-        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True, session=yf_session)
+        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True, session=session)
         if not data.empty:
             closes = data['Close'] if isinstance(data.columns, pd.MultiIndex) else data
             sector_scores = {}
@@ -123,12 +133,13 @@ def calculate_leading_sectors(nifty_return_20d):
     except: pass
     return leading_sectors
 
-def download_in_chunks(tickers, chunk_size=50):
+def download_in_chunks(tickers, chunk_size=40):
     opens_list, closes_list, highs_list, lows_list, vols_list = [], [], [], [], []
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
-        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=yf_session)
+        # Inject the specialized rate-limiting session
+        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=False, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
                 if 'Open' in d.columns.levels[0]: opens_list.append(d['Open'])
@@ -143,7 +154,6 @@ def download_in_chunks(tickers, chunk_size=50):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        # 1-second delay to guarantee we bypass Yahoo's rate limit firewall
         time.sleep(1.0)
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
@@ -278,7 +288,7 @@ def get_index_options_ideas():
     results = []
     for ticker, name in indices.items():
         try:
-            data = yf.download(ticker, period="5d", interval="5m", progress=False, threads=False, session=yf_session)
+            data = yf.download(ticker, period="5d", interval="5m", progress=False, threads=False, session=session)
             if data.empty: continue
             if isinstance(data.columns, pd.MultiIndex): data.columns = data.columns.get_level_values(0)
             df_c, df_h, df_l = data['Close'].dropna(), data['High'].dropna(), data['Low'].dropna()
@@ -323,7 +333,7 @@ def generate_ai_deep_dive(top_candidates):
     for candidate in top_candidates[:2]:
         sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
         try:
-            info = yf.Ticker(f"{sym}.NS", session=yf_session).info
+            info = yf.Ticker(f"{sym}.NS", session=session).info
             pe, sector = info.get('trailingPE', 'N/A'), info.get('sector', 'N/A')
         except: pe, sector = "N/A", "N/A"
         prompt = f"""You are an Elite Institutional Equity Research Analyst. Write a rigorous 14-section institutional research report on **{sym} (NSE: {sym})**. Context: Setup Type: {tag} (Score: {score}/10) | Buy Trigger: ₹{entry} | SL: ₹{eq_sl} | Targets: ₹{t1} | Sector: {sector} | P/E: {pe}. Format EXACTLY as:
@@ -344,7 +354,8 @@ def generate_ai_deep_dive(top_candidates):
 ### 13. Final Investment View
 ### 14. Executive Summary"""
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={GEMINI_API_KEY}"
+            # FIXED: Updated the model alias to gemini-1.5-pro-latest
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             if res.status_code == 200: 
                 all_dossiers.append(res.json()['candidates'][0]['content']['parts'][0]['text'])
@@ -372,7 +383,7 @@ def run():
     market_close = now_ist.replace(hour=15, minute=15, second=0, microsecond=0) 
     minutes_elapsed = 360.0 if (now_ist.weekday() >= 5 or now_ist > market_close or now_ist < market_open) else min(max(1.0, (now_ist - market_open).total_seconds() / 60.0), 360.0)
     
-    nifty_df = yf.download("^NSEI", period="1y", interval="1d", progress=False, session=yf_session)
+    nifty_df = yf.download("^NSEI", period="1y", interval="1d", progress=False, session=session)
     nifty_return_20d = 0.0
     if not nifty_df.empty:
         if isinstance(nifty_df.columns, pd.MultiIndex): nifty_df.columns = nifty_df.columns.get_level_values(0)
@@ -382,8 +393,7 @@ def run():
     leading_sectors = calculate_leading_sectors(nifty_return_20d)
     universe = get_complete_nse_universe()
     
-    # NEW CHUNK SIZE = 50 (Bypasses Yahoo's 401 Rate Limiting)
-    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=50)
+    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=40)
     if closes.empty: return
 
     ema_50_daily = closes.ewm(span=50).mean()
@@ -407,7 +417,7 @@ def run():
             if row['Status'] != 'Active': continue
             sym, sec = row['RawStock'], row.get('Sector', 'Unknown')
             if sec == 'Unknown' or pd.isna(sec):
-                try: sec = yf.Ticker(f"{sym}.NS", session=yf_session).info.get('sector', 'Unknown'); pf.at[i, 'Sector'] = sec
+                try: sec = yf.Ticker(f"{sym}.NS", session=session).info.get('sector', 'Unknown'); pf.at[i, 'Sector'] = sec
                 except: sec = 'Unknown'
             active_sectors_count[sec] = active_sectors_count.get(sec, 0) + 1
             ticker = f"{sym}.NS"
@@ -512,7 +522,7 @@ def run():
                 if score < 6: continue 
 
                 try:
-                    stock_sector = yf.Ticker(ticker, session=yf_session).info.get('sector', 'Unknown')
+                    stock_sector = yf.Ticker(ticker, session=session).info.get('sector', 'Unknown')
                     if stock_sector in leading_sectors:
                         score = min(10, score + 1)
                         tag += " 🚀 Sector-Leader"
