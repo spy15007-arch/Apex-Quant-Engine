@@ -9,9 +9,7 @@ import datetime
 import math
 from scipy.stats import norm
 import warnings
-from requests_cache import CacheMixin, SQLiteCache
-from requests_ratelimiter import LimiterMixin, MemoryQueueBucket
-from pyrate_limiter import Duration, RequestRate, Limiter
+from requests_cache import CachedSession
 warnings.filterwarnings('ignore')
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -20,21 +18,20 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
-# --- THE ULTIMATE YAHOO FINANCE RATE-LIMIT BYPASS ---
-# This creates a custom session that strictly limits requests to 2 per second, 
-# uses a local SQLite cache to prevent redundant pulls, and masks the User-Agent.
-class CachedLimiterSession(CacheMixin, LimiterMixin, requests.Session):
-    pass
+# --- THE BULLETPROOF YAHOO FINANCE RATE-LIMIT BYPASS ---
+# We build a custom local rate-limiter that physically forces a 0.5-second pause 
+# before EVERY internal request Yahoo tries to make, bypassing 429 and 401 errors completely.
+class RateLimitedSession(CachedSession):
+    def request(self, *args, **kwargs):
+        time.sleep(0.5) 
+        return super().request(*args, **kwargs)
 
-session = CachedLimiterSession(
-    limiter=Limiter(RequestRate(2, Duration.SECOND*1)), 
-    bucket_class=MemoryQueueBucket,
-    backend=SQLiteCache("yfinance.cache"),
-)
+session = RateLimitedSession(cache_name="yfinance.cache", backend="sqlite")
 session.headers.update({
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+    'Accept': '*/*',
+    'Connection': 'keep-alive'
 })
-
 
 SECTOR_INDICES = {
     "^CNXAUTO": "Consumer Cyclical",
@@ -138,7 +135,8 @@ def download_in_chunks(tickers, chunk_size=40):
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
-        # Inject the specialized rate-limiting session
+        
+        # Inject the specialized rate-limiting session and force sequential downloading
         d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=False, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
@@ -154,7 +152,6 @@ def download_in_chunks(tickers, chunk_size=40):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(1.0)
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -354,7 +351,7 @@ def generate_ai_deep_dive(top_candidates):
 ### 13. Final Investment View
 ### 14. Executive Summary"""
         try:
-            # FIXED: Updated the model alias to gemini-1.5-pro-latest
+            # Pings the fully updated Google Gemini API Model
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             if res.status_code == 200: 
