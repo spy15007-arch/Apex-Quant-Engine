@@ -10,8 +10,7 @@ import math
 from scipy.stats import norm
 import warnings
 from requests_cache import CacheMixin, SQLiteCache
-from requests_ratelimiter import LimiterMixin, MemoryQueueBucket
-from pyrate_limiter import Duration, RequestRate, Limiter
+from requests_ratelimiter import LimiterMixin
 
 warnings.filterwarnings('ignore')
 
@@ -22,14 +21,12 @@ BASE_CAPITAL_PER_TRADE = 50000
 HIGH_CONVICTION_MULTIPLIER = 2  
 
 # --- THE ULTIMATE YAHOO FINANCE RATE-LIMIT BYPASS ---
-# Uses a local SQLite cache and strictly limits requests to 2 per second.
-# This allows us to use threads=True without getting IP banned.
+# Modern syntax handles rate limits directly without needing external pyrate_limiter classes
 class CachedLimiterSession(CacheMixin, LimiterMixin, requests.Session):
     pass
 
 session = CachedLimiterSession(
-    limiter=Limiter(RequestRate(2, Duration.SECOND * 1)), 
-    bucket_class=MemoryQueueBucket,
+    per_second=2,
     backend=SQLiteCache("yfinance.cache"),
 )
 session.headers.update({
@@ -135,7 +132,6 @@ def download_in_chunks(tickers, chunk_size=120):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        # Threads=True works perfectly now because the session limits concurrency safely
         d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
@@ -361,7 +357,6 @@ def generate_ai_deep_dive(top_candidates):
 ### 13. Final Investment View
 ### 14. Executive Summary"""
         try:
-            # Switched to the stable gemini-1.5-pro endpoint
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             
@@ -428,7 +423,6 @@ def run():
             if row['Status'] != 'Active': continue
             sym, sec = row['RawStock'], row.get('Sector', 'Unknown')
             if sec == 'Unknown' or pd.isna(sec):
-                # Avoid .info calls whenever possible
                 sec = 'Unknown'
                 pf.at[i, 'Sector'] = sec
             active_sectors_count[sec] = active_sectors_count.get(sec, 0) + 1
