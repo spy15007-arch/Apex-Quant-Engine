@@ -381,8 +381,8 @@ def generate_ai_deep_dive(top_candidates):
         • Overall Conviction Level: [Low/Medium/High]"""
         
         try:
-            # Pointing directly to the active gemini-2.5-flash model on the v1beta endpoint
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+            # Pointing directly to the active gemini-3.5-flash model on the v1beta endpoint
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             
             if res.status_code == 200: 
