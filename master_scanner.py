@@ -326,7 +326,7 @@ def generate_ai_deep_dive(top_candidates):
             
         sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
         try:
-            info = yf.Ticker(f"{sym}.NS", session=session).info
+            info = yf.Ticker(f"{sym}.NS").info
             pe, sector = info.get('trailingPE', 'N/A'), info.get('sector', 'N/A')
         except: 
             pe, sector = "N/A", "N/A"
@@ -359,7 +359,8 @@ def generate_ai_deep_dive(top_candidates):
         • Overall Conviction Level: [Low/Medium/High]"""
         
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={GEMINI_API_KEY}"
+            # THIS IS THE CRITICAL LINE THAT MUST BE SAVED
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             
             if res.status_code == 200: 
@@ -375,7 +376,6 @@ def generate_ai_deep_dive(top_candidates):
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
-
 def run():
     start_time = time.time()
     print("🚀 Starting High-Performance Master Quant Scanner...")
