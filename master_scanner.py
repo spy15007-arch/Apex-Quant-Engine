@@ -20,8 +20,6 @@ BASE_CAPITAL_PER_TRADE = 50000
 HIGH_CONVICTION_MULTIPLIER = 2  
 
 # --- YAHOO FINANCE CONCURRENT RATE-LIMIT BYPASS ---
-# Enables fast threads=True downloading while safely throttling 
-# the request initialization to 5 per second, completely avoiding the GitHub Actions IP ban.
 class ConcurrencySafeSession(requests.Session):
     def __init__(self, req_per_sec=5):
         super().__init__()
@@ -380,30 +378,48 @@ def generate_ai_deep_dive(top_candidates):
         • Key Concerns: [1 concise sentence]
         • Overall Conviction Level: [Low/Medium/High]"""
         
-        try:
-            # Pointing directly to the active gemini-3.7-flash model on the v1beta endpoint
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key={GEMINI_API_KEY}"
-            res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
-            
-            if res.status_code == 200: 
-                res_json = res.json()
-                try:
-                    text_content = res_json['candidates'][0]['content']['parts'][0]['text']
-                    all_dossiers.append(text_content)
-                except KeyError:
-                    # Fallback if Gemini triggers a Safety Filter and refuses to provide the text payload
-                    reason = res_json.get('candidates', [{}])[0].get('finishReason', 'UNKNOWN')
-                    safe_msg = f"**{sym} Analysis Failed**\nBlocked by Gemini Safety Filter (Reason: {reason})"
-                    all_dossiers.append(safe_msg)
-                    print(f"⚠️ API Warning: {sym} blocked by filter ({reason})")
-            else:
-                error_msg = f"**{sym} Analysis Failed**\nGoogle API Error {res.status_code}: {res.text}"
-                all_dossiers.append(error_msg)
-                print(f"⚠️ API Error {res.status_code}: {res.text}")
-        except Exception as e:
-            error_msg = f"**{sym} Analysis Failed**\nSystem Exception: {str(e)}"
-            all_dossiers.append(error_msg)
-            print(f"⚠️ System Error: {str(e)}")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro:generateContent?key={GEMINI_API_KEY}"
+        
+        # --- NEW RETRY LOGIC TO HANDLE 503 & TIMEOUTS ---
+        max_retries = 3
+        success = False
+        
+        for attempt in range(max_retries):
+            try:
+                res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
+                
+                if res.status_code == 200: 
+                    res_json = res.json()
+                    try:
+                        text_content = res_json['candidates'][0]['content']['parts'][0]['text']
+                        all_dossiers.append(text_content)
+                        success = True
+                        break # Got the data, break out of retry loop
+                    except KeyError:
+                        reason = res_json.get('candidates', [{}])[0].get('finishReason', 'UNKNOWN')
+                        all_dossiers.append(f"**{sym} Analysis Failed**\nBlocked by Gemini Safety Filter (Reason: {reason})")
+                        success = True 
+                        break
+                        
+                elif res.status_code == 503:
+                    print(f"⚠️ API Overloaded (503). Retrying {attempt+1}/{max_retries} in 15s...")
+                    time.sleep(15)
+                    
+                else:
+                    all_dossiers.append(f"**{sym} Analysis Failed**\nGoogle API Error {res.status_code}: {res.text}")
+                    success = True 
+                    break # Stop retrying on permanent errors like 403 Forbidden
+                    
+            except requests.exceptions.Timeout:
+                print(f"⚠️ API Timeout. Retrying {attempt+1}/{max_retries} in 15s...")
+                time.sleep(15)
+            except Exception as e:
+                all_dossiers.append(f"**{sym} Analysis Failed**\nSystem Exception: {str(e)}")
+                success = True
+                break
+                
+        if not success:
+            all_dossiers.append(f"**{sym} Analysis Failed**\nMax retries reached due to Google server timeouts. Google servers are currently overloaded.")
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
