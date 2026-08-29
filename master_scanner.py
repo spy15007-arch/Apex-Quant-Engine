@@ -141,7 +141,7 @@ def download_in_chunks(tickers, chunk_size=150):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        # threads=True is back ON!
+        # threads=True is ON for fast downloads!
         d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
@@ -376,7 +376,8 @@ def generate_ai_deep_dive(top_candidates):
         • Overall Conviction Level: [Low/Medium/High]"""
         
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+            # Safely point to the current 2.5-flash model endpoint for generation
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             
             if res.status_code == 200: 
