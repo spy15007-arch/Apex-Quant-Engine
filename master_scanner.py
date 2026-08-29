@@ -376,8 +376,8 @@ def generate_ai_deep_dive(top_candidates):
         • Overall Conviction Level: [Low/Medium/High]"""
         
         try:
-            # FIXED: Using gemini-1.5-pro (available) instead of gemini-2.5-flash
-            url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key={GEMINI_API_KEY}"
+            # FIXED: Updated endpoint to v1beta and explicitly requested the latest 1.5 Pro model
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             
             if res.status_code == 200: 
@@ -393,7 +393,6 @@ def generate_ai_deep_dive(top_candidates):
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
-
 def run():
     start_time = time.time()
     print("🚀 Starting High-Performance Master Quant Scanner...")
