@@ -391,7 +391,7 @@ def generate_ai_deep_dive(top_candidates):
             all_dossiers.append(error_msg)
             print(f"⚠️ System Error: {str(e)}")
             
-    with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
+        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
 def run():
     start_time = time.time()
