@@ -2,13 +2,11 @@ name: Master Quant Scanner
 
 on:
   schedule:
-    # Morning Scan: 9:28 AM IST (Bypasses the 9:30 AM global queue)
+    # Runs at 9:28 AM IST (03:58 UTC) Monday-Friday
     - cron: '58 3 * * 1-5'
-    
-    # Afternoon Scan: 2:43 PM IST (Bypasses the 2:45 PM global queue)
+    # Runs at 2:43 PM IST (09:13 UTC) Monday-Friday
     - cron: '13 9 * * 1-5'
-    
-  # Keeps the manual trigger button active for you
+  # Allows you to run this manually from the Actions tab
   workflow_dispatch: 
 
 jobs:
@@ -16,29 +14,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout repository
       uses: actions/checkout@v4
-      
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.10'
-        
-    - name: Install Dependencies
+
+    - name: Install dependencies (Forced Override)
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
+        pip install yfinance pandas numpy scipy requests streamlit plotly streamlit-lightweight-charts requests-cache requests-ratelimiter pyrate-limiter
+
     - name: Execute Master Scanner Engine
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      run: python master_scanner.py
-      
-    - name: Save and Commit Results
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add .
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update scanner reports and alerts memory" && git push)
+        python master_scanner.py
+        
+    - name: Commit and push updated data
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add all_setups.csv index_setups.csv portfolio.csv chart_data.csv deep_dive_analysis.md sent_alerts.json || true
+        git commit -m "Auto-update quant data" || true
+        git push
