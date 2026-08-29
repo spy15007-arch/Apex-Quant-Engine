@@ -29,7 +29,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install yfinance pandas numpy scipy requests streamlit plotly streamlit-lightweight-charts
+        pip install yfinance pandas numpy scipy requests streamlit plotly streamlit-lightweight-charts requests-cache requests-ratelimiter pyrate-limiter
 
     - name: Execute Master Scanner Engine
       env:
@@ -40,20 +40,18 @@ jobs:
         python master_scanner.py
         
     - name: Commit and push updated data
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
-        # 1. Force add the files to bypass any hidden .gitignore rules
-        git add -f all_setups.csv index_setups.csv portfolio.csv chart_data.csv deep_dive_analysis.md sent_alerts.json || true
+        # Force add all files
+        git add -A
         
-        # 2. Print status to the console so we can see what Git is doing
+        # Print the exact file status to the logs
         git status
         
-        # 3. Commit the changes
-        git commit -m "Auto-update quant data" || echo "No changes to commit"
+        # Commit (This will turn RED and fail if the file didn't actually change)
+        git commit -m "Auto-update quant data"
         
-        # 4. Explicitly push using the auth token to bypass permission drops
-        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:main
+        # Push (This will turn RED and fail if it is a permissions block)
+        git push
