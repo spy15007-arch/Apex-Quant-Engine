@@ -9,8 +9,6 @@ import datetime
 import math
 from scipy.stats import norm
 import warnings
-from requests_cache import CacheMixin, SQLiteCache
-from requests_ratelimiter import LimiterMixin
 
 warnings.filterwarnings('ignore')
 
@@ -19,21 +17,6 @@ TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
-
-# --- THE ULTIMATE YAHOO FINANCE RATE-LIMIT BYPASS ---
-# Modern syntax handles rate limits directly without needing external pyrate_limiter classes
-class CachedLimiterSession(CacheMixin, LimiterMixin, requests.Session):
-    pass
-
-session = CachedLimiterSession(
-    per_second=2,
-    backend=SQLiteCache("yfinance.cache"),
-)
-session.headers.update({
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-    'Accept': '*/*',
-    'Connection': 'keep-alive'
-})
 
 SECTOR_INDICES = {
     "^CNXAUTO": "Consumer Cyclical", "^CNXIT": "Technology", "^CNXMETAL": "Basic Materials",
@@ -109,7 +92,8 @@ def get_complete_nse_universe():
 def calculate_leading_sectors(nifty_return_20d):
     leading_sectors = set()
     try:
-        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True, session=session)
+        # yfinance natively handles the connection now
+        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True)
         if not data.empty:
             closes = data['Close'] if isinstance(data.columns, pd.MultiIndex) else data
             sector_scores = {}
@@ -132,7 +116,8 @@ def download_in_chunks(tickers, chunk_size=120):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=session)
+        # yfinance handles rate-limits and cookies automatically here
+        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
                 if 'Open' in d.columns.levels[0]: opens_list.append(d['Open'])
@@ -147,7 +132,7 @@ def download_in_chunks(tickers, chunk_size=120):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(0.5)
+        time.sleep(0.5) # Gentle pause between massive chunks to avoid connection resets
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -281,7 +266,7 @@ def get_index_options_ideas():
     results = []
     for ticker, name in indices.items():
         try:
-            data = yf.download(ticker, period="5d", interval="5m", progress=False, threads=False, session=session)
+            data = yf.download(ticker, period="5d", interval="5m", progress=False, threads=False)
             if data.empty: continue
             if isinstance(data.columns, pd.MultiIndex): data.columns = data.columns.get_level_values(0)
             df_c, df_h, df_l = data['Close'].dropna(), data['High'].dropna(), data['Low'].dropna()
@@ -327,14 +312,14 @@ def generate_ai_deep_dive(top_candidates):
     all_dossiers = []
     
     for idx, candidate in enumerate(top_candidates[:2]):
-        # Add a 35-second delay before the second API call to bypass the 2 RPM free-tier limit
+        # Added a 35-second delay before the second API call to bypass the 2 RPM free-tier limit
         if idx > 0:
             print("⏳ Pausing for 35 seconds to respect Gemini free-tier rate limits...")
             time.sleep(35)
             
         sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
         try:
-            info = yf.Ticker(f"{sym}.NS", session=session).info
+            info = yf.Ticker(f"{sym}.NS").info
             pe, sector = info.get('trailingPE', 'N/A'), info.get('sector', 'N/A')
         except: 
             pe, sector = "N/A", "N/A"
@@ -389,7 +374,7 @@ def run():
     market_close = now_ist.replace(hour=15, minute=15, second=0, microsecond=0) 
     minutes_elapsed = 360.0 if (now_ist.weekday() >= 5 or now_ist > market_close or now_ist < market_open) else min(max(1.0, (now_ist - market_open).total_seconds() / 60.0), 360.0)
     
-    nifty_df = yf.download("^NSEI", period="1y", interval="1d", progress=False, session=session)
+    nifty_df = yf.download("^NSEI", period="1y", interval="1d", progress=False)
     nifty_return_20d = 0.0
     if not nifty_df.empty:
         if isinstance(nifty_df.columns, pd.MultiIndex): nifty_df.columns = nifty_df.columns.get_level_values(0)
