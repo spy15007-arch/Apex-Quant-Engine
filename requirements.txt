@@ -6,4 +6,3 @@ requests
 streamlit
 plotly
 streamlit-lightweight-charts
-pyrate-limiter
