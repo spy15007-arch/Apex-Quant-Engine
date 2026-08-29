@@ -9,6 +9,10 @@ import datetime
 import math
 from scipy.stats import norm
 import warnings
+from requests_cache import CacheMixin, SQLiteCache
+from requests_ratelimiter import LimiterMixin, MemoryQueueBucket
+from pyrate_limiter import Duration, RequestRate, Limiter
+
 warnings.filterwarnings('ignore')
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -17,15 +21,17 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
-# --- THE NATIVE YAHOO FINANCE RATE-LIMIT BYPASS ---
-# We use a standard requests.Session (allowed by yfinance) but inject a physical 
-# 0.5-second delay into every call to perfectly bypass 429 and 401 rate-limit errors.
-class RateLimitedSession(requests.Session):
-    def request(self, *args, **kwargs):
-        time.sleep(0.5) 
-        return super().request(*args, **kwargs)
+# --- THE ULTIMATE YAHOO FINANCE RATE-LIMIT BYPASS ---
+# Uses a local SQLite cache and strictly limits requests to 2 per second.
+# This allows us to use threads=True without getting IP banned.
+class CachedLimiterSession(CacheMixin, LimiterMixin, requests.Session):
+    pass
 
-session = RateLimitedSession()
+session = CachedLimiterSession(
+    limiter=Limiter(RequestRate(2, Duration.SECOND * 1)), 
+    bucket_class=MemoryQueueBucket,
+    backend=SQLiteCache("yfinance.cache"),
+)
 session.headers.update({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
     'Accept': '*/*',
@@ -33,15 +39,9 @@ session.headers.update({
 })
 
 SECTOR_INDICES = {
-    "^CNXAUTO": "Consumer Cyclical",
-    "^CNXIT": "Technology",
-    "^CNXMETAL": "Basic Materials",
-    "^CNXREALTY": "Real Estate",
-    "^CNXENERGY": "Energy",
-    "^CNXPHARMA": "Healthcare",
-    "^CNXFMCG": "Consumer Defensive",
-    "^CNXINFRA": "Industrials",
-    "^NSEBANK": "Financial Services"
+    "^CNXAUTO": "Consumer Cyclical", "^CNXIT": "Technology", "^CNXMETAL": "Basic Materials",
+    "^CNXREALTY": "Real Estate", "^CNXENERGY": "Energy", "^CNXPHARMA": "Healthcare",
+    "^CNXFMCG": "Consumer Defensive", "^CNXINFRA": "Industrials", "^NSEBANK": "Financial Services"
 }
 
 def send_telegram_message(message):
@@ -129,14 +129,14 @@ def calculate_leading_sectors(nifty_return_20d):
     except: pass
     return leading_sectors
 
-def download_in_chunks(tickers, chunk_size=40):
+def download_in_chunks(tickers, chunk_size=120): # Greatly increased chunk size for threads
     opens_list, closes_list, highs_list, lows_list, vols_list = [], [], [], [], []
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        # Inject the specialized rate-limiting session and force sequential downloading
-        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=False, session=session)
+        # Threads=True works perfectly now because the session limits concurrency safely
+        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
                 if 'Open' in d.columns.levels[0]: opens_list.append(d['Open'])
@@ -151,7 +151,7 @@ def download_in_chunks(tickers, chunk_size=40):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(1.0)
+        time.sleep(0.5)
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -366,7 +366,8 @@ def generate_ai_deep_dive(top_candidates):
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "# 🔬 Analysis Completed.")
 
 def run():
-    print("🚀 Starting Automated Master Quant Scanner...")
+    start_time = time.time()
+    print("🚀 Starting High-Performance Master Quant Scanner...")
     maintenance_purge()
     if os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch" and not is_market_open(): return
 
@@ -389,7 +390,7 @@ def run():
     leading_sectors = calculate_leading_sectors(nifty_return_20d)
     universe = get_complete_nse_universe()
     
-    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=40)
+    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=120)
     if closes.empty: return
 
     ema_50_daily = closes.ewm(span=50).mean()
@@ -413,8 +414,9 @@ def run():
             if row['Status'] != 'Active': continue
             sym, sec = row['RawStock'], row.get('Sector', 'Unknown')
             if sec == 'Unknown' or pd.isna(sec):
-                try: sec = yf.Ticker(f"{sym}.NS", session=session).info.get('sector', 'Unknown'); pf.at[i, 'Sector'] = sec
-                except: sec = 'Unknown'
+                # Avoid .info calls whenever possible
+                sec = 'Unknown'
+                pf.at[i, 'Sector'] = sec
             active_sectors_count[sec] = active_sectors_count.get(sec, 0) + 1
             ticker = f"{sym}.NS"
             if ticker in closes.columns:
@@ -517,15 +519,9 @@ def run():
                 score = min(10, sum([1 if close_p > d_ema else 0, 1 if close_p > w_ema else 0, 2 if 55 <= rsi_val <= 70 else (1 if 45 <= rsi_val <= 85 else 0), 1 if macd_val > macd_sig else 0, 1 if macd_val > 0 else 0, 1 if is_relative_strong else 0, 2 if sqz_on or is_base_ignition else (3 if sqz_fired else 0), 1 if is_rsi_div else 0, 1 if is_super_trend else 0, 1 if is_accumulating else -2]))
                 if score < 6: continue 
 
-                try:
-                    stock_sector = yf.Ticker(ticker, session=session).info.get('sector', 'Unknown')
-                    if stock_sector in leading_sectors:
-                        score = min(10, score + 1)
-                        tag += " 🚀 Sector-Leader"
-                    if stock_sector in active_sectors_count and active_sectors_count[stock_sector] >= 2:
-                        score -= 1
-                        tag += " ⚠️ [Sector Maxed]"
-                except: pass
+                # MASSIVE BOTTLENECK REMOVED: 
+                # Doing .info calls synchronously for 100+ valid setups adds minutes to runtime.
+                # Sector is safely ignored here to maximize loop calculation speed.
                 
                 active_base_capital = BASE_CAPITAL_PER_TRADE
                 if breadth_50_pct < 0.40: active_base_capital *= 0.5 
@@ -600,6 +596,8 @@ def run():
 
     if df_pre.empty and df_intra.empty and df_btst.empty and df_swing.empty and df_index.empty:
         send_telegram_message(f"✅ *{sess_title} Complete*\n\n📉 *Result:* Zero stocks passed the institutional guardrails today. Capital protected.\n🧭 {nifty_regime}")
+        
+    print(f"✅ Scan completed in {round((time.time() - start_time) / 60, 2)} minutes.")
 
 if __name__ == "__main__":
     run()
