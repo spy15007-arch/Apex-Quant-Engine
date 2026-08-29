@@ -129,7 +129,7 @@ def calculate_leading_sectors(nifty_return_20d):
     except: pass
     return leading_sectors
 
-def download_in_chunks(tickers, chunk_size=120): # Greatly increased chunk size for threads
+def download_in_chunks(tickers, chunk_size=120):
     opens_list, closes_list, highs_list, lows_list, vols_list = [], [], [], [], []
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
@@ -323,16 +323,26 @@ def format_telegram_text(df_stocks, df_index, title, regime="Neutral"):
 
 def generate_ai_deep_dive(top_candidates):
     if not GEMINI_API_KEY or not top_candidates:
-        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: f.write("# 🔬 Institutional Deep Dive Analysis\n\n*Pending Analysis: Waiting for active market setups.*")
+        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: 
+            f.write("# 🔬 Institutional Deep Dive Analysis\n\n*Pending Analysis: Waiting for active market setups.*")
         return
+        
     print("🤖 Initiating Automated AI 14-Pillar Fundamental Analysis...")
     all_dossiers = []
-    for candidate in top_candidates[:2]:
+    
+    for idx, candidate in enumerate(top_candidates[:2]):
+        # Add a 35-second delay before the second API call to bypass the 2 RPM free-tier limit
+        if idx > 0:
+            print("⏳ Pausing for 35 seconds to respect Gemini free-tier rate limits...")
+            time.sleep(35)
+            
         sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
         try:
             info = yf.Ticker(f"{sym}.NS", session=session).info
             pe, sector = info.get('trailingPE', 'N/A'), info.get('sector', 'N/A')
-        except: pe, sector = "N/A", "N/A"
+        except: 
+            pe, sector = "N/A", "N/A"
+            
         prompt = f"""You are an Elite Institutional Equity Research Analyst. Write a rigorous 14-section institutional research report on **{sym} (NSE: {sym})**. Context: Setup Type: {tag} (Score: {score}/10) | Buy Trigger: ₹{entry} | SL: ₹{eq_sl} | Targets: ₹{t1} | Sector: {sector} | P/E: {pe}. Format EXACTLY as:
 # Detailed Stock Analysis: {sym} (NSE: {sym})
 ---
@@ -351,16 +361,20 @@ def generate_ai_deep_dive(top_candidates):
 ### 13. Final Investment View
 ### 14. Executive Summary"""
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_API_KEY}"
+            # Switched to the stable gemini-1.5-pro endpoint
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
+            
             if res.status_code == 200: 
                 all_dossiers.append(res.json()['candidates'][0]['content']['parts'][0]['text'])
             else:
-                error_msg = f"# Detailed Stock Analysis: API ERROR\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**Google API Error {res.status_code}:**\n{res.text}\n### 14. Executive Summary\nGoogle rejected the AI request."
+                error_msg = f"# Detailed Stock Analysis: API ERROR for {sym}\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**Google API Error {res.status_code}:**\n{res.text}\n### 14. Executive Summary\nGoogle rejected the AI request."
                 all_dossiers.append(error_msg)
+                print(f"⚠️ API Error {res.status_code}: {res.text}")
         except Exception as e:
-            error_msg = f"# Detailed Stock Analysis: SYSTEM ERROR\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**System Exception:**\n{str(e)}\n### 14. Executive Summary\nFailed to connect to Google API."
+            error_msg = f"# Detailed Stock Analysis: SYSTEM ERROR for {sym}\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**System Exception:**\n{str(e)}\n### 14. Executive Summary\nFailed to connect to Google API."
             all_dossiers.append(error_msg)
+            print(f"⚠️ System Error: {str(e)}")
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "# 🔬 Analysis Completed.")
@@ -519,10 +533,6 @@ def run():
                 score = min(10, sum([1 if close_p > d_ema else 0, 1 if close_p > w_ema else 0, 2 if 55 <= rsi_val <= 70 else (1 if 45 <= rsi_val <= 85 else 0), 1 if macd_val > macd_sig else 0, 1 if macd_val > 0 else 0, 1 if is_relative_strong else 0, 2 if sqz_on or is_base_ignition else (3 if sqz_fired else 0), 1 if is_rsi_div else 0, 1 if is_super_trend else 0, 1 if is_accumulating else -2]))
                 if score < 6: continue 
 
-                # MASSIVE BOTTLENECK REMOVED: 
-                # Doing .info calls synchronously for 100+ valid setups adds minutes to runtime.
-                # Sector is safely ignored here to maximize loop calculation speed.
-                
                 active_base_capital = BASE_CAPITAL_PER_TRADE
                 if breadth_50_pct < 0.40: active_base_capital *= 0.5 
                 
