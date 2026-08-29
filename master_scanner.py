@@ -141,7 +141,6 @@ def download_in_chunks(tickers, chunk_size=150):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        # threads=True is ON for fast downloads!
         d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
@@ -338,13 +337,19 @@ def generate_ai_deep_dive(top_candidates):
     
     for idx, candidate in enumerate(top_candidates[:2]):
         if idx > 0:
-            print("⏳ Pausing for 35 seconds to respect Gemini free-tier rate limits...")
+            print("⏳ Pausing for 35 seconds to respect Gemini rate limits...")
             time.sleep(35)
             
-        sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
+        sym = candidate['RawStock']
+        entry = candidate['Entry']
+        eq_sl = candidate['EqSL']
+        tag = candidate['Tag']
+        score = candidate['Score']
+        
         try:
             info = yf.Ticker(f"{sym}.NS", session=session).info
-            pe, sector = info.get('trailingPE', 'N/A'), info.get('sector', 'N/A')
+            pe = info.get('trailingPE', 'N/A')
+            sector = info.get('sector', 'N/A')
         except: 
             pe, sector = "N/A", "N/A"
             
@@ -376,12 +381,21 @@ def generate_ai_deep_dive(top_candidates):
         • Overall Conviction Level: [Low/Medium/High]"""
         
         try:
-            # FIXED: Updated endpoint to v1beta and explicitly requested the latest 1.5 Pro model
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_API_KEY}"
+            # Pointing directly to the active gemini-2.5-flash model on the v1beta endpoint
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             
             if res.status_code == 200: 
-                all_dossiers.append(res.json()['candidates'][0]['content']['parts'][0]['text'])
+                res_json = res.json()
+                try:
+                    text_content = res_json['candidates'][0]['content']['parts'][0]['text']
+                    all_dossiers.append(text_content)
+                except KeyError:
+                    # Fallback if Gemini triggers a Safety Filter and refuses to provide the text payload
+                    reason = res_json.get('candidates', [{}])[0].get('finishReason', 'UNKNOWN')
+                    safe_msg = f"**{sym} Analysis Failed**\nBlocked by Gemini Safety Filter (Reason: {reason})"
+                    all_dossiers.append(safe_msg)
+                    print(f"⚠️ API Warning: {sym} blocked by filter ({reason})")
             else:
                 error_msg = f"**{sym} Analysis Failed**\nGoogle API Error {res.status_code}: {res.text}"
                 all_dossiers.append(error_msg)
@@ -391,8 +405,9 @@ def generate_ai_deep_dive(top_candidates):
             all_dossiers.append(error_msg)
             print(f"⚠️ System Error: {str(e)}")
             
-        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
+    with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
+
 def run():
     start_time = time.time()
     print("🚀 Starting High-Performance Master Quant Scanner...")
@@ -592,7 +607,7 @@ def run():
                     temp = pd.DataFrame({'Date': opens.index.strftime('%Y-%m-%d'), 'Ticker': sym, 'Open': opens[t], 'High': highs[t], 'Low': lows[t], 'Close': closes[t], 'Volume': volumes[t]}).dropna()
                     chart_data_list.append(temp)
             except: pass
-    if chart_data_list: pd.concat(chart_data_list).to_csv("chart_data.csv", index=False)
+        if chart_data_list: pd.concat(chart_data_list).to_csv("chart_data.csv", index=False)
     else: pd.DataFrame(columns=['Date','Ticker','Open','High','Low','Close','Volume']).to_csv("chart_data.csv", index=False)
 
     df_index.to_csv("index_setups.csv", index=False) if not df_index.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Entry','EntryZone','RSI','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','Score']).to_csv("index_setups.csv", index=False)
