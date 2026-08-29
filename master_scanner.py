@@ -18,6 +18,16 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
+# --- YAHOO FINANCE 401 "INVALID CRUMB" BYPASS ---
+# We use a standard requests.Session to spoof a real browser.
+# This prevents Yahoo from blocking the GitHub Actions IP.
+session = requests.Session()
+session.headers.update({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+    'Accept': '*/*',
+    'Connection': 'keep-alive'
+})
+
 SECTOR_INDICES = {
     "^CNXAUTO": "Consumer Cyclical", "^CNXIT": "Technology", "^CNXMETAL": "Basic Materials",
     "^CNXREALTY": "Real Estate", "^CNXENERGY": "Energy", "^CNXPHARMA": "Healthcare",
@@ -92,7 +102,7 @@ def get_complete_nse_universe():
 def calculate_leading_sectors(nifty_return_20d):
     leading_sectors = set()
     try:
-        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True)
+        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True, session=session)
         if not data.empty:
             closes = data['Close'] if isinstance(data.columns, pd.MultiIndex) else data
             sector_scores = {}
@@ -115,7 +125,7 @@ def download_in_chunks(tickers, chunk_size=120):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True)
+        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
                 if 'Open' in d.columns.levels[0]: opens_list.append(d['Open'])
@@ -264,7 +274,7 @@ def get_index_options_ideas():
     results = []
     for ticker, name in indices.items():
         try:
-            data = yf.download(ticker, period="5d", interval="5m", progress=False, threads=False)
+            data = yf.download(ticker, period="5d", interval="5m", progress=False, threads=False, session=session)
             if data.empty: continue
             if isinstance(data.columns, pd.MultiIndex): data.columns = data.columns.get_level_values(0)
             df_c, df_h, df_l = data['Close'].dropna(), data['High'].dropna(), data['Low'].dropna()
@@ -316,7 +326,7 @@ def generate_ai_deep_dive(top_candidates):
             
         sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
         try:
-            info = yf.Ticker(f"{sym}.NS").info
+            info = yf.Ticker(f"{sym}.NS", session=session).info
             pe, sector = info.get('trailingPE', 'N/A'), info.get('sector', 'N/A')
         except: 
             pe, sector = "N/A", "N/A"
@@ -381,7 +391,7 @@ def run():
     market_close = now_ist.replace(hour=15, minute=15, second=0, microsecond=0) 
     minutes_elapsed = 360.0 if (now_ist.weekday() >= 5 or now_ist > market_close or now_ist < market_open) else min(max(1.0, (now_ist - market_open).total_seconds() / 60.0), 360.0)
     
-    nifty_df = yf.download("^NSEI", period="1y", interval="1d", progress=False)
+    nifty_df = yf.download("^NSEI", period="1y", interval="1d", progress=False, session=session)
     nifty_return_20d = 0.0
     if not nifty_df.empty:
         if isinstance(nifty_df.columns, pd.MultiIndex): nifty_df.columns = nifty_df.columns.get_level_values(0)
