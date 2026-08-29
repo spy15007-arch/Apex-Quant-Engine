@@ -115,42 +115,41 @@ with tabs[6]:
         else: st.info("No active trades currently.")
     else: st.info("Your portfolio is currently empty.")
 
-# --- TAB 8: AI DEEP DIVE (NEW TABBED UI) ---
+# --- TAB 8: AI DEEP DIVE (TRADINGVIEW OVERLAYS) ---
 with tabs[7]:
-    st.header("🔬 Institutional Fundamental Analysis")
+    st.header("🔬 TradingView Overlays (AI Analysis)")
+    st.markdown("Copy these concise blocks and paste them directly into a TradingView text box on your charts.")
+    
     raw_ai_report = load_markdown("deep_dive_analysis.md")
     if "Pending Analysis" in raw_ai_report or "No qualifying setups" in raw_ai_report: 
         st.info("AI Analysis is pending or no qualifying setups were found today.")
     else:
         reports = raw_ai_report.split("\n\n---\n\n")
-        for report in reports:
+        for i, report in enumerate(reports):
             if not report.strip(): continue
-            lines = report.strip().split('\n')
-            title = lines[0].replace("# Detailed Stock Analysis:", "").strip() if lines else "Stock Analysis"
             
-            # Regex Parsing for Mini-Tabs
-            scorecard_match = re.search(r'### 12\. Final Scorecard(.*?)(?=### 13\.|$)', report, re.DOTALL)
-            summary_match = re.search(r'### 14\. Executive Summary(.*?)(?=###|$)', report, re.DOTALL)
-            tech_match = re.search(r'### 1\. Technical Analysis(.*?)(?=### 2\.|$)', report, re.DOTALL)
-            
-            scorecard_text = scorecard_match.group(1).strip() if scorecard_match else "Data error."
-            summary_text = summary_match.group(1).strip() if summary_match else "Data error."
-            tech_text = tech_match.group(1).strip() if tech_match else "Data error."
-            
-            st.markdown(f"### {title}")
-            
-            # Create sub-tabs for each stock
-            ai_tab1, ai_tab2, ai_tab3, ai_tab4 = st.tabs(["📋 Executive Summary", "📊 Technical View", "🏆 Scorecard", "📖 Full Report"])
-            
-            with ai_tab1:
-                st.markdown(summary_text)
-            with ai_tab2:
-                st.markdown(tech_text)
-            with ai_tab3:
-                st.markdown(scorecard_text)
-            with ai_tab4:
-                st.markdown(report)
-            
+            # Identify if it's an error block
+            if "Analysis Failed" in report:
+                st.error(report.strip())
+            else:
+                st.markdown(f"### 🔥 Setup Option {i+1}")
+                
+                # Parse the clean TradingView text format for nice display
+                scorecard_match = re.search(r'\*\*12\. Final Scorecard\*\*(.*?)(?=\*\*14\. Executive Summary\*\*|$)', report, re.DOTALL)
+                summary_match = re.search(r'\*\*14\. Executive Summary\*\*(.*?)(?=\*\*|$)', report, re.DOTALL)
+                
+                if scorecard_match and summary_match:
+                    col1, col2 = st.columns([1, 2])
+                    with col1:
+                        st.markdown("**🏆 12. Final Scorecard**")
+                        st.markdown(scorecard_match.group(1).strip())
+                    with col2:
+                        st.markdown("**📋 14. Executive Summary**")
+                        st.markdown(summary_match.group(1).strip())
+                
+                # 1-Click Copy Box
+                st.caption("📋 1-Click Copy for TradingView:")
+                st.code(report.strip(), language="markdown")
             st.divider()
 
 # --- TAB 9: NATIVE QUANTITATIVE CHARTING ENGINE (MACD & VOLUME UPGRADE) ---
