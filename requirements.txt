@@ -8,3 +8,4 @@ plotly
 streamlit-lightweight-charts
 requests-cache
 requests-ratelimiter
+pyrate-limiter
