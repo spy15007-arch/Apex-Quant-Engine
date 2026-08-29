@@ -1,4 +1,4 @@
-name: Master Quant Scanner
+Name: Master Quant Scanner
 
 on:
   schedule:
@@ -8,6 +8,10 @@ on:
     - cron: '13 9 * * 1-5'
   # Allows you to run this manually from the Actions tab
   workflow_dispatch: 
+
+# ADDED: This grants the workflow permission to push files back to your repo
+permissions:
+  contents: write
 
 jobs:
   run-scanner:
