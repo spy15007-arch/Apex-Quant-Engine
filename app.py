@@ -22,7 +22,7 @@ def load_data(file_path):
 def load_markdown(file_path):
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as f: return f.read()
-    return "*AI Analysis is pending or no qualifying setups were found today.*"
+    return "Pending Analysis: Waiting for active market setups."
 
 # --- PORTFOLIO ACTION FUNCTIONS ---
 def add_to_portfolio(raw_stock, df_source):
