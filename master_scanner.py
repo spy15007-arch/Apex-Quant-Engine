@@ -92,7 +92,6 @@ def get_complete_nse_universe():
 def calculate_leading_sectors(nifty_return_20d):
     leading_sectors = set()
     try:
-        # yfinance natively handles the connection now
         data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True)
         if not data.empty:
             closes = data['Close'] if isinstance(data.columns, pd.MultiIndex) else data
@@ -116,7 +115,6 @@ def download_in_chunks(tickers, chunk_size=120):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        # yfinance handles rate-limits and cookies automatically here
         d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
@@ -132,7 +130,7 @@ def download_in_chunks(tickers, chunk_size=120):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(0.5) # Gentle pause between massive chunks to avoid connection resets
+        time.sleep(0.5) 
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -305,14 +303,13 @@ def format_telegram_text(df_stocks, df_index, title, regime="Neutral"):
 def generate_ai_deep_dive(top_candidates):
     if not GEMINI_API_KEY or not top_candidates:
         with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: 
-            f.write("# 🔬 Institutional Deep Dive Analysis\n\n*Pending Analysis: Waiting for active market setups.*")
+            f.write("Pending Analysis: Waiting for active market setups.")
         return
         
-    print("🤖 Initiating Automated AI 14-Pillar Fundamental Analysis...")
+    print("🤖 Initiating Automated AI Executive Summary...")
     all_dossiers = []
     
     for idx, candidate in enumerate(top_candidates[:2]):
-        # Added a 35-second delay before the second API call to bypass the 2 RPM free-tier limit
         if idx > 0:
             print("⏳ Pausing for 35 seconds to respect Gemini free-tier rate limits...")
             time.sleep(35)
@@ -324,40 +321,50 @@ def generate_ai_deep_dive(top_candidates):
         except: 
             pe, sector = "N/A", "N/A"
             
-        prompt = f"""You are an Elite Institutional Equity Research Analyst. Write a rigorous 14-section institutional research report on **{sym} (NSE: {sym})**. Context: Setup Type: {tag} (Score: {score}/10) | Buy Trigger: ₹{entry} | SL: ₹{eq_sl} | Targets: ₹{t1} | Sector: {sector} | P/E: {pe}. Format EXACTLY as:
-# Detailed Stock Analysis: {sym} (NSE: {sym})
----
-### 1. Technical Analysis
-### 2. Why Did the Stock Fall Earlier?
-### 3. Has the Company Recovered?
-### 4. Latest News & Business Developments
-### 5. Fundamental Analysis
-### 6. Shareholding Pattern
-### 7. Quarterly & Annual Financial Performance
-### 8. Five-Year Financial Trend
-### 9. Valuation Summary
-### 10. Key Risks
-### 11. Key Growth Triggers
-### 12. Final Scorecard
-### 13. Final Investment View
-### 14. Executive Summary"""
+        prompt = f"""You are an Elite Institutional Equity Research Analyst. 
+        Analyze **{sym} (NSE: {sym})**. Context: Setup: {tag} | Quant Score: {score}/10 | Buy Trigger: ₹{entry} | SL: ₹{eq_sl} | Sector: {sector} | P/E: {pe}. 
+        
+        Provide ONLY a concise text block designed to be pasted as an overlay on a trading chart. Do not include any introductory or concluding text. Format EXACTLY like this:
+
+        **12. Final Scorecard**
+        Technicals: [Score]/10
+        Fundamentals: [Score]/10
+        Financial Strength: [Score]/10
+        Earnings Quality: [Score]/10
+        Valuation: [Score]/10
+        Promoter Quality: [Score]/10
+        Institutional Interest: [Score]/10
+        Growth Visibility: [Score]/10
+        News Flow: [Score]/10
+        Risk Profile: [Score]/10
+        Overall Score: [Total]/100
+
+        **14. Executive Summary**
+        • Why it Corrected: [1 concise sentence]
+        • Reasons Resolved?: [1 concise sentence]
+        • Fundamental Recovery: [1 concise sentence]
+        • Technical & Accumulation Status: [1 concise sentence]
+        • Key Positives: [1 to 2 concise sentences]
+        • Key Concerns: [1 concise sentence]
+        • Overall Conviction Level: [Low/Medium/High]"""
+        
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={GEMINI_API_KEY}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             
             if res.status_code == 200: 
                 all_dossiers.append(res.json()['candidates'][0]['content']['parts'][0]['text'])
             else:
-                error_msg = f"# Detailed Stock Analysis: API ERROR for {sym}\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**Google API Error {res.status_code}:**\n{res.text}\n### 14. Executive Summary\nGoogle rejected the AI request."
+                error_msg = f"**{sym} Analysis Failed**\nGoogle API Error {res.status_code}: {res.text}"
                 all_dossiers.append(error_msg)
                 print(f"⚠️ API Error {res.status_code}: {res.text}")
         except Exception as e:
-            error_msg = f"# Detailed Stock Analysis: SYSTEM ERROR for {sym}\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**System Exception:**\n{str(e)}\n### 14. Executive Summary\nFailed to connect to Google API."
+            error_msg = f"**{sym} Analysis Failed**\nSystem Exception: {str(e)}"
             all_dossiers.append(error_msg)
             print(f"⚠️ System Error: {str(e)}")
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
-        f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "# 🔬 Analysis Completed.")
+        f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
 
 def run():
     start_time = time.time()
@@ -568,7 +575,7 @@ def run():
 
     if not df_all.empty: generate_ai_deep_dive(sorted(valid_setups, key=lambda x: (x['Score'], x['Horizon'] == 'Swing'), reverse=True))
     else:
-        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: f.write("# 🔬 Institutional Deep Dive Analysis\n\n*No qualifying setups found today.*")
+        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: f.write("Pending Analysis: Waiting for active market setups.")
 
     if not df_pre.empty: 
         new_pre = get_new_alerts(df_pre.head(25), "PreBreakout")
