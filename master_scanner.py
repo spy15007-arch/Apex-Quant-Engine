@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import time
+import threading
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -18,14 +19,25 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
-# --- YAHOO FINANCE RATE-LIMIT BYPASS ---
-# Safely throttles requests so GitHub Actions IPs don't get 429 banned
-class RateLimitedSession(requests.Session):
+# --- YAHOO FINANCE CONCURRENT RATE-LIMIT BYPASS ---
+# Enables fast threads=True downloading while safely throttling 
+# the request initialization to 5 per second, completely avoiding the GitHub Actions IP ban.
+class ConcurrencySafeSession(requests.Session):
+    def __init__(self, req_per_sec=5):
+        super().__init__()
+        self.lock = threading.Lock()
+        self.interval = 1.0 / req_per_sec
+        self.last_call = 0.0
+
     def request(self, *args, **kwargs):
-        time.sleep(0.3) # Gentle 300ms pause prevents Yahoo from blocking the scan
+        with self.lock:
+            elapsed = time.time() - self.last_call
+            if elapsed < self.interval:
+                time.sleep(self.interval - elapsed)
+            self.last_call = time.time()
         return super().request(*args, **kwargs)
 
-session = RateLimitedSession()
+session = ConcurrencySafeSession(req_per_sec=5)
 session.headers.update({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     'Accept': '*/*',
@@ -106,7 +118,7 @@ def get_complete_nse_universe():
 def calculate_leading_sectors(nifty_return_20d):
     leading_sectors = set()
     try:
-        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=False, session=session)
+        data = yf.download(list(SECTOR_INDICES.keys()), period="3mo", interval="1d", progress=False, threads=True, session=session)
         if not data.empty:
             closes = data['Close'] if isinstance(data.columns, pd.MultiIndex) else data
             sector_scores = {}
@@ -123,14 +135,14 @@ def calculate_leading_sectors(nifty_return_20d):
     except: pass
     return leading_sectors
 
-def download_in_chunks(tickers, chunk_size=40):
+def download_in_chunks(tickers, chunk_size=150):
     opens_list, closes_list, highs_list, lows_list, vols_list = [], [], [], [], []
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        # Threads=False prevents Yahoo from IP banning the GitHub Action
-        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=False, session=session)
+        # threads=True is back ON!
+        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
                 if 'Open' in d.columns.levels[0]: opens_list.append(d['Open'])
@@ -145,7 +157,7 @@ def download_in_chunks(tickers, chunk_size=40):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(1.0) 
+        time.sleep(0.5) 
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -364,7 +376,6 @@ def generate_ai_deep_dive(top_candidates):
         • Overall Conviction Level: [Low/Medium/High]"""
         
         try:
-            # Safely point to the current 1.5-flash model endpoint for generation
             url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             
@@ -407,7 +418,7 @@ def run():
     leading_sectors = calculate_leading_sectors(nifty_return_20d)
     universe = get_complete_nse_universe()
     
-    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=40)
+    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=150)
     if closes.empty: 
         print("❌ No price data retrieved. Ending scan.")
         return
