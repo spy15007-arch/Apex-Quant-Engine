@@ -377,7 +377,7 @@ def generate_ai_deep_dive(top_candidates):
         
         try:
             # FIXED: Updated endpoint to v1beta and explicitly requested the latest 1.5 Pro model
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_API_KEY}"
             res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
             
             if res.status_code == 200: 
