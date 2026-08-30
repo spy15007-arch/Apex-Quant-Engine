@@ -1,7 +1,7 @@
 ### 📊 ATLANTAELE
-**Analysis Failed**: Max retries reached due to Google server quotas and timeouts.
+**Analysis Skipped**: Google Servers too busy. Moving on to finish scan.
 
 ---
 
 ### 📊 AUBANK
-**Analysis Failed**: Max retries reached due to Google server quotas and timeouts.
+**Analysis Skipped**: Google Servers too busy. Moving on to finish scan.
