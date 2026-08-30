@@ -1,7 +1,3 @@
-### 📊 ATLANTAELE
-**Analysis Failed**: Max retries reached due to Google server quotas and timeouts.
+⚠️ **AI Deep Dive is currently DISABLED.**
 
----
-
-### 📊 AUBANK
-**Analysis Failed**: Max retries reached due to Google server quotas and timeouts.
+To re-enable AI reports, change `ENABLE_AI_DEEP_DIVE = True` in the master_scanner.py file.
