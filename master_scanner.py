@@ -10,6 +10,8 @@ import datetime
 import math
 from scipy.stats import norm
 import warnings
+from pyrate_limiter import Duration, RequestRate, Limiter
+from requests_ratelimiter import LimiterSession
 
 warnings.filterwarnings('ignore')
 
@@ -19,23 +21,10 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
-# --- YAHOO FINANCE CONCURRENT RATE-LIMIT BYPASS ---
-class ConcurrencySafeSession(requests.Session):
-    def __init__(self, req_per_sec=5):
-        super().__init__()
-        self.lock = threading.Lock()
-        self.interval = 1.0 / req_per_sec
-        self.last_call = 0.0
-
-    def request(self, *args, **kwargs):
-        with self.lock:
-            elapsed = time.time() - self.last_call
-            if elapsed < self.interval:
-                time.sleep(self.interval - elapsed)
-            self.last_call = time.time()
-        return super().request(*args, **kwargs)
-
-session = ConcurrencySafeSession(req_per_sec=5)
+# --- 🚀 SPEED FIX 1: UNLOCKED TRUE PARALLEL RATE LIMITER ---
+rate = RequestRate(15, Duration.SECOND)
+limiter = Limiter(rate)
+session = LimiterSession(limiter=limiter)
 session.headers.update({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     'Accept': '*/*',
@@ -133,11 +122,11 @@ def calculate_leading_sectors(nifty_return_20d):
     except: pass
     return leading_sectors
 
-def download_in_chunks(tickers, chunk_size=150):
+def download_in_chunks(tickers, chunk_size=250):
     opens_list, closes_list, highs_list, lows_list, vols_list = [], [], [], [], []
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
-        print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
+        print(f"📡 Downloading batch {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
         d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=session)
         if not d.empty:
@@ -154,7 +143,7 @@ def download_in_chunks(tickers, chunk_size=150):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(0.5) 
+        time.sleep(0.1) 
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -453,12 +442,18 @@ def run():
     leading_sectors = calculate_leading_sectors(nifty_return_20d)
     universe = get_complete_nse_universe()
     
-    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=150)
+    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=250)
     if closes.empty: 
         print("❌ No price data retrieved. Ending scan.")
         return
 
+    # --- 🚀 SPEED FIX 2: GLOBAL VECTORIZATION ---
+    ema_20_daily = closes.ewm(span=20).mean()
     ema_50_daily = closes.ewm(span=50).mean()
+    ema_200_daily = closes.ewm(span=200).mean()
+    std_20_daily = closes.rolling(20).std()
+    sma_20_daily = closes.rolling(20).mean()
+    
     total_stocks = len(closes.columns)
     stocks_above_50ema = (closes.iloc[-1] > ema_50_daily.iloc[-1]).sum()
     breadth_50_pct = stocks_above_50ema / total_stocks if total_stocks > 0 else 0
@@ -495,7 +490,6 @@ def run():
     highs_weekly = highs.resample('W').max().dropna(how='all')
     lows_weekly = lows.resample('W').min().dropna(how='all')
     
-    ema_20_daily, ema_200_daily = closes.ewm(span=20).mean(), closes.ewm(span=200).mean()
     vol_50d_avg_daily = volumes.rolling(50).mean()
     delta = closes.diff()
     gain, loss = (delta.where(delta > 0, 0)).rolling(14).mean(), (-delta.where(delta < 0, 0)).rolling(14).mean()
@@ -517,11 +511,13 @@ def run():
             
             close_p, vol_today, vol_50_avg = float(df_c.iloc[-1]), float(volumes.iloc[-1][ticker]), float(vol_50d_avg_daily.iloc[-1][ticker])
             turnover_avg = close_p * vol_50_avg
+            
+            # Very fast initial filter
             if close_p < 20 or turnover_avg < 15000000 or vol_50_avg < 50000: continue
             is_micro_tier = turnover_avg < 50000000 
             
-            std_20_series = df_c.rolling(20).std()
-            std_20, sma_20 = float(std_20_series.iloc[-1]), float(df_c.rolling(20).mean().iloc[-1])
+            # Look up pre-calculated values instead of calculating them inside the loop
+            std_20, sma_20 = float(std_20_daily[ticker].iloc[-1]), float(sma_20_daily[ticker].iloc[-1])
             if float(df_l.iloc[-1]) > (sma_20 + (2 * std_20)): continue
             
             adjusted_vol_50 = vol_50_avg * (minutes_elapsed / 360.0) 
@@ -541,10 +537,14 @@ def run():
             
             recent_vol_avg, recent_range_avg, recent_high = float(volumes[ticker].tail(3).mean()), float((highs[ticker].tail(3) - lows[ticker].tail(3)).mean()), float(highs[ticker].tail(20).max())
             
-            try: is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna())
-            except: is_trendline_retest, tl_val, tl_d1, tl_v1 = False, 0.0, None, None
+            # --- 🚀 SPEED FIX 3: LAZY EVALUATION ---
+            # Only do the heavy trendline math if the stock isn't overbought
+            is_trendline_retest, tl_val = False, 0.0
+            if close_p > d_ema20 and 40 <= rsi_val <= 65:
+                try: is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna())
+                except: pass
             
-            min_std_20 = float(std_20_series.tail(20).min())
+            min_std_20 = float(std_20_daily[ticker].tail(20).min())
             is_base_ignition = (std_20 <= min_std_20 * 1.1 if min_std_20 > 0 else False) and (prev_close < prev_ema20) and (close_p > d_ema20) and (1.0 <= vol_vs <= 2.5) and (45 <= rsi_val <= 65)
             is_squeeze = (recent_vol_avg < vol_50_avg * 0.85) and (recent_range_avg < atr * 0.85)
             is_relative_strong = (float(df_c.iloc[-1] / df_c.iloc[-20] - 1) > nifty_return_20d) if len(df_c) >= 20 else False
@@ -555,7 +555,11 @@ def run():
             recent_daily_high = float(df_h.iloc[-1])
             is_btst = (close_p >= 0.98 * recent_daily_high) and (close_p > prev_close) and (close_p > d_ema20) and (vol_vs >= 1.0) and (50 <= rsi_val <= 75)
             is_rsi_div = check_bullish_divergence(df_c, rsi_daily[ticker].dropna())
-            sqz_on, sqz_fired = check_ttm_squeeze(df_c, df_h, df_l)
+            
+            # Only do the heavy squeeze math if it's already a coil/ignition candidate
+            sqz_on, sqz_fired = False, False
+            if is_pre_breakout or is_base_ignition:
+                sqz_on, sqz_fired = check_ttm_squeeze(df_c, df_h, df_l)
 
             hor, sl_m, tag = "", 0.0, ""
             if is_trendline_retest: hor, sl_m, tag = "Swing", 1.2, "📈 Rising Support Retest"
