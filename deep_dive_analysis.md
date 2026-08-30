@@ -1,7 +1,20 @@
 ### 📊 ATLANTAELE
-**Analysis Skipped**: Google Servers busy. Scan completed.
+**Google API Error 404**: {
+  "error": {
+    "code": 404,
+    "message": "This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API.",
+    "status": "NOT_FOUND"
+  }
+}
+
 
 ---
 
 ### 📊 KROSS
-**Analysis Skipped**: Google Servers busy. Scan completed.
+**Google API Error 404**: {
+  "error": {
+    "code": 404,
+    "message": "This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.6-flash for the latest features and improvements. We recommend you to use the Interactions API.",
+    "status": "NOT_FOUND"
+  }
+}
