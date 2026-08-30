@@ -17,7 +17,8 @@ warnings.filterwarnings('ignore')
 # ==========================================
 # 🎛️ MASTER SWITCHES
 # ==========================================
-ENABLE_AI_DEEP_DIVE = True  
+ENABLE_AI_DEEP_DIVE = True
+ENABLE_5_STAR_STRICT_MODE = True  # Strict Institutional Checklist Enabled
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
@@ -368,10 +369,9 @@ def generate_ai_deep_dive(top_candidates):
             f.write("Pending Analysis: Waiting for active market setups.")
         return
         
-    print("🤖 Initiating Automated AI Executive Summary...")
+    print("🤖 Initiating Automated AI Executive Summary & 5-Star Audit...")
     all_dossiers = []
     
-    # ⚡ FAST-FAIL IMPLEMENTATION: Only 2 retries, 10s wait.
     for idx, candidate in enumerate(top_candidates[:2]):
         if idx > 0:
             print("⏳ Pausing for 15 seconds to respect Gemini rate limits...")
@@ -390,8 +390,10 @@ def generate_ai_deep_dive(top_candidates):
         except: 
             pe, sector = "N/A", "N/A"
             
-        prompt = f"""You are an Elite Institutional Equity Research Analyst. 
+        prompt = f"""You are an Elite Institutional Equity Research Analyst auditing a momentum breakout. 
         Analyze **{sym} (NSE: {sym})**. Context: Setup: {tag} | Quant Score: {score}/10 | Buy Trigger: ₹{entry} | SL: ₹{eq_sl} | Sector: {sector} | P/E: {pe}. 
+        
+        Search the web for the latest corporate earnings and news. 
         
         Provide ONLY a concise text block designed to be pasted as an overlay on a trading chart. Do not include any introductory or concluding text. Format EXACTLY like this:
 
@@ -412,9 +414,8 @@ def generate_ai_deep_dive(top_candidates):
         Overall Score: [Total]/100
 
         **14. Executive Summary**
-        • Why it Corrected: [1 concise sentence]
-        • Reasons Resolved?: [1 concise sentence]
-        • Fundamental Recovery: [1 concise sentence]
+        • Explosive Growth Audit: [State if recent YoY EPS is near +50% or Sales near +20%]
+        • Market Theme: [1 sentence on current industry tailwinds]
         • Technical & Accumulation Status: [1 concise sentence]
         • Key Positives: [1 to 2 concise sentences]
         • Key Concerns: [1 concise sentence]
@@ -464,7 +465,7 @@ def generate_ai_deep_dive(top_candidates):
                 break
                 
         if not success:
-            all_dossiers.append(f"### 📊 {sym}\n**Analysis Skipped**: Google Servers too busy. Moving on to finish scan.")
+            all_dossiers.append(f"### 📊 {sym}\n**Analysis Skipped**: Google Servers busy. Scan completed.")
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
@@ -576,17 +577,30 @@ def run():
             if daily_range > 0 and ((float(df_h.iloc[-1]) - max(close_p, prev_close)) / daily_range) > 0.5 and vol_vs > 2.0 and close_p < prev_close: continue 
             if len(df_c) >= 10 and ((close_p / float(df_c.iloc[-10])) - 1) > 0.40 and vol_vs > 3.0 and close_p < float(df_h.iloc[-1]): continue 
             
-            momentum_6m = (close_p / float(df_c.iloc[-125])) - 1 if len(df_c) >= 125 else 0
-            is_super_trend = momentum_6m >= 0.50
+            momentum_1y = (close_p / float(df_c.iloc[-250])) - 1 if len(df_c) >= 250 else ((close_p / float(df_c.iloc[0])) - 1)
+            is_5_star_momentum = momentum_1y >= 0.50
+
+            recent_vols = volumes[ticker].tail(20)
+            recent_closes = closes[ticker].tail(20)
+            recent_50_vols = vol_50d_avg_daily[ticker].tail(20)
+            inst_vol_days = ((recent_closes > recent_closes.shift(1)) & (recent_vols >= (1.5 * recent_50_vols))).sum()
+            has_inst_volume = inst_vol_days >= 3
 
             rsi_val, macd_val, macd_sig = float(rsi_daily.iloc[-1][ticker]), float(macd_daily.iloc[-1][ticker]), float(macd_signal_daily.iloc[-1][ticker])
+            
+            is_optimal_rsi = 50 <= rsi_val <= 72
+
             d_ema, w_ema, atr = float(ema_50_daily.iloc[-1][ticker]), float(ema_50_weekly.iloc[-1][ticker]), float(atr_daily.iloc[-1][ticker])
+            
+            # --- SAFETY NET FOR NAN/MISSING DATA ---
+            if math.isnan(atr) or math.isnan(close_p) or atr == 0: 
+                continue
+
             d_ema20, d_ema200 = float(ema_20_daily.iloc[-1][ticker]), float(ema_200_daily.iloc[-1][ticker]) if not pd.isna(ema_200_daily.iloc[-1][ticker]) else 0.0
             prev_ema20 = float(ema_20_daily.iloc[-2][ticker]) if len(ema_20_daily) > 1 else d_ema20
             
             recent_vol_avg, recent_range_avg, recent_high = float(volumes[ticker].tail(3).mean()), float((highs[ticker].tail(3) - lows[ticker].tail(3)).mean()), float(highs[ticker].tail(20).max())
             
-            # --- EVALUATE PATTERNS ---
             is_trendline_retest, tl_val, tl_d1, tl_v1 = False, 0.0, None, 0.0
             if close_p > d_ema20 and 40 <= rsi_val <= 65:
                 try: is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna())
@@ -609,13 +623,17 @@ def run():
             if is_pre_breakout or is_base_ignition:
                 sqz_on, sqz_fired = check_ttm_squeeze(df_c, df_h, df_l)
 
-            # --- ASSIGN HORIZONS AND TAGS ---
             hor, sl_m, tag = "", 0.0, ""
-            
-            # --- 🚀 ADDING CHARTING DATA EXPORT ---
             tl_start_date, tl_start_price, tl_end_price = "", 0.0, 0.0
             
-            if is_triangle: 
+            is_5_star_candidate = (is_triangle or is_trendline_retest) and is_5_star_momentum and has_inst_volume and is_optimal_rsi
+            
+            if is_5_star_candidate:
+                hor, sl_m = "Explosive", 0.8
+                tag = "⭐ 5-Star Institutional Squeeze"
+                if is_triangle: tl_start_date, tl_start_price, tl_end_price = tri_d1, tri_v1, tri_res_val
+                else: tl_start_date, tl_start_price, tl_end_price = tl_d1, tl_v1, tl_val
+            elif is_triangle: 
                 hor, sl_m, tag = "Explosive", 0.8, "🔺 Symmetrical Triangle Coil"
                 tl_start_date, tl_start_price, tl_end_price = tri_d1, tri_v1, tri_res_val
             elif is_trendline_retest: 
@@ -633,7 +651,6 @@ def run():
             
             is_rsi_div = check_bullish_divergence(df_c, rsi_daily[ticker].dropna())
             if is_rsi_div: tag += " (📉 +RSI Div)"
-            if is_super_trend: tag += " 🏆 Super-Trend"
 
             if (close_p > d_ema and close_p > w_ema and check_structure_hh_hl(df_h, df_l)) and ((macd_val > macd_sig) if hor not in ["Pre-Breakout", "Swing", "Explosive"] else True) and (45 <= rsi_val <= 85):
                 t1, t2, t3, t4, t5 = calculate_dynamic_targets(close_p, atr, df_h, df_l, "Bullish", False)
@@ -643,7 +660,15 @@ def run():
                 curr_obv, curr_obv_ema = float(obv[ticker].iloc[-1]), float(obv_ema20[ticker].iloc[-1])
                 is_accumulating = curr_obv > curr_obv_ema
 
-                score = min(10, sum([1 if close_p > d_ema else 0, 1 if close_p > w_ema else 0, 2 if 55 <= rsi_val <= 70 else (1 if 45 <= rsi_val <= 85 else 0), 1 if macd_val > macd_sig else 0, 1 if is_accumulating else 0, 1 if (float(df_c.iloc[-1] / df_c.iloc[-20] - 1) > nifty_return_20d) else 0, 1 if hor in ["Swing", "Explosive"] else 0]))
+                score = min(10, sum([
+                    1 if close_p > d_ema else 0, 
+                    1 if close_p > w_ema else 0, 
+                    2 if 55 <= rsi_val <= 70 else (1 if 45 <= rsi_val <= 85 else 0), 
+                    1 if macd_val > macd_sig else 0, 
+                    1 if is_accumulating else 0, 
+                    1 if (float(df_c.iloc[-1] / df_c.iloc[-20] - 1) > nifty_return_20d) else 0, 
+                    2 if is_5_star_candidate else (1 if hor in ["Swing", "Explosive"] else 0)
+                ]))
                 if score < 6: continue 
 
                 active_base_capital = BASE_CAPITAL_PER_TRADE
@@ -654,14 +679,14 @@ def run():
                     score = max(0, score - 1)
                     cash_qty = int((active_base_capital * 0.5) / close_p)
                 else:
-                    if score >= 8 and hor not in ["Pre-Breakout", "Swing", "Explosive"]: 
+                    if (score >= 8 or is_5_star_candidate) and hor not in ["Pre-Breakout", "Swing"]: 
                         tag += " (⭐ 2x Size)"
                         cash_qty = int((active_base_capital * HIGH_CONVICTION_MULTIPLIER) / close_p)
                     else:
                         cash_qty = int(active_base_capital / close_p)
 
                 is_pullback_candle = (close_p < prev_close) or ((recent_daily_high - close_p) > 0.35 * atr)
-                if "Rising Support Retest" in tag: ez_low, ez_high, best_entry, eq_sl = round(tl_val * 0.99, 1), round(close_p, 1), round(tl_val * 1.01, 1), round(tl_val - 0.75 * atr, 1)
+                if "Rising Support Retest" in tag or "5-Star" in tag: ez_low, ez_high, best_entry, eq_sl = round(tl_val * 0.99, 1), round(close_p, 1), round(tl_val * 1.01, 1), round(tl_val - 0.75 * atr, 1)
                 elif "Symmetrical Triangle Coil" in tag: ez_low, ez_high, best_entry, eq_sl = round(tri_res_val * 0.99, 1), round(close_p, 1), round(tri_res_val * 1.01, 1), round(tri_res_val - 0.75 * atr, 1)
                 elif "Base Ignition" in tag: ez_low, ez_high, best_entry, eq_sl = round(d_ema20, 1), round(close_p, 1), round(close_p, 1), round(d_ema20 - 0.5 * atr, 1)
                 elif "200 MA Retest" in tag: ez_low, ez_high, best_entry = round(d_ema200 - 0.15 * atr, 1), round(close_p + 0.1 * atr, 1), round(d_ema200 + 0.05 * atr, 1)
@@ -678,13 +703,8 @@ def run():
         except: continue
 
     df_all = pd.DataFrame(valid_setups).drop_duplicates(subset=['Stock']).sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]) if valid_setups else pd.DataFrame()
-    
-    # Save the expanded setups containing the X/Y coordinates for Streamlit
     df_all.to_csv("all_setups.csv", index=False) if not df_all.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','Qty','Risk','RSI','Vol vs 50d','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Score','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','TL_StartDate','TL_StartPrice','TL_EndPrice']).to_csv("all_setups.csv", index=False)
     
-    # =========================================================================
-    # 🎯 STRICT CHART DATA: ONLY Ascending Line / Symmetrical Triangle stocks
-    # =========================================================================
     chart_setups = [r for r in valid_setups if r['Horizon'] == 'Explosive']
     chart_data_list = []
     if chart_setups:
@@ -702,33 +722,30 @@ def run():
 
     df_index.to_csv("index_setups.csv", index=False) if not df_index.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','RSI','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','Score']).to_csv("index_setups.csv", index=False)
 
-    # Full Category Segmenting
     df_explosive = df_all[df_all['Horizon'] == 'Explosive'].sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
     df_pre = df_all[df_all['Horizon'] == 'Pre-Breakout'].sort_values(by=['Score', 'RSI'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
     df_intra = df_all[df_all['Horizon'] == 'Intraday'].sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
     df_btst = df_all[df_all['Horizon'] == 'BTST'].sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
     df_swing = df_all[df_all['Horizon'] == 'Swing'].sort_values(by=['Score', 'RSI'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
 
-    # Priority AI Deep Dive execution for Explosive Setups
     if not df_all.empty: generate_ai_deep_dive(sorted(valid_setups, key=lambda x: (x['Horizon'] == 'Explosive', x['Score']), reverse=True))
     else:
         with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: f.write("Pending Analysis: Waiting for active market setups.")
 
-    # Telegram Dispatches (Up to 25 setups per category)
     if not df_explosive.empty:
         new_explosive = get_new_alerts(df_explosive, "Explosive")
-        if not new_explosive.empty: send_telegram_message(format_telegram_text(new_explosive, pd.DataFrame(), f"🧨 READY TO BLAST: Ascending & Triangle Coils", nifty_regime))
+        if not new_explosive.empty: send_telegram_message(format_telegram_text(new_explosive, pd.DataFrame(), f"⭐ 5-STAR SQUEEZE & COIL ALERTS", nifty_regime))
     if not df_pre.empty: 
-        new_pre = get_new_alerts(df_pre, "PreBreakout")
+        new_pre = get_new_alerts(df_pre.head(25), "PreBreakout")
         if not new_pre.empty: send_telegram_message(format_telegram_text(new_pre, pd.DataFrame(), f"💥 Soon to Breakout", nifty_regime))
     if (not df_intra.empty or not df_index.empty) and (is_options_window or sess_type == "Manual"): 
-        new_intra, new_idx = get_new_alerts(df_intra, "Intraday"), get_new_alerts(df_index, "Index") if is_options_window else pd.DataFrame()
+        new_intra, new_idx = get_new_alerts(df_intra.head(25), "Intraday"), get_new_alerts(df_index, "Index") if is_options_window else pd.DataFrame()
         if not new_intra.empty or not new_idx.empty: send_telegram_message(format_telegram_text(new_intra, new_idx, f"⚡ Intraday Report", nifty_regime))
     if not df_btst.empty and (not is_options_window or sess_type == "Manual"): 
-        new_btst = get_new_alerts(df_btst, "BTST")
+        new_btst = get_new_alerts(df_btst.head(25), "BTST")
         if not new_btst.empty: send_telegram_message(format_telegram_text(new_btst, pd.DataFrame(), f"🌙 BTST Report", nifty_regime))
     if not df_swing.empty and (not is_options_window or sess_type == "Manual"): 
-        new_swing = get_new_alerts(df_swing, "Swing")
+        new_swing = get_new_alerts(df_swing.head(25), "Swing")
         if not new_swing.empty: send_telegram_message(format_telegram_text(new_swing, pd.DataFrame(), f"📈 Swing Trade Report", nifty_regime))
 
     if df_explosive.empty and df_pre.empty and df_intra.empty and df_btst.empty and df_swing.empty and df_index.empty:
