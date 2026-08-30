@@ -422,7 +422,7 @@ def generate_ai_deep_dive(top_candidates):
         • Overall Conviction Level: [Low/Medium/High]"""
         
         # Switched to the highly stable Flash production model
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={GEMINI_API_KEY}"
         
         max_retries = 3
         success = False
