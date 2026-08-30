@@ -358,6 +358,9 @@ def generate_ai_deep_dive(top_candidates):
         
         Provide ONLY a concise text block designed to be pasted as an overlay on a trading chart. Do not include any introductory or concluding text. Format EXACTLY like this:
 
+        ### 📊 {sym} (NSE) | {tag} (Score: {score}/10)
+        • Buy Zone: ₹{entry} | Stop Loss: ₹{eq_sl}
+
         **12. Final Scorecard**
         Technicals: [Score]/10
         Fundamentals: [Score]/10
@@ -380,9 +383,7 @@ def generate_ai_deep_dive(top_candidates):
         • Key Concerns: [1 concise sentence]
         • Overall Conviction Level: [Low/Medium/High]"""
         
-        # --- FIXED: Updated to Gemini 3.7 Flash endpoint ---
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key={GEMINI_API_KEY}"
-
         
         max_retries = 3
         success = False
@@ -400,7 +401,7 @@ def generate_ai_deep_dive(top_candidates):
                         break 
                     except KeyError:
                         reason = res_json.get('candidates', [{}])[0].get('finishReason', 'UNKNOWN')
-                        all_dossiers.append(f"**{sym} Analysis Failed**\nBlocked by Gemini Safety Filter (Reason: {reason})")
+                        all_dossiers.append(f"### 📊 {sym}\n**Analysis Failed**: Blocked by Gemini Safety Filter ({reason})")
                         success = True 
                         break
                         
@@ -409,7 +410,7 @@ def generate_ai_deep_dive(top_candidates):
                     time.sleep(15)
                     
                 else:
-                    all_dossiers.append(f"**{sym} Analysis Failed**\nGoogle API Error {res.status_code}: {res.text}")
+                    all_dossiers.append(f"### 📊 {sym}\n**Google API Error {res.status_code}**: {res.text}")
                     success = True 
                     break 
                     
@@ -417,12 +418,12 @@ def generate_ai_deep_dive(top_candidates):
                 print(f"⚠️ API Timeout. Retrying {attempt+1}/{max_retries} in 15s...")
                 time.sleep(15)
             except Exception as e:
-                all_dossiers.append(f"**{sym} Analysis Failed**\nSystem Exception: {str(e)}")
+                all_dossiers.append(f"### 📊 {sym}\n**System Exception**: {str(e)}")
                 success = True
                 break
                 
         if not success:
-            all_dossiers.append(f"**{sym} Analysis Failed**\nMax retries reached due to Google server timeouts.")
+            all_dossiers.append(f"### 📊 {sym}\n**Analysis Failed**: Max retries reached due to Google server timeouts.")
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
