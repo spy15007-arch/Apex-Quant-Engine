@@ -179,7 +179,8 @@ def get_new_alerts(df, category_name):
     if alerts_db.get("date") != today_str: alerts_db = {"date": today_str, "sent": []}
     new_rows = []
     for idx, row in df.iterrows():
-        alert_id = f"{row['Stock']}_{row['Tag']}_{category_name}"
+        tag_val = row.get('Tag', 'Index Scalp')
+        alert_id = f"{row['Stock']}_{tag_val}_{category_name}"
         if alert_id not in alerts_db["sent"]:
             new_rows.append(row)
             alerts_db["sent"].append(alert_id)
@@ -302,7 +303,8 @@ def get_index_options_ideas():
             t1, t2, t3, t4, t5 = (round(close_p + m*atr_5m, 1) for m in [0.8, 1.6, 2.4, 3.2, 4.0]) if direction == "Bullish" else (round(close_p - m*atr_5m, 1) for m in [0.8, 1.6, 2.4, 3.2, 4.0])
             eq_sl = round(close_p - 1.0*atr_5m, 1) if direction == "Bullish" else round(close_p + 1.0*atr_5m, 1)
             opt, prem, pt1, pt2, pt3, pt4, pt5, opt_sl = generate_quant_option(ticker, close_p, t1, t2, t3, t4, t5, eq_sl, df_h, df_l, df_c, direction)
-            results.append({'Stock': f"{name} ({'Call' if direction == 'Bullish' else 'Put'})", 'RawStock': "NIFTY" if "NIFTY 50" in name else "BANKNIFTY", 'Horizon': 'Intraday', 'Entry': round(close_p, 2), 'EntryZone': f'₹{close_p}', 'RSI': round(rsi_val, 1), 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Opt': opt, 'Prem': round(prem, 1), 'PT1': pt1, 'PT2': pt2, 'PT3': pt3, 'PT4': pt4, 'PT5': pt5, 'OptSL': opt_sl, 'Score': 8.0})
+            
+            results.append({'Stock': f"{name} ({'Call' if direction == 'Bullish' else 'Put'})", 'RawStock': "NIFTY" if "NIFTY 50" in name else "BANKNIFTY", 'Horizon': 'Intraday', 'Tag': '👑 Index Scalp', 'Entry': round(close_p, 2), 'EntryZone': f'₹{close_p}', 'RSI': round(rsi_val, 1), 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Opt': opt, 'Prem': round(prem, 1), 'PT1': pt1, 'PT2': pt2, 'PT3': pt3, 'PT4': pt4, 'PT5': pt5, 'OptSL': opt_sl, 'Score': 8.0})
         except: pass
     return pd.DataFrame(results)
 
@@ -317,7 +319,7 @@ def format_telegram_text(df_stocks, df_index, title, regime="Neutral"):
         msg += "📊 *TOP POSITION SIZED SETUPS*\n"
         for idx, r in df_stocks.head(25).reset_index().iterrows():
             stock_clean = r['Stock'].replace(" (↑)", "")
-            msg += f"{idx+1}. *{stock_clean}* | *{r['Tag']}* (Score: *{r['Score']}/10*)\n"
+            msg += f"{idx+1}. *{stock_clean}* | *{r.get('Tag', 'N/A')}* (Score: *{r['Score']}/10*)\n"
             msg += f"   ⚡ *Entry Zone: {r.get('EntryZone', '₹'+str(r['Entry']))}* | SL: ₹{r['EqSL']}\n"
             msg += f"   🎯 TGT: T1:{r['EqT1']} | T2:{r['EqT2']} | T3:{r['EqT3']}\n"
             if "N/A" not in str(r['Opt']) and str(r['Prem']) not in ["-", "nan"]: msg += f"   🔹 *Option:* {r['Opt']} @ Buy > ₹{r['Prem']}\n"
@@ -341,7 +343,7 @@ def generate_ai_deep_dive(top_candidates):
         sym = candidate['RawStock']
         entry = candidate['Entry']
         eq_sl = candidate['EqSL']
-        tag = candidate['Tag']
+        tag = candidate.get('Tag', 'N/A')
         score = candidate['Score']
         
         try:
@@ -378,9 +380,10 @@ def generate_ai_deep_dive(top_candidates):
         • Key Concerns: [1 concise sentence]
         • Overall Conviction Level: [Low/Medium/High]"""
         
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro:generateContent?key={GEMINI_API_KEY}"
+        # --- FIXED: Updated to Gemini 3.7 Flash endpoint ---
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key={GEMINI_API_KEY}"
+
         
-        # --- NEW RETRY LOGIC TO HANDLE 503 & TIMEOUTS ---
         max_retries = 3
         success = False
         
@@ -394,7 +397,7 @@ def generate_ai_deep_dive(top_candidates):
                         text_content = res_json['candidates'][0]['content']['parts'][0]['text']
                         all_dossiers.append(text_content)
                         success = True
-                        break # Got the data, break out of retry loop
+                        break 
                     except KeyError:
                         reason = res_json.get('candidates', [{}])[0].get('finishReason', 'UNKNOWN')
                         all_dossiers.append(f"**{sym} Analysis Failed**\nBlocked by Gemini Safety Filter (Reason: {reason})")
@@ -408,7 +411,7 @@ def generate_ai_deep_dive(top_candidates):
                 else:
                     all_dossiers.append(f"**{sym} Analysis Failed**\nGoogle API Error {res.status_code}: {res.text}")
                     success = True 
-                    break # Stop retrying on permanent errors like 403 Forbidden
+                    break 
                     
             except requests.exceptions.Timeout:
                 print(f"⚠️ API Timeout. Retrying {attempt+1}/{max_retries} in 15s...")
@@ -419,7 +422,7 @@ def generate_ai_deep_dive(top_candidates):
                 break
                 
         if not success:
-            all_dossiers.append(f"**{sym} Analysis Failed**\nMax retries reached due to Google server timeouts. Google servers are currently overloaded.")
+            all_dossiers.append(f"**{sym} Analysis Failed**\nMax retries reached due to Google server timeouts.")
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
@@ -626,7 +629,7 @@ def run():
         if chart_data_list: pd.concat(chart_data_list).to_csv("chart_data.csv", index=False)
     else: pd.DataFrame(columns=['Date','Ticker','Open','High','Low','Close','Volume']).to_csv("chart_data.csv", index=False)
 
-    df_index.to_csv("index_setups.csv", index=False) if not df_index.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Entry','EntryZone','RSI','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','Score']).to_csv("index_setups.csv", index=False)
+    df_index.to_csv("index_setups.csv", index=False) if not df_index.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','RSI','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','Score']).to_csv("index_setups.csv", index=False)
 
     df_pre = df_all[df_all['Horizon'] == 'Pre-Breakout'].sort_values(by=['Score', 'RSI'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
     df_intra = df_all[df_all['Horizon'] == 'Intraday'].sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
