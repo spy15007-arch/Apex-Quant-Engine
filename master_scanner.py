@@ -421,14 +421,15 @@ def generate_ai_deep_dive(top_candidates):
         • Key Concerns: [1 concise sentence]
         • Overall Conviction Level: [Low/Medium/High]"""
         
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key={GEMINI_API_KEY}"
+        # Switched to the highly stable Flash production model
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
         
-        max_retries = 2
+        max_retries = 3
         success = False
         
         for attempt in range(max_retries):
             try:
-                res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=20)
+                res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=25)
                 
                 if res.status_code == 200: 
                     res_json = res.json()
@@ -444,12 +445,14 @@ def generate_ai_deep_dive(top_candidates):
                         break
                         
                 elif res.status_code == 429:
-                    print(f"⚠️ Quota Exceeded. Fast Failing to save time.")
+                    print(f"⚠️ Quota Exceeded (429). Fast Failing to save time.")
                     break
                     
                 elif res.status_code == 503:
-                    print(f"⚠️ API Overloaded (503). Retrying {attempt+1}/{max_retries} in 10s...")
-                    time.sleep(10)
+                    # Exponential Backoff: Waits 10s, then 25s, then 45s
+                    wait_time = 10 + (15 * attempt)
+                    print(f"⚠️ API Overloaded (503). Retrying {attempt+1}/{max_retries} in {wait_time}s...")
+                    time.sleep(wait_time)
                     
                 else:
                     all_dossiers.append(f"### 📊 {sym}\n**Google API Error {res.status_code}**: {res.text}")
@@ -457,8 +460,9 @@ def generate_ai_deep_dive(top_candidates):
                     break 
                     
             except requests.exceptions.Timeout:
-                print(f"⚠️ API Timeout. Retrying {attempt+1}/{max_retries} in 10s...")
-                time.sleep(10)
+                wait_time = 10 + (15 * attempt)
+                print(f"⚠️ API Timeout. Retrying {attempt+1}/{max_retries} in {wait_time}s...")
+                time.sleep(wait_time)
             except Exception as e:
                 all_dossiers.append(f"### 📊 {sym}\n**System Exception**: {str(e)}")
                 success = True
@@ -469,6 +473,7 @@ def generate_ai_deep_dive(top_candidates):
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
+
 
 def run():
     start_time = time.time()
