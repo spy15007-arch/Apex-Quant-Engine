@@ -228,30 +228,32 @@ def check_structure_hh_hl(df_h, df_l):
 
 def check_explosive_triangle(df_c, df_h, df_l, lookback=60):
     try:
-        if len(df_c) < lookback: return False, 0.0
+        if len(df_c) < lookback: return False, 0.0, None, 0.0
         highs = df_h.tail(lookback).values
         lows = df_l.tail(lookback).values
         closes = df_c.tail(lookback).values
+        dates = df_c.tail(lookback).index
         
         window1_h = highs[:30]
         p1_idx = np.argmax(window1_h)
         p1 = window1_h[p1_idx]
         
         window2_h = highs[30:55]
-        if len(window2_h) < 2: return False, 0.0
+        if len(window2_h) < 2: return False, 0.0, None, 0.0
         p2_idx = 30 + np.argmax(window2_h)
         p2 = window2_h[p2_idx - 30]
         
         window1_l = lows[:30]
         t1_idx = np.argmin(window1_l)
         t1 = window1_l[t1_idx]
+        d1 = dates[t1_idx].strftime('%Y-%m-%d')
         
         window2_l = lows[30:55]
-        if len(window2_l) < 2: return False, 0.0
+        if len(window2_l) < 2: return False, 0.0, None, 0.0
         t2_idx = 30 + np.argmin(window2_l)
         t2 = window2_l[t2_idx - 30]
         
-        if p2 >= p1 or t2 <= t1: return False, 0.0
+        if p2 >= p1 or t2 <= t1: return False, 0.0, None, 0.0
         
         res_slope = (p2 - p1) / (p2_idx - p1_idx) if p2_idx != p1_idx else 0
         curr_idx = lookback - 1
@@ -259,9 +261,9 @@ def check_explosive_triangle(df_c, df_h, df_l, lookback=60):
         
         curr_close = closes[-1]
         if (proj_res * 0.985) <= curr_close <= (proj_res * 1.02):
-            return True, proj_res
+            return True, proj_res, d1, t1
     except: pass
-    return False, 0.0
+    return False, 0.0, None, 0.0
 
 def check_bullish_divergence(closes, rsi):
     try:
@@ -369,10 +371,11 @@ def generate_ai_deep_dive(top_candidates):
     print("🤖 Initiating Automated AI Executive Summary...")
     all_dossiers = []
     
+    # ⚡ FAST-FAIL IMPLEMENTATION: Only 2 retries, 10s wait.
     for idx, candidate in enumerate(top_candidates[:2]):
         if idx > 0:
-            print("⏳ Pausing for 35 seconds to respect Gemini rate limits...")
-            time.sleep(35)
+            print("⏳ Pausing for 15 seconds to respect Gemini rate limits...")
+            time.sleep(15)
             
         sym = candidate['RawStock']
         entry = candidate['Entry']
@@ -419,12 +422,12 @@ def generate_ai_deep_dive(top_candidates):
         
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.7-flash:generateContent?key={GEMINI_API_KEY}"
         
-        max_retries = 3
+        max_retries = 2
         success = False
         
         for attempt in range(max_retries):
             try:
-                res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
+                res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=20)
                 
                 if res.status_code == 200: 
                     res_json = res.json()
@@ -440,13 +443,12 @@ def generate_ai_deep_dive(top_candidates):
                         break
                         
                 elif res.status_code == 429:
-                    print(f"⚠️ Rate Limit Quota Exceeded (429). Sleeping for 60s to reset...")
-                    time.sleep(60) 
+                    print(f"⚠️ Quota Exceeded. Fast Failing to save time.")
+                    break
                     
                 elif res.status_code == 503:
-                    # Extended to 30s so Google servers have time to rest
-                    print(f"⚠️ API Overloaded (503). Retrying {attempt+1}/{max_retries} in 30s...")
-                    time.sleep(30)
+                    print(f"⚠️ API Overloaded (503). Retrying {attempt+1}/{max_retries} in 10s...")
+                    time.sleep(10)
                     
                 else:
                     all_dossiers.append(f"### 📊 {sym}\n**Google API Error {res.status_code}**: {res.text}")
@@ -454,15 +456,15 @@ def generate_ai_deep_dive(top_candidates):
                     break 
                     
             except requests.exceptions.Timeout:
-                print(f"⚠️ API Timeout. Retrying {attempt+1}/{max_retries} in 30s...")
-                time.sleep(30)
+                print(f"⚠️ API Timeout. Retrying {attempt+1}/{max_retries} in 10s...")
+                time.sleep(10)
             except Exception as e:
                 all_dossiers.append(f"### 📊 {sym}\n**System Exception**: {str(e)}")
                 success = True
                 break
                 
         if not success:
-            all_dossiers.append(f"### 📊 {sym}\n**Analysis Failed**: Max retries reached due to Google server quotas and timeouts.")
+            all_dossiers.append(f"### 📊 {sym}\n**Analysis Skipped**: Google Servers too busy. Moving on to finish scan.")
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
@@ -585,12 +587,12 @@ def run():
             recent_vol_avg, recent_range_avg, recent_high = float(volumes[ticker].tail(3).mean()), float((highs[ticker].tail(3) - lows[ticker].tail(3)).mean()), float(highs[ticker].tail(20).max())
             
             # --- EVALUATE PATTERNS ---
-            is_trendline_retest, tl_val = False, 0.0
+            is_trendline_retest, tl_val, tl_d1, tl_v1 = False, 0.0, None, 0.0
             if close_p > d_ema20 and 40 <= rsi_val <= 65:
                 try: is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna())
                 except: pass
             
-            is_triangle, tri_res_val = check_explosive_triangle(df_c, df_h, df_l)
+            is_triangle, tri_res_val, tri_d1, tri_v1 = check_explosive_triangle(df_c, df_h, df_l)
             
             min_std_20 = float(std_20_daily[ticker].tail(20).min())
             is_base_ignition = (std_20 <= min_std_20 * 1.1 if min_std_20 > 0 else False) and (prev_close < prev_ema20) and (close_p > d_ema20) and (1.0 <= vol_vs <= 2.5) and (45 <= rsi_val <= 65)
@@ -608,10 +610,17 @@ def run():
                 sqz_on, sqz_fired = check_ttm_squeeze(df_c, df_h, df_l)
 
             # --- ASSIGN HORIZONS AND TAGS ---
-            # Using custom "Explosive" Horizon to prioritize them for Telegram and AI
             hor, sl_m, tag = "", 0.0, ""
-            if is_triangle: hor, sl_m, tag = "Explosive", 0.8, "🔺 Symmetrical Triangle Coil"
-            elif is_trendline_retest: hor, sl_m, tag = "Explosive", 1.2, "📈 Rising Support Retest"
+            
+            # --- 🚀 ADDING CHARTING DATA EXPORT ---
+            tl_start_date, tl_start_price, tl_end_price = "", 0.0, 0.0
+            
+            if is_triangle: 
+                hor, sl_m, tag = "Explosive", 0.8, "🔺 Symmetrical Triangle Coil"
+                tl_start_date, tl_start_price, tl_end_price = tri_d1, tri_v1, tri_res_val
+            elif is_trendline_retest: 
+                hor, sl_m, tag = "Explosive", 1.2, "📈 Rising Support Retest"
+                tl_start_date, tl_start_price, tl_end_price = tl_d1, tl_v1, tl_val
             elif is_base_ignition: hor, sl_m, tag = "Pre-Breakout", 0.8, "🌱 Base Ignition"
             elif sqz_fired: hor, sl_m, tag = "Pre-Breakout", 1.0, "🔥 Squeeze Breakout"
             elif sqz_on and is_pre_breakout: hor, sl_m, tag = "Pre-Breakout", 1.0, "🗜️ TTM Squeeze Coil"
@@ -665,11 +674,13 @@ def run():
                 entry_zone_str = f"₹{ez_low} - ₹{ez_high} (🎯 ₹{best_entry})"
                 opt_info = generate_quant_option(symbol, close_p, t1, t2, t3, t4, t5, eq_sl, df_h, df_l, df_c, "Bullish") if symbol in STATIC_FNO else ("N/A (Cash)", "-", "-", "-", "-", "-", "-", 0)
                 
-                valid_setups.append({'Stock': f"{symbol} (↑)", 'RawStock': symbol, 'Horizon': hor, 'Tag': tag, 'Entry': round(close_p, 2), 'EntryZone': entry_zone_str, 'Qty': cash_qty, 'Risk': round(close_p - eq_sl, 2), 'RSI': round(rsi_val, 1), 'Vol vs 50d': vol_vs, 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Score': score, 'Opt': opt_info[0], 'Prem': opt_info[1], 'PT1': opt_info[2], 'PT2': opt_info[3], 'PT3': opt_info[4], 'PT4': opt_info[5], 'PT5': opt_info[6], 'OptSL': opt_info[7]})
+                valid_setups.append({'Stock': f"{symbol} (↑)", 'RawStock': symbol, 'Horizon': hor, 'Tag': tag, 'Entry': round(close_p, 2), 'EntryZone': entry_zone_str, 'Qty': cash_qty, 'Risk': round(close_p - eq_sl, 2), 'RSI': round(rsi_val, 1), 'Vol vs 50d': vol_vs, 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Score': score, 'Opt': opt_info[0], 'Prem': opt_info[1], 'PT1': opt_info[2], 'PT2': opt_info[3], 'PT3': opt_info[4], 'PT4': opt_info[5], 'PT5': opt_info[6], 'OptSL': opt_info[7], 'TL_StartDate': tl_start_date, 'TL_StartPrice': tl_start_price, 'TL_EndPrice': tl_end_price})
         except: continue
 
     df_all = pd.DataFrame(valid_setups).drop_duplicates(subset=['Stock']).sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]) if valid_setups else pd.DataFrame()
-    df_all.to_csv("all_setups.csv", index=False) if not df_all.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','Qty','Risk','RSI','Vol vs 50d','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Score','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL']).to_csv("all_setups.csv", index=False)
+    
+    # Save the expanded setups containing the X/Y coordinates for Streamlit
+    df_all.to_csv("all_setups.csv", index=False) if not df_all.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','Qty','Risk','RSI','Vol vs 50d','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Score','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','TL_StartDate','TL_StartPrice','TL_EndPrice']).to_csv("all_setups.csv", index=False)
     
     # =========================================================================
     # 🎯 STRICT CHART DATA: ONLY Ascending Line / Symmetrical Triangle stocks
