@@ -14,11 +14,17 @@ from requests_ratelimiter import LimiterSession
 
 warnings.filterwarnings('ignore')
 
+# ==========================================
+# 🎛️ MASTER SWITCHES
+# ==========================================
+ENABLE_AI_DEEP_DIVE = False  # Set to True to turn AI on, False for max speed
+
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
+# ==========================================
 
 # --- 🚀 SPEED FIX 1: UNLOCKED TRUE PARALLEL RATE LIMITER ---
 session = LimiterSession(per_second=15)
@@ -313,6 +319,12 @@ def format_telegram_text(df_stocks, df_index, title, regime="Neutral"):
     return msg
 
 def generate_ai_deep_dive(top_candidates):
+    if not ENABLE_AI_DEEP_DIVE:
+        print("⏭️ AI Deep Dive is disabled by user flag. Skipping to save time.")
+        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: 
+            f.write("⚠️ **AI Deep Dive is currently DISABLED.**\n\nTo re-enable AI reports, change `ENABLE_AI_DEEP_DIVE = True` in the master_scanner.py file.")
+        return
+
     if not GEMINI_API_KEY or not top_candidates:
         with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: 
             f.write("Pending Analysis: Waiting for active market setups.")
@@ -391,7 +403,6 @@ def generate_ai_deep_dive(top_candidates):
                         success = True 
                         break
                         
-                # --- NEW RATE LIMIT CATCHER ---
                 elif res.status_code == 429:
                     print(f"⚠️ Rate Limit Quota Exceeded (429). Sleeping for 60s to reset...")
                     time.sleep(60) 
@@ -418,7 +429,6 @@ def generate_ai_deep_dive(top_candidates):
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
-
 
 def run():
     start_time = time.time()
