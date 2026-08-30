@@ -391,6 +391,11 @@ def generate_ai_deep_dive(top_candidates):
                         success = True 
                         break
                         
+                # --- NEW RATE LIMIT CATCHER ---
+                elif res.status_code == 429:
+                    print(f"⚠️ Rate Limit Quota Exceeded (429). Sleeping for 60s to reset...")
+                    time.sleep(60) 
+                    
                 elif res.status_code == 503:
                     print(f"⚠️ API Overloaded (503). Retrying {attempt+1}/{max_retries} in 15s...")
                     time.sleep(15)
@@ -409,10 +414,11 @@ def generate_ai_deep_dive(top_candidates):
                 break
                 
         if not success:
-            all_dossiers.append(f"### 📊 {sym}\n**Analysis Failed**: Max retries reached due to Google server timeouts.")
+            all_dossiers.append(f"### 📊 {sym}\n**Analysis Failed**: Max retries reached due to Google server quotas and timeouts.")
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
         f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
+
 
 def run():
     start_time = time.time()
