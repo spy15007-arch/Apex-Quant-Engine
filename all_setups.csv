@@ -1,181 +1,87 @@
 Stock,RawStock,Horizon,Tag,Entry,EntryZone,Qty,Risk,RSI,Vol vs 50d,EqSL,EqT1,EqT2,EqT3,EqT4,EqT5,Score,Opt,Prem,PT1,PT2,PT3,PT4,PT5,OptSL,TL_StartDate,TL_StartPrice,TL_EndPrice
-VMART (↑),VMART,Explosive,🔺 Symmetrical Triangle Coil,836.05,₹815.0 - ₹836.0 (🎯 ₹831.4),29,,56.3,1.26,,,,,,,8,N/A (Cash),-,-,-,-,-,-,0.0,2026-06-08,640.1929663687391,823.1913142224583
-SBFC (↑),SBFC,Explosive,📈 Rising Support Retest,98.61,₹93.4 - ₹98.6 (🎯 ₹95.3),253,,63.5,1.21,,,,,,,8,N/A (Cash),-,-,-,-,-,-,0.0,2026-04-05,79.6,94.35
-XTRANET (↑),XTRANET,Swing,🔄 Breakout Retest,164.26,₹nan - ₹nan (🎯 ₹nan),152,,61.3,1.0,,,,,,,8,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-ATLANTAELE (↑),ATLANTAELE,Explosive,📈 Rising Support Retest 🏆 Super-Trend,1745.1,₹1615.0 - ₹1745.1 (🎯 ₹1647.6),14,170.1,59.1,0.95,1575.0,1814.6,1869.0,1938.5,2032.4,2165.7,8,N/A (Cash),-,-,-,-,-,-,0.0,2026-02-01,707.6,1631.3
+ATLANTAELE (↑),ATLANTAELE,Explosive,⭐ 5-Star Institutional Squeeze (⭐ 2x Size),1745.1,₹1615.0 - ₹1745.1 (🎯 ₹1647.6),28,170.1,59.1,0.95,1575.0,1814.6,1869.0,1938.5,2032.4,2165.7,9,N/A (Cash),-,-,-,-,-,-,0.0,2026-02-01,707.6,1631.3
 EDELWEISS (↑),EDELWEISS,Swing,🔄 Breakout Retest,125.42,₹122.7 - ₹125.4 (🎯 ₹123.6),199,4.32,62.0,0.88,121.1,128.9,131.6,135.1,139.8,146.6,8,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 MANALIPETC (↑),MANALIPETC,Swing,🔄 Breakout Retest,73.36,₹70.1 - ₹73.4 (🎯 ₹71.0),340,4.16,66.1,0.81,69.2,76.5,79.0,82.1,86.4,92.3,8,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-SKFINDUS (↑),SKFINDUS,Explosive,🔺 Symmetrical Triangle Coil,2891.6,₹2859.7 - ₹2891.6 (🎯 ₹2891.6),8,,65.7,0.78,,,,,,,8,N/A (Cash),-,-,-,-,-,-,0.0,2026-06-09,2318.972066880628,2888.5591628195725
-PETRONET (↑),PETRONET,Explosive,🔺 Symmetrical Triangle Coil,290.95,₹290.8 - ₹291.0 (🎯 ₹291.0),85,,66.3,0.58,,,,,,,8,290 CE,5.17,,,,,,5.0,2026-06-11,258.17166271212386,293.7119558583135
-NIACL (↑),NIACL,Explosive,📈 Rising Support Retest,185.2,₹180.2 - ₹185.2 (🎯 ₹183.9),134,,64.4,0.55,,,,,,,8,N/A (Cash),-,-,-,-,-,-,0.0,2026-04-05,116.01,182.04
-OBEROIRLTY (↑),OBEROIRLTY,Swing,🔄 Breakout Retest,1872.9,₹nan - ₹nan (🎯 ₹nan),13,,62.7,0.48,,,,,,,8,1880 CE,45.02,,,,,,5.0,,0.0,0.0
-HOMEFIRST (↑),HOMEFIRST,Explosive,📈 Rising Support Retest,1200.2,₹1148.7 - ₹1200.2 (🎯 ₹1172.0),20,,63.8,0.47,,,,,,,8,N/A (Cash),-,-,-,-,-,-,0.0,2026-04-05,889.54,1160.35
-AUBANK (↑),AUBANK,Explosive,📈 Rising Support Retest,1091.0,₹1075.8 - ₹1091.0 (🎯 ₹1091.0),22,,57.6,0.46,,,,,,,8,1100 CE,15.48,,,,,,5.0,2026-04-05,830.84,1086.68
-KROSS (↑),KROSS,Explosive,📈 Rising Support Retest (📉 +RSI Div),213.99,₹200.8 - ₹214.0 (🎯 ₹204.9),116,14.89,56.8,0.29,199.1,219.2,223.1,228.3,235.4,245.8,8,N/A (Cash),-,-,-,-,-,-,0.0,2026-04-05,150.52,202.83
-HEXAGON (↑),HEXAGON,Swing,🔄 Breakout Retest,69.16,₹nan - ₹nan (🎯 ₹nan),361,,66.8,0.07,,,,,,,8,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-PRECWIRE (↑),PRECWIRE,BTST,🌙 Strong Close BTST 🏆 Super-Trend,507.35,₹481.7 - ₹515.9 (🎯 ₹494.5),49,85.65,64.1,12.65,421.7,557.5,601.6,651.7,711.7,787.6,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-AYE (↑),AYE,Intraday,🚀 Volume Breakout 🏆 Super-Trend,183.92,₹171.3 - ₹183.9 (🎯 ₹174.9),135,11.42,58.8,5.0,172.5,193.3,201.3,210.6,222.3,237.5,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+KROSS (↑),KROSS,Explosive,📈 Rising Support Retest (📉 +RSI Div) (⭐ 2x Size),213.99,₹200.8 - ₹214.0 (🎯 ₹204.9),233,14.89,56.8,0.29,199.1,219.2,223.1,228.3,235.4,245.8,8,N/A (Cash),-,-,-,-,-,-,0.0,2026-04-05,150.52,202.83
+PRECWIRE (↑),PRECWIRE,BTST,🌙 Strong Close BTST,507.35,₹481.7 - ₹515.9 (🎯 ₹494.5),49,85.65,64.1,12.65,421.7,557.5,601.6,651.7,711.7,787.6,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+AYE (↑),AYE,Intraday,🚀 Volume Breakout,183.92,₹171.3 - ₹183.9 (🎯 ₹174.9),135,11.42,58.8,5.0,172.5,193.3,201.3,210.6,222.3,237.5,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 MANINFRA (↑),MANINFRA,BTST,🌙 Strong Close BTST,122.81,₹120.4 - ₹123.6 (🎯 ₹121.6),203,8.01,63.4,3.97,114.8,128.9,133.9,140.1,148.0,158.9,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 STYLEBAAZA (↑),STYLEBAAZA,BTST,🌙 Strong Close BTST,410.8,₹406.7 - ₹412.2 (🎯 ₹408.8),60,13.7,69.6,3.26,397.1,436.9,455.2,481.3,520.2,579.7,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 AGI (↑),AGI,BTST,🌙 Strong Close BTST (📉 +RSI Div),774.8,₹759.4 - ₹779.9 (🎯 ₹767.1),32,51.5,66.8,2.95,723.3,804.7,831.1,861.0,896.7,941.7,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-RGL (↑),RGL,Intraday,🚀 Volume Breakout,133.81,₹nan - ₹nan (🎯 ₹nan),186,,62.2,2.4,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-ELGIEQUIP (↑),ELGIEQUIP,Intraday,🚀 Volume Breakout,599.25,₹nan - ₹nan (🎯 ₹nan),41,,55.6,2.24,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-WHEELS (↑),WHEELS,BTST,🌙 Strong Close BTST 🏆 Super-Trend,1516.3,₹nan - ₹nan (🎯 ₹nan),16,,62.9,2.22,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 GENUSPOWER (↑),GENUSPOWER,Explosive,🔺 Symmetrical Triangle Coil,349.7,₹341.0 - ₹349.7 (🎯 ₹347.9),71,24.1,74.6,2.2,325.6,366.0,379.9,396.1,416.2,442.5,7,N/A (Cash),-,-,-,-,-,-,0.0,2026-06-30,282.1000061035156,344.45833188011534
-INOXINDIA (↑),INOXINDIA,Intraday,🚀 Volume Breakout 🏆 Super-Trend,2177.9,₹nan - ₹nan (🎯 ₹nan),11,,69.7,2.01,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-DYCL (↑),DYCL,BTST,🌙 Strong Close BTST 🏆 Super-Trend,487.6,₹474.5 - ₹492.0 (🎯 ₹481.0),51,43.8,66.5,1.94,443.8,516.8,541.5,570.8,607.2,655.3,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+DYCL (↑),DYCL,BTST,🌙 Strong Close BTST,487.6,₹474.5 - ₹492.0 (🎯 ₹481.0),51,43.8,66.5,1.94,443.8,516.8,541.5,570.8,607.2,655.3,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 BAJAJHIND (↑),BAJAJHIND,BTST,🌙 Strong Close BTST,21.67,₹20.0 - ₹21.7 (🎯 ₹20.3),1153,0.97,65.1,1.92,20.7,23.1,24.2,25.6,27.8,31.0,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-EBGNG (↑),EBGNG,BTST,🌙 Strong Close BTST 🏆 Super-Trend,580.25,₹nan - ₹nan (🎯 ₹nan),43,,56.7,1.8,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-SEAMECLTD (↑),SEAMECLTD,Intraday,🚀 Volume Breakout,1624.4,₹nan - ₹nan (🎯 ₹nan),15,,65.1,1.67,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 BEML (↑),BEML,BTST,🌙 Strong Close BTST,1984.9,₹1960.6 - ₹1993.0 (🎯 ₹1972.8),12,81.0,66.0,1.42,1903.9,2055.3,2111.2,2181.6,2275.5,2407.3,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 PERSISTENT (↑),PERSISTENT,BTST,🌙 Strong Close BTST (📉 +RSI Div),5875.0,₹5798.2 - ₹5900.6 (🎯 ₹5836.6),4,256.0,69.7,1.28,5619.0,6047.1,6192.6,6364.7,6579.9,6864.7,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 SUPREMEIND (↑),SUPREMEIND,BTST,🌙 Strong Close BTST (📉 +RSI Div),3636.9,₹3531.5 - ₹3636.9 (🎯 ₹3563.7),6,128.9,64.7,1.28,3508.0,3727.0,3802.5,3892.6,4006.6,4159.2,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 HINDZINC (↑),HINDZINC,BTST,🌙 Strong Close BTST,622.0,₹617.0 - ₹623.7 (🎯 ₹619.5),40,16.5,57.9,1.27,605.5,639.3,652.5,669.8,693.8,728.4,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-OFSS (↑),OFSS,Pre-Breakout,🗜️ TTM Squeeze Coil (📉 +RSI Div) 🏆 Super-Trend,12190.0,₹12148.0 - ₹12358.0 (🎯 ₹12211.0),2,420.0,56.6,1.23,11770.0,12489.6,12739.0,13038.5,13419.5,13932.0,7,12200 CE,259.94,445.4,637.0,899.0,1261.2,1767.8,94.8,,0.0,0.0
-LGEINDIA (↑),LGEINDIA,Pre-Breakout,💥 Pre-Breakout Coil,1700.4,₹nan - ₹nan (🎯 ₹nan),14,,68.5,1.18,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-AKUMS (↑),AKUMS,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,761.2,₹nan - ₹nan (🎯 ₹nan),32,,59.1,1.15,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-SIGMAADV (↑),SIGMAADV,BTST,🌙 Strong Close BTST 🏆 Super-Trend,763.65,₹nan - ₹nan (🎯 ₹nan),32,,59.0,1.03,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-STLTECH (↑),STLTECH,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,723.75,₹720.5 - ₹736.9 (🎯 ₹725.4),34,32.75,69.4,1.02,691.0,753.8,777.4,807.5,848.0,905.5,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+OFSS (↑),OFSS,Pre-Breakout,🗜️ TTM Squeeze Coil (📉 +RSI Div),12190.0,₹12148.0 - ₹12358.0 (🎯 ₹12211.0),2,420.0,56.6,1.23,11770.0,12489.6,12739.0,13038.5,13419.5,13932.0,7,12200 CE,259.94,445.4,637.0,899.0,1261.2,1767.8,94.8,,0.0,0.0
+STLTECH (↑),STLTECH,Pre-Breakout,💥 Pre-Breakout Coil,723.75,₹720.5 - ₹736.9 (🎯 ₹725.4),34,32.75,69.4,1.02,691.0,753.8,777.4,807.5,848.0,905.5,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 AARNAV (↑),AARNAV,Swing,🔄 Breakout Retest (📉 +RSI Div),33.66,₹32.2 - ₹33.7 (🎯 ₹32.6),742,2.16,60.9,1.0,31.5,35.2,36.5,38.0,40.1,43.0,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 INDIAGLYCO (↑),INDIAGLYCO,Pre-Breakout,💥 Pre-Breakout Coil,1178.3,₹1134.2 - ₹1178.3 (🎯 ₹1143.3),21,36.5,64.1,0.98,1141.8,1213.6,1240.9,1276.2,1324.2,1392.9,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-ASAHIINDIA (↑),ASAHIINDIA,Pre-Breakout,💥 Pre-Breakout Coil,951.25,₹nan - ₹nan (🎯 ₹nan),26,,67.4,0.95,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 SOLARINDS (↑),SOLARINDS,Pre-Breakout,💥 Pre-Breakout Coil,20400.0,₹19557.4 - ₹20400.0 (🎯 ₹19663.6),1,425.0,68.8,0.93,19975.0,20907.0,21285.5,21792.5,22508.0,23560.5,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-FCL (↑),FCL,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,50.03,₹49.8 - ₹51.1 (🎯 ₹50.2),499,2.73,69.9,0.92,47.3,52.7,54.7,57.3,60.9,66.0,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-PAUSHAKLTD (↑),PAUSHAKLTD,Swing,🔄 Breakout Retest 🏆 Super-Trend,776.7,₹713.2 - ₹776.7 (🎯 ₹727.7),32,69.2,68.1,0.88,707.5,819.9,855.5,898.7,954.3,1030.2,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-KCP (↑),KCP,Swing,🏦 200 MA Retest ⚠️ Micro-Risk,169.51,₹nan - ₹nan (🎯 ₹nan),73,,69.7,0.76,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+FCL (↑),FCL,Pre-Breakout,💥 Pre-Breakout Coil,50.03,₹49.8 - ₹51.1 (🎯 ₹50.2),499,2.73,69.9,0.92,47.3,52.7,54.7,57.3,60.9,66.0,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+PAUSHAKLTD (↑),PAUSHAKLTD,Swing,🔄 Breakout Retest,776.7,₹713.2 - ₹776.7 (🎯 ₹727.7),32,69.2,68.1,0.88,707.5,819.9,855.5,898.7,954.3,1030.2,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 GNFC (↑),GNFC,Swing,🔄 Breakout Retest,580.05,₹565.5 - ₹580.0 (🎯 ₹570.3),43,22.85,64.6,0.73,557.2,600.3,615.7,635.9,663.9,704.5,7,580 CE,14.72,27.7,40.1,58.4,85.7,126.2,5.5,,0.0,0.0
 SIEMENS (↑),SIEMENS,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div),4089.0,₹3949.0 - ₹4089.0 (🎯 ₹3962.2),6,53.0,63.6,0.72,4036.0,4163.9,4218.3,4293.3,4401.4,4563.3,7,4100 CE,76.35,120.4,159.0,219.8,317.9,475.7,52.2,,0.0,0.0
 CDSL (↑),CDSL,Pre-Breakout,💥 Pre-Breakout Coil,1414.7,₹1412.7 - ₹1422.8 (🎯 ₹1415.7),17,20.3,68.8,0.68,1394.4,1438.5,1456.2,1480.0,1513.4,1562.5,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-MSTCLTD (↑),MSTCLTD,Explosive,🔺 Symmetrical Triangle Coil 🏆 Super-Trend,722.25,₹710.7 - ₹722.2 (🎯 ₹722.2),34,,79.5,0.66,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,2026-06-08,486.3999938964844,717.8937454223633
-MANAKCOAT (↑),MANAKCOAT,Swing,🏦 200 MA Retest,121.09,₹nan - ₹nan (🎯 ₹nan),206,,64.5,0.64,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-OIL (↑),OIL,Swing,🔄 Breakout Retest,469.85,₹nan - ₹nan (🎯 ₹nan),53,,60.3,0.59,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-SANDHAR (↑),SANDHAR,Swing,🔄 Breakout Retest,651.75,₹nan - ₹nan (🎯 ₹nan),38,,49.3,0.59,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-SUDARSCHEM (↑),SUDARSCHEM,Pre-Breakout,💥 Pre-Breakout Coil,1252.8,₹nan - ₹nan (🎯 ₹nan),19,,69.5,0.58,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 JINDALSTEL (↑),JINDALSTEL,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div),1179.2,₹1122.4 - ₹1179.2 (🎯 ₹1127.9),21,21.9,64.3,0.57,1157.3,1201.2,1218.2,1240.2,1270.4,1313.9,7,1180 CE,22.28,35.7,48.2,66.7,94.7,137.4,12.5,,0.0,0.0
-INDOSTAR (↑),INDOSTAR,Swing,🔄 Breakout Retest ⚠️ Micro-Risk,255.05,₹nan - ₹nan (🎯 ₹nan),49,,61.4,0.56,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 CLEAN (↑),CLEAN,Pre-Breakout,💥 Pre-Breakout Coil,836.45,₹808.7 - ₹836.5 (🎯 ₹814.1),29,21.85,61.3,0.55,814.6,858.6,875.6,897.8,928.3,972.2,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-JINDALSAW (↑),JINDALSAW,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,308.6,₹280.0 - ₹308.6 (🎯 ₹281.5),81,6.2,67.3,0.54,302.4,318.6,325.7,335.7,350.3,372.4,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-CANHLIFE (↑),CANHLIFE,Pre-Breakout,🗜️ TTM Squeeze Coil,156.89,₹nan - ₹nan (🎯 ₹nan),159,,70.0,0.53,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-BHEL (↑),BHEL,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend,433.95,₹nan - ₹nan (🎯 ₹nan),57,,64.0,0.48,,,,,,,7,435 CE,9.51,,,,,,5.0,,0.0,0.0
-GODREJAGRO (↑),GODREJAGRO,Pre-Breakout,💥 Pre-Breakout Coil,614.75,₹nan - ₹nan (🎯 ₹nan),40,,67.8,0.47,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+JINDALSAW (↑),JINDALSAW,Pre-Breakout,💥 Pre-Breakout Coil,308.6,₹280.0 - ₹308.6 (🎯 ₹281.5),81,6.2,67.3,0.54,302.4,318.6,325.7,335.7,350.3,372.4,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 KFINTECH (↑),KFINTECH,Swing,🏦 200 MA Retest (📉 +RSI Div),949.95,₹926.6 - ₹952.1 (🎯 ₹930.9),26,32.35,56.0,0.47,917.6,968.1,982.6,1000.7,1024.8,1058.3,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-PNBHOUSING (↑),PNBHOUSING,Pre-Breakout,💥 Pre-Breakout Coil,1178.0,₹nan - ₹nan (🎯 ₹nan),21,,62.3,0.46,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-PRAJIND (↑),PRAJIND,Pre-Breakout,💥 Pre-Breakout Coil,354.4,₹nan - ₹nan (🎯 ₹nan),70,,66.0,0.46,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-BALAMINES (↑),BALAMINES,Explosive,🔺 Symmetrical Triangle Coil 🏆 Super-Trend,2425.8,₹2399.2 - ₹2425.8 (🎯 ₹2425.8),10,,81.7,0.45,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,2026-06-29,1875.7072475524326,2423.386993408203
-EMUDHRA (↑),EMUDHRA,Pre-Breakout,💥 Pre-Breakout Coil,559.25,₹nan - ₹nan (🎯 ₹nan),44,,61.8,0.43,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-JUBLFOOD (↑),JUBLFOOD,Swing,🔄 Breakout Retest,504.0,₹nan - ₹nan (🎯 ₹nan),49,,55.1,0.39,,,,,,,7,500 CE,15.02,,,,,,5.0,,0.0,0.0
 ADANIENT (↑),ADANIENT,Explosive,🔺 Symmetrical Triangle Coil,3168.5,₹3102.0 - ₹3168.5 (🎯 ₹3164.7),7,65.5,73.4,0.37,3103.0,3213.1,3246.8,3291.4,3353.6,3444.2,7,3150 CE,65.79,95.2,120.8,158.4,215.5,303.8,33.6,2026-06-12,2886.199951171875,3133.318181818182
-BLACKBUCK (↑),BLACKBUCK,Swing,🏦 200 MA Retest,588.2,₹nan - ₹nan (🎯 ₹nan),42,,54.2,0.36,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-FEDFINA (↑),FEDFINA,Pre-Breakout,🔥 Squeeze Breakout,157.94,₹nan - ₹nan (🎯 ₹nan),158,,66.0,0.36,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-CUB (↑),CUB,Pre-Breakout,💥 Pre-Breakout Coil,229.23,₹nan - ₹nan (🎯 ₹nan),109,,62.2,0.34,,,,,,,7,230 CE,6.17,,,,,,5.0,,0.0,0.0
-DIVGIITTS (↑),DIVGIITTS,Swing,🔄 Breakout Retest 🏆 Super-Trend,1195.5,₹nan - ₹nan (🎯 ₹nan),20,,65.9,0.34,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 GRAVITA (↑),GRAVITA,Pre-Breakout,💥 Pre-Breakout Coil,1825.8,₹1786.4 - ₹1825.8 (🎯 ₹1792.9),13,26.0,59.4,0.33,1799.8,1865.1,1893.5,1932.8,1990.1,2076.2,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-CARTRADE (↑),CARTRADE,Explosive,🔺 Symmetrical Triangle Coil 🏆 Super-Trend,3080.2,₹3042.8 - ₹3080.2 (🎯 ₹3080.2),8,,77.2,0.32,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,2026-06-05,1891.0999755859375,3073.5
-ALKYLAMINE (↑),ALKYLAMINE,Pre-Breakout,💥 Pre-Breakout Coil,2045.0,₹nan - ₹nan (🎯 ₹nan),12,,62.7,0.31,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 COCHINSHIP (↑),COCHINSHIP,Pre-Breakout,💥 Pre-Breakout Coil,1535.0,₹1491.5 - ₹1535.0 (🎯 ₹1495.5),16,15.9,58.9,0.31,1519.1,1560.5,1578.7,1604.2,1641.6,1698.1,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-SENORES (↑),SENORES,Swing,🔄 Breakout Retest 🏆 Super-Trend,1482.1,₹1461.3 - ₹1482.1 (🎯 ₹1468.3),16,33.4,60.3,0.31,1448.7,1527.8,1560.3,1606.0,1673.0,1774.7,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+SENORES (↑),SENORES,Swing,🔄 Breakout Retest,1482.1,₹1461.3 - ₹1482.1 (🎯 ₹1468.3),16,33.4,60.3,0.31,1448.7,1527.8,1560.3,1606.0,1673.0,1774.7,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 DLF (↑),DLF,Pre-Breakout,💥 Pre-Breakout Coil,679.8,₹678.8 - ₹684.0 (🎯 ₹680.3),36,10.5,61.9,0.27,669.3,690.5,698.7,709.4,724.2,745.5,7,680 CE,12.22,18.7,24.6,33.4,46.9,67.6,7.4,,0.0,0.0
-GANESHBE (↑),GANESHBE,Pre-Breakout,🗜️ TTM Squeeze Coil (📉 +RSI Div) 🏆 Super-Trend,125.09,₹nan - ₹nan (🎯 ₹nan),199,,55.9,0.27,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-VGUARD (↑),VGUARD,Swing,🔄 Breakout Retest,331.5,₹nan - ₹nan (🎯 ₹nan),75,,59.1,0.26,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-ABSLAMC (↑),ABSLAMC,Pre-Breakout,🗜️ TTM Squeeze Coil,1046.5,₹nan - ₹nan (🎯 ₹nan),23,,61.1,0.24,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-ESAFSFB (↑),ESAFSFB,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend,43.97,₹nan - ₹nan (🎯 ₹nan),568,,68.9,0.17,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-CANTABIL (↑),CANTABIL,Pre-Breakout,💥 Pre-Breakout Coil,245.77,₹nan - ₹nan (🎯 ₹nan),101,,63.1,0.11,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-SCPL (↑),SCPL,Swing,🔄 Breakout Retest (📉 +RSI Div) 🏆 Super-Trend,658.15,₹nan - ₹nan (🎯 ₹nan),37,,57.2,0.11,,,,,,,7,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 SHYAMMETL (↑),SHYAMMETL,BTST,🌙 Strong Close BTST,1099.8,₹1078.4 - ₹1106.9 (🎯 ₹1089.1),22,71.4,74.2,4.82,1028.4,1145.0,1183.9,1229.0,1284.5,1356.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-IFCI (↑),IFCI,Intraday,🚀 Volume Breakout 🏆 Super-Trend,89.96,₹89.1 - ₹93.5 (🎯 ₹90.4),277,7.06,80.3,4.81,82.9,95.8,100.8,106.7,114.0,123.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+IFCI (↑),IFCI,Intraday,🚀 Volume Breakout,89.96,₹89.1 - ₹93.5 (🎯 ₹90.4),277,7.06,80.3,4.81,82.9,95.8,100.8,106.7,114.0,123.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 ARIS (↑),ARIS,BTST,🌙 Strong Close BTST (📉 +RSI Div),151.31,₹148.3 - ₹152.3 (🎯 ₹149.8),165,10.01,70.9,4.52,141.3,158.6,164.7,172.0,181.4,194.2,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-RAMRAT (↑),RAMRAT,Intraday,🚀 Volume Breakout 🏆 Super-Trend,569.6,₹nan - ₹nan (🎯 ₹nan),43,,83.5,4.04,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-QPOWER (↑),QPOWER,BTST,🌙 Strong Close BTST 🏆 Super-Trend,1363.1,₹nan - ₹nan (🎯 ₹nan),18,,71.7,3.49,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-RSL (↑),RSL,Intraday,🚀 Volume Breakout,172.47,₹nan - ₹nan (🎯 ₹nan),144,,78.1,3.36,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-MAHSEAMLES (↑),MAHSEAMLES,BTST,🌙 Strong Close BTST,642.05,₹nan - ₹nan (🎯 ₹nan),38,,70.7,2.99,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-GKSL (↑),GKSL,Intraday,🚀 Volume Breakout,154.29,₹nan - ₹nan (🎯 ₹nan),162,,82.5,2.66,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 SAIL (↑),SAIL,Intraday,🚀 Volume Breakout,200.0,₹199.2 - ₹203.4 (🎯 ₹200.4),125,6.7,76.7,2.51,193.3,208.3,214.8,223.1,234.6,251.0,6,200 CE,6.34,11.6,16.7,24.2,35.3,51.6,5.0,,0.0,0.0
 ELECTCAST (↑),ELECTCAST,Intraday,🚀 Volume Breakout,81.5,₹81.1 - ₹82.9 (🎯 ₹81.7),306,2.8,77.6,2.47,78.7,84.4,86.7,89.6,93.5,98.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-MARINE (↑),MARINE,BTST,🌙 Strong Close BTST 🏆 Super-Trend,406.8,₹395.4 - ₹410.6 (🎯 ₹401.1),61,38.0,73.8,2.47,368.8,439.0,464.8,497.0,539.8,599.5,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-HATSUN (↑),HATSUN,Intraday,🚀 Volume Breakout,1152.5,₹nan - ₹nan (🎯 ₹nan),21,,76.1,2.25,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-KRN (↑),KRN,Intraday,🚀 Volume Breakout 🏆 Super-Trend,1609.7,₹1602.0 - ₹1640.4 (🎯 ₹1613.5),15,61.4,83.0,2.23,1548.3,1692.0,1754.5,1836.8,1951.0,2116.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+MARINE (↑),MARINE,BTST,🌙 Strong Close BTST,406.8,₹395.4 - ₹410.6 (🎯 ₹401.1),61,38.0,73.8,2.47,368.8,439.0,464.8,497.0,539.8,599.5,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+KRN (↑),KRN,Intraday,🚀 Volume Breakout,1609.7,₹1602.0 - ₹1640.4 (🎯 ₹1613.5),15,61.4,83.0,2.23,1548.3,1692.0,1754.5,1836.8,1951.0,2116.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 GEOJITFSL (↑),GEOJITFSL,BTST,🌙 Strong Close BTST ⚠️ Micro-Risk,83.7,₹79.6 - ₹83.7 (🎯 ₹80.6),149,3.9,69.8,2.07,79.8,86.5,88.8,91.6,95.2,100.0,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-KOPRAN (↑),KOPRAN,Intraday,🚀 Volume Breakout ⚠️ Micro-Risk,192.72,₹nan - ₹nan (🎯 ₹nan),64,,66.1,1.97,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-MOREPENLAB (↑),MOREPENLAB,Intraday,🚀 Volume Breakout 🏆 Super-Trend,106.19,₹105.2 - ₹110.3 (🎯 ₹106.7),235,8.29,78.8,1.86,97.9,116.3,124.1,134.2,147.9,167.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-COFORGE (↑),COFORGE,BTST,🌙 Strong Close BTST 🏆 Super-Trend,2014.6,₹1980.2 - ₹2026.1 (🎯 ₹1997.4),12,114.7,74.7,1.81,1899.9,2095.6,2163.2,2244.2,2346.9,2484.7,6,2000 CE,51.77,110.5,171.4,250.3,352.7,490.4,9.1,,0.0,0.0
+MOREPENLAB (↑),MOREPENLAB,Intraday,🚀 Volume Breakout,106.19,₹105.2 - ₹110.3 (🎯 ₹106.7),235,8.29,78.8,1.86,97.9,116.3,124.1,134.2,147.9,167.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+COFORGE (↑),COFORGE,BTST,🌙 Strong Close BTST,2014.6,₹1980.2 - ₹2026.1 (🎯 ₹1997.4),12,114.7,74.7,1.81,1899.9,2095.6,2163.2,2244.2,2346.9,2484.7,6,2000 CE,51.77,110.5,171.4,250.3,352.7,490.4,9.1,,0.0,0.0
 ENGINERSIN (↑),ENGINERSIN,BTST,🌙 Strong Close BTST,253.72,₹251.4 - ₹254.5 (🎯 ₹252.5),98,7.82,54.7,1.8,245.9,261.1,266.9,274.3,284.3,298.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 DBOL (↑),DBOL,Intraday,🚀 Volume Breakout ⚠️ Micro-Risk,125.42,₹120.1 - ₹125.4 (🎯 ₹122.0),99,6.02,61.0,1.71,119.4,133.4,139.5,147.5,158.5,174.5,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 DIVISLAB (↑),DIVISLAB,Intraday,🚀 Volume Breakout (📉 +RSI Div),9239.0,₹9218.0 - ₹9323.0 (🎯 ₹9249.5),2,168.0,82.5,1.67,9071.0,9460.5,9629.5,9851.0,10157.5,10601.5,6,9200 CE,171.65,326.4,471.6,681.2,984.3,1427.9,90.1,,0.0,0.0
 MEDANTA (↑),MEDANTA,Intraday,🚀 Volume Breakout (📉 +RSI Div),1472.2,₹1417.4 - ₹1472.2 (🎯 ₹1434.7),16,55.4,49.5,1.58,1416.8,1519.3,1559.1,1606.2,1665.3,1743.9,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-WONDERLA (↑),WONDERLA,Intraday,🚀 Volume Breakout,542.25,₹nan - ₹nan (🎯 ₹nan),46,,77.2,1.57,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-VINCOFE (↑),VINCOFE,Intraday,🚀 Volume Breakout,174.65,₹nan - ₹nan (🎯 ₹nan),143,,83.1,1.56,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-UGARSUGAR (↑),UGARSUGAR,Intraday,🚀 Volume Breakout ⚠️ Micro-Risk,50.7,₹nan - ₹nan (🎯 ₹nan),246,,57.8,1.55,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 GLENMARK (↑),GLENMARK,Intraday,🚀 Volume Breakout,2515.0,₹2504.4 - ₹2557.4 (🎯 ₹2520.3),9,84.7,78.5,1.5,2430.3,2601.7,2671.5,2758.1,2872.2,3030.7,6,2500 CE,70.11,129.0,187.4,267.9,379.8,537.9,31.4,,0.0,0.0
 KRBL (↑),KRBL,BTST,🌙 Strong Close BTST,437.65,₹431.7 - ₹439.6 (🎯 ₹434.7),57,19.85,73.1,1.32,417.8,457.7,473.2,493.2,520.8,560.5,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-CRAFTSMAN (↑),CRAFTSMAN,Pre-Breakout,💥 Pre-Breakout Coil,10898.0,₹nan - ₹nan (🎯 ₹nan),2,,64.2,1.19,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 DHAMPURSUG (↑),DHAMPURSUG,BTST,🌙 Strong Close BTST,175.23,₹166.9 - ₹175.2 (🎯 ₹168.7),142,7.53,61.2,1.12,167.7,185.5,193.0,203.3,218.0,240.0,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 INDOCO (↑),INDOCO,Pre-Breakout,🔥 Squeeze Breakout,248.8,₹247.4 - ₹254.5 (🎯 ₹249.5),100,14.4,70.7,1.1,234.4,259.2,267.9,278.3,291.6,309.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 GLAXO (↑),GLAXO,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div),3106.4,₹3099.6 - ₹3133.6 (🎯 ₹3109.8),8,68.0,83.0,1.09,3038.4,3205.1,3276.5,3375.2,3518.0,3732.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-RPEL (↑),RPEL,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,1745.4,₹nan - ₹nan (🎯 ₹nan),14,,80.5,1.09,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-AETHER (↑),AETHER,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,1696.8,₹1603.7 - ₹1696.8 (🎯 ₹1616.9),14,53.0,64.6,1.04,1643.8,1744.5,1782.0,1829.7,1893.8,1984.3,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-BALUFORGE (↑),BALUFORGE,Pre-Breakout,💥 Pre-Breakout Coil,632.9,₹nan - ₹nan (🎯 ₹nan),39,,81.0,1.02,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+AETHER (↑),AETHER,Pre-Breakout,💥 Pre-Breakout Coil,1696.8,₹1603.7 - ₹1696.8 (🎯 ₹1616.9),14,53.0,64.6,1.04,1643.8,1744.5,1782.0,1829.7,1893.8,1984.3,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 ARTEMISMED (↑),ARTEMISMED,Swing,🔄 Breakout Retest (📉 +RSI Div),319.25,₹312.9 - ₹319.2 (🎯 ₹314.0),78,4.85,53.8,1.0,314.4,325.0,329.1,334.8,343.1,355.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-TURTLEMINT (↑),TURTLEMINT,Pre-Breakout,💥 Pre-Breakout Coil,153.64,₹nan - ₹nan (🎯 ₹nan),162,,75.4,1.0,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-AEROENTER (↑),AEROENTER,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,146.29,₹145.8 - ₹148.2 (🎯 ₹146.5),170,4.79,75.8,0.97,141.5,151.3,155.2,160.2,167.2,177.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+AEROENTER (↑),AEROENTER,Pre-Breakout,💥 Pre-Breakout Coil,146.29,₹145.8 - ₹148.2 (🎯 ₹146.5),170,4.79,75.8,0.97,141.5,151.3,155.2,160.2,167.2,177.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 PARADEEP (↑),PARADEEP,Pre-Breakout,🔥 Squeeze Breakout,165.88,₹165.1 - ₹168.9 (🎯 ₹166.3),150,7.48,70.5,0.97,158.4,171.7,176.5,182.3,190.0,200.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 SOMANYCERA (↑),SOMANYCERA,Pre-Breakout,💥 Pre-Breakout Coil,564.5,₹563.0 - ₹570.4 (🎯 ₹565.2),44,14.8,75.9,0.97,549.7,580.2,592.1,607.8,629.4,660.8,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 AMBER (↑),AMBER,Pre-Breakout,💥 Pre-Breakout Coil,7675.0,₹7392.3 - ₹7675.0 (🎯 ₹7427.0),3,139.0,77.6,0.9,7536.0,7830.1,7947.2,8102.3,8318.9,8635.0,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-CYIENTDLM (↑),CYIENTDLM,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend,819.1,₹722.8 - ₹819.1 (🎯 ₹731.8),30,36.3,71.8,0.89,782.8,855.6,883.7,920.2,970.3,1042.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-PITTIENG (↑),PITTIENG,Pre-Breakout,💥 Pre-Breakout Coil,1129.65,₹nan - ₹nan (🎯 ₹nan),22,,81.6,0.89,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-HARSHA (↑),HARSHA,Pre-Breakout,💥 Pre-Breakout Coil,438.55,₹nan - ₹nan (🎯 ₹nan),57,,52.9,0.88,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-MENONBE (↑),MENONBE,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend ⚠️ Micro-Risk,283.35,₹nan - ₹nan (🎯 ₹nan),44,,67.2,0.83,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-PREMIERPOL (↑),PREMIERPOL,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,95.21,₹nan - ₹nan (🎯 ₹nan),262,,82.8,0.83,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-IOLCP (↑),IOLCP,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,193.07,₹nan - ₹nan (🎯 ₹nan),129,,73.7,0.8,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+CYIENTDLM (↑),CYIENTDLM,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div),819.1,₹722.8 - ₹819.1 (🎯 ₹731.8),30,36.3,71.8,0.89,782.8,855.6,883.7,920.2,970.3,1042.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 SURAKSHA (↑),SURAKSHA,Pre-Breakout,💥 Pre-Breakout Coil,340.2,₹339.0 - ₹344.8 (🎯 ₹340.8),73,11.5,77.0,0.8,328.7,356.1,367.8,383.7,406.7,441.0,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-WELCORP (↑),WELCORP,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,2373.8,₹2048.0 - ₹2373.8 (🎯 ₹2071.3),10,92.9,81.3,0.77,2280.9,2503.6,2598.0,2727.8,2914.8,3194.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+WELCORP (↑),WELCORP,Pre-Breakout,💥 Pre-Breakout Coil,2373.8,₹2048.0 - ₹2373.8 (🎯 ₹2071.3),10,92.9,81.3,0.77,2280.9,2503.6,2598.0,2727.8,2914.8,3194.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 KEI (↑),KEI,Swing,🔄 Breakout Retest,5570.0,₹5514.1 - ₹5570.0 (🎯 ₹5534.8),4,99.1,45.4,0.76,5470.9,5713.5,5814.8,5958.3,6170.1,6492.3,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-HFCL (↑),HFCL,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,251.47,₹225.3 - ₹251.5 (🎯 ₹227.7),99,9.57,76.9,0.72,241.9,262.3,270.5,281.3,296.5,318.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-QUESS (↑),QUESS,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend,372.25,₹370.5 - ₹379.4 (🎯 ₹373.1),67,17.85,74.9,0.69,354.4,388.0,400.5,416.2,437.3,466.9,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-GCSL (↑),GCSL,Pre-Breakout,🗜️ TTM Squeeze Coil,540.55,₹nan - ₹nan (🎯 ₹nan),46,,54.5,0.67,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-ACUTAAS (↑),ACUTAAS,Pre-Breakout,🔥 Squeeze Breakout 🏆 Super-Trend,3329.2,₹nan - ₹nan (🎯 ₹nan),7,,52.3,0.66,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+HFCL (↑),HFCL,Pre-Breakout,💥 Pre-Breakout Coil,251.47,₹225.3 - ₹251.5 (🎯 ₹227.7),99,9.57,76.9,0.72,241.9,262.3,270.5,281.3,296.5,318.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+QUESS (↑),QUESS,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div),372.25,₹370.5 - ₹379.4 (🎯 ₹373.1),67,17.85,74.9,0.69,354.4,388.0,400.5,416.2,437.3,466.9,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 GPPL (↑),GPPL,Pre-Breakout,💥 Pre-Breakout Coil,168.75,₹160.1 - ₹168.8 (🎯 ₹160.7),148,2.15,83.2,0.66,166.6,172.7,175.4,179.4,185.2,194.1,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-MAHABANK (↑),MAHABANK,Pre-Breakout,💥 Pre-Breakout Coil,84.69,₹nan - ₹nan (🎯 ₹nan),295,,71.2,0.66,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-BLSE (↑),BLSE,Swing,🔄 Breakout Retest 🏆 Super-Trend,314.05,₹nan - ₹nan (🎯 ₹nan),79,,49.5,0.65,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 TITAN (↑),TITAN,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div),5169.2,₹5165.8 - ₹5182.8 (🎯 ₹5170.9),4,33.9,62.1,0.65,5135.3,5222.3,5260.3,5313.4,5390.9,5507.9,6,5200 CE,44.3,72.8,98.3,139.9,209.3,323.2,30.6,,0.0,0.0
-VISHNU (↑),VISHNU,Pre-Breakout,💥 Pre-Breakout Coil,647.85,₹nan - ₹nan (🎯 ₹nan),38,,81.7,0.65,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-IPCALAB (↑),IPCALAB,Pre-Breakout,💥 Pre-Breakout Coil,1959.8,₹nan - ₹nan (🎯 ₹nan),12,,83.4,0.63,,,,,,,6,1960 CE,57.63,,,,,,5.0,,0.0,0.0
 PPLPHARMA (↑),PPLPHARMA,Pre-Breakout,💥 Pre-Breakout Coil,218.68,₹218.1 - ₹220.8 (🎯 ₹218.9),114,5.38,55.2,0.62,213.3,224.1,228.2,233.6,241.0,251.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 EICHERMOT (↑),EICHERMOT,Pre-Breakout,🗜️ TTM Squeeze Coil (📉 +RSI Div),8059.0,₹7953.8 - ₹8059.0 (🎯 ₹7988.1),3,137.0,58.6,0.61,7922.0,8150.7,8228.4,8320.1,8434.7,8586.2,6,8100 CE,76.93,128.0,182.6,257.8,362.7,510.3,28.9,,0.0,0.0
-ARIHANTCAP (↑),ARIHANTCAP,Pre-Breakout,🔥 Squeeze Breakout ⚠️ Micro-Risk,78.62,₹nan - ₹nan (🎯 ₹nan),158,,60.2,0.6,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 BANKINDIA (↑),BANKINDIA,Pre-Breakout,🗜️ TTM Squeeze Coil,144.0,₹142.8 - ₹144.0 (🎯 ₹143.4),173,2.2,59.3,0.58,141.8,145.9,147.5,149.4,152.0,155.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 MEESHO (↑),MEESHO,Pre-Breakout,💥 Pre-Breakout Coil,208.63,₹207.8 - ₹211.9 (🎯 ₹209.0),119,8.13,72.9,0.58,200.5,215.7,221.4,228.5,237.9,251.2,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 CGPOWER (↑),CGPOWER,Pre-Breakout,💥 Pre-Breakout Coil,889.0,₹878.6 - ₹889.0 (🎯 ₹883.5),28,19.7,53.4,0.56,869.3,905.6,918.9,935.5,957.5,988.2,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-NEULANDLAB (↑),NEULANDLAB,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,23205.0,₹22307.6 - ₹23205.0 (🎯 ₹22501.6),1,776.0,60.7,0.54,22429.0,24090.8,24757.1,25642.9,26884.6,28701.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-WELSPUNLIV (↑),WELSPUNLIV,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,190.46,₹177.2 - ₹190.5 (🎯 ₹178.8),131,6.36,76.1,0.54,184.1,198.0,203.6,211.2,221.8,237.5,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+NEULANDLAB (↑),NEULANDLAB,Pre-Breakout,💥 Pre-Breakout Coil,23205.0,₹22307.6 - ₹23205.0 (🎯 ₹22501.6),1,776.0,60.7,0.54,22429.0,24090.8,24757.1,25642.9,26884.6,28701.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+WELSPUNLIV (↑),WELSPUNLIV,Pre-Breakout,💥 Pre-Breakout Coil,190.46,₹177.2 - ₹190.5 (🎯 ₹178.8),131,6.36,76.1,0.54,184.1,198.0,203.6,211.2,221.8,237.5,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 AARTIIND (↑),AARTIIND,Pre-Breakout,💥 Pre-Breakout Coil,540.35,₹538.8 - ₹546.3 (🎯 ₹541.1),46,15.05,70.0,0.52,525.3,554.8,565.9,580.4,599.9,628.0,6,540 CE,13.49,22.5,31.0,43.5,61.9,89.6,6.9,,0.0,0.0
-ANTHEM (↑),ANTHEM,Pre-Breakout,💥 Pre-Breakout Coil,924.6,₹nan - ₹nan (🎯 ₹nan),27,,70.4,0.52,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-NEOGEN (↑),NEOGEN,Swing,🔄 Breakout Retest 🏆 Super-Trend,2230.2,₹nan - ₹nan (🎯 ₹nan),11,,53.5,0.52,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 MCX (↑),MCX,Pre-Breakout,💥 Pre-Breakout Coil,3332.0,₹3322.6 - ₹3369.6 (🎯 ₹3336.7),7,94.0,79.5,0.51,3238.0,3463.4,3559.0,3690.3,3879.7,4162.8,6,3350 CE,80.96,161.8,237.3,355.7,540.1,822.4,42.4,,0.0,0.0
 SAILIFE (↑),SAILIFE,Pre-Breakout,💥 Pre-Breakout Coil,1485.0,₹1419.8 - ₹1485.0 (🎯 ₹1428.0),16,32.5,61.0,0.49,1452.5,1520.5,1547.5,1583.0,1632.6,1704.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-ECLERX (↑),ECLERX,Pre-Breakout,💥 Pre-Breakout Coil,1940.9,₹nan - ₹nan (🎯 ₹nan),12,,71.0,0.48,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 PRINCEPIPE (↑),PRINCEPIPE,Pre-Breakout,💥 Pre-Breakout Coil,293.45,₹281.9 - ₹293.5 (🎯 ₹283.4),85,5.95,71.5,0.48,287.5,300.7,306.1,313.3,323.6,338.6,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 DIXON (↑),DIXON,Pre-Breakout,💥 Pre-Breakout Coil,14650.0,₹14343.0 - ₹14650.0 (🎯 ₹14410.5),1,270.0,60.2,0.45,14380.0,14925.7,15137.4,15413.1,15792.5,16339.6,6,14600 CE,354.78,527.4,683.3,910.8,1255.5,1785.6,223.0,,0.0,0.0
-SHILPAMED (↑),SHILPAMED,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,901.85,₹nan - ₹nan (🎯 ₹nan),27,,78.3,0.45,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-360ONE (↑),360ONE,Pre-Breakout,🗜️ TTM Squeeze Coil,1204.0,₹nan - ₹nan (🎯 ₹nan),20,,59.6,0.39,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-HONASA (↑),HONASA,Swing,🔄 Breakout Retest 🏆 Super-Trend,481.85,₹nan - ₹nan (🎯 ₹nan),51,,53.3,0.39,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 LODHA (↑),LODHA,Pre-Breakout,🗜️ TTM Squeeze Coil (📉 +RSI Div),1274.0,₹1271.2 - ₹1285.1 (🎯 ₹1275.4),19,27.7,63.5,0.36,1246.3,1299.5,1319.4,1344.9,1379.3,1428.0,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-RADICO (↑),RADICO,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,4606.0,₹nan - ₹nan (🎯 ₹nan),5,,56.2,0.36,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-UDS (↑),UDS,Pre-Breakout,🔥 Squeeze Breakout,221.82,₹nan - ₹nan (🎯 ₹nan),112,,71.8,0.36,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-COSMOFIRST (↑),COSMOFIRST,Swing,🔄 Breakout Retest (📉 +RSI Div),942.05,₹nan - ₹nan (🎯 ₹nan),26,,53.7,0.35,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-KALYANKJIL (↑),KALYANKJIL,Pre-Breakout,🗜️ TTM Squeeze Coil (📉 +RSI Div) 🏆 Super-Trend,615.8,₹595.9 - ₹615.8 (🎯 ₹601.6),40,22.5,58.0,0.31,593.3,633.6,648.1,665.9,689.1,721.2,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-SUNDRMFAST (↑),SUNDRMFAST,Pre-Breakout,💥 Pre-Breakout Coil,1216.2,₹nan - ₹nan (🎯 ₹nan),20,,70.0,0.3,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+KALYANKJIL (↑),KALYANKJIL,Pre-Breakout,🗜️ TTM Squeeze Coil (📉 +RSI Div),615.8,₹595.9 - ₹615.8 (🎯 ₹601.6),40,22.5,58.0,0.31,593.3,633.6,648.1,665.9,689.1,721.2,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 UNIONBANK (↑),UNIONBANK,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div),186.0,₹185.8 - ₹186.9 (🎯 ₹186.1),134,2.2,59.5,0.24,183.8,189.4,191.8,195.1,200.0,207.4,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 MRPL (↑),MRPL,Swing,🏦 200 MA Retest (📉 +RSI Div),168.53,₹163.8 - ₹169.0 (🎯 ₹164.7),148,6.63,55.2,0.2,161.9,173.6,177.4,182.4,189.5,199.8,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-TBOTEK (↑),TBOTEK,Pre-Breakout,💥 Pre-Breakout Coil,1696.6,₹nan - ₹nan (🎯 ₹nan),14,,63.8,0.2,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-UNIVASTU (↑),UNIVASTU,Swing,🔄 Breakout Retest (📉 +RSI Div) 🏆 Super-Trend ⚠️ Micro-Risk,156.88,₹nan - ₹nan (🎯 ₹nan),79,,66.8,0.2,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-MANYAVAR (↑),MANYAVAR,Pre-Breakout,💥 Pre-Breakout Coil,544.55,₹nan - ₹nan (🎯 ₹nan),45,,64.8,0.19,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-GANDHAR (↑),GANDHAR,Pre-Breakout,💥 Pre-Breakout Coil 🏆 Super-Trend,256.47,₹245.4 - ₹256.5 (🎯 ₹246.8),97,5.47,68.0,0.16,251.0,263.1,268.0,274.6,283.9,297.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-NILKAMAL (↑),NILKAMAL,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div) 🏆 Super-Trend,2081.6,₹nan - ₹nan (🎯 ₹nan),12,,74.3,0.14,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-MATRIMONY (↑),MATRIMONY,Swing,🔄 Breakout Retest ⚠️ Micro-Risk,515.45,₹nan - ₹nan (🎯 ₹nan),24,,62.8,0.13,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-PREMEXPLN (↑),PREMEXPLN,Pre-Breakout,💥 Pre-Breakout Coil (📉 +RSI Div),666.25,₹nan - ₹nan (🎯 ₹nan),37,,64.2,0.13,,,,,,,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-JAIBALAJI (↑),JAIBALAJI,Intraday,🚀 Volume Breakout ⚠️ Micro-Risk,70.16,₹nan - ₹nan (🎯 ₹nan),178,,53.8,1.92,,,,,,,5,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-MAWANASUG (↑),MAWANASUG,Intraday,🚀 Volume Breakout 🏆 Super-Trend ⚠️ Micro-Risk,141.67,₹nan - ₹nan (🎯 ₹nan),88,,73.9,1.63,,,,,,,5,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
+GANDHAR (↑),GANDHAR,Pre-Breakout,💥 Pre-Breakout Coil,256.47,₹245.4 - ₹256.5 (🎯 ₹246.8),97,5.47,68.0,0.16,251.0,263.1,268.0,274.6,283.9,297.7,6,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
 ALEMBICLTD (↑),ALEMBICLTD,Intraday,🚀 Volume Breakout ⚠️ Micro-Risk,100.04,₹91.5 - ₹100.0 (🎯 ₹92.4),124,3.04,73.1,1.57,97.0,104.1,107.1,111.2,116.8,124.9,5,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-VIDHIING (↑),VIDHIING,BTST,🌙 Strong Close BTST (📉 +RSI Div) ⚠️ Micro-Risk,350.1,₹nan - ₹nan (🎯 ₹nan),35,,71.2,1.41,,,,,,,5,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-SHANKARA (↑),SHANKARA,Pre-Breakout,🔥 Squeeze Breakout (📉 +RSI Div) ⚠️ Micro-Risk,146.95,₹nan - ₹nan (🎯 ₹nan),85,,76.6,0.77,,,,,,,5,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0
-EMAMIPAP (↑),EMAMIPAP,Pre-Breakout,🗜️ TTM Squeeze Coil (📉 +RSI Div) ⚠️ Micro-Risk,117.18,₹nan - ₹nan (🎯 ₹nan),106,,73.8,0.22,,,,,,,5,N/A (Cash),-,-,-,-,-,-,0.0,,0.0,0.0

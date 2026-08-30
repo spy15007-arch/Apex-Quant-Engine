@@ -1,7 +1,7 @@
 ### 📊 ATLANTAELE
-**Analysis Skipped**: Google Servers too busy. Moving on to finish scan.
+**Analysis Skipped**: Google Servers busy. Scan completed.
 
 ---
 
-### 📊 AUBANK
-**Analysis Skipped**: Google Servers too busy. Moving on to finish scan.
+### 📊 KROSS
+**Analysis Skipped**: Google Servers busy. Scan completed.
