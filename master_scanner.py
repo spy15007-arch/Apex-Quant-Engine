@@ -10,7 +10,6 @@ import datetime
 import math
 from scipy.stats import norm
 import warnings
-from pyrate_limiter import Duration, RequestRate, Limiter
 from requests_ratelimiter import LimiterSession
 
 warnings.filterwarnings('ignore')
@@ -22,9 +21,7 @@ BASE_CAPITAL_PER_TRADE = 50000
 HIGH_CONVICTION_MULTIPLIER = 2  
 
 # --- 🚀 SPEED FIX 1: UNLOCKED TRUE PARALLEL RATE LIMITER ---
-rate = RequestRate(15, Duration.SECOND)
-limiter = Limiter(rate)
-session = LimiterSession(limiter=limiter)
+session = LimiterSession(per_second=15)
 session.headers.update({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     'Accept': '*/*',
