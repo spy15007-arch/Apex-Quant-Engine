@@ -1,45 +1,51 @@
+### 📊 ATLANTAELE (NSE) | 📈 Rising Support Retest 🏆 Super-Trend (Score: 8/10)
+• Buy Zone: ₹1745.1 | Stop Loss: ₹1575.0
+
 **12. Final Scorecard**
-Technicals: 8.5/10
-Fundamentals: 7.5/10
-Financial Strength: 8.0/10
-Earnings Quality: 7.5/10
-Valuation: 5.5/10
-Promoter Quality: 7.5/10
-Institutional Interest: 7.5/10
-Growth Visibility: 8.5/10
-News Flow: 7.5/10
-Risk Profile: 7.0/10
-Overall Score: 75/100
+Technicals: 8/10
+Fundamentals: 7/10
+Financial Strength: 8/10
+Earnings Quality: 7/10
+Valuation: 5/10
+Promoter Quality: 8/10
+Institutional Interest: 7/10
+Growth Visibility: 8/10
+News Flow: 7/10
+Risk Profile: 7/10
+Overall Score: 72/100
 
 **14. Executive Summary**
-• Why it Corrected: Healthy profit-booking and valuation consolidation following an extended impulse move across industrial electrical equipment names.
-• Reasons Resolved?: Selling momentum has exhausted at structural rising trendline support with clear volume absorption.
-• Fundamental Recovery: High-margin power T&D capex orders and electrification demand continue to drive solid top-line visibility and operational strength.
-• Technical & Accumulation Status: Bullish rising support retest with active Super-Trend confirmation, triggering high-probability continuation above ₹1,745.1.
-• Key Positives: Strong order pipeline tied to national power infrastructure upgrades and expanding operating leverage. Consistent return metrics support long-term compounding.
-• Key Concerns: Rich valuation multiple (P/E ~57.5x) leaves limited room for quarterly execution slippages.
+• Why it Corrected: Healthy sector-wide consolidation and profit-taking following an extended multi-quarter momentum rally.
+• Reasons Resolved?: Selling pressure has dried up at key dynamic support, signaling an orderly base completion.
+• Fundamental Recovery: Domestic industrial capex cycle and power infrastructure demand continue to drive solid order execution.
+• Technical & Accumulation Status: Bouncing off multi-month rising trendline support with intact Super-Trend confirmation.
+• Key Positives: Strong balance sheet health combined with multi-year tailwinds in industrial electrical equipment.
+• Key Concerns: Elevated trailing valuation (P/E ~57.5x) leaves little buffer for quarterly execution delays.
 • Overall Conviction Level: High
 
 ---
 
+### 📊 AUBANK (NSE) | 📈 Rising Support Retest (Score: 8/10)
+• Buy Zone: ₹1091.0 | Stop Loss: ₹1035.0
+
 **12. Final Scorecard**
-Technicals: 8.0/10
-Fundamentals: 8.0/10
-Financial Strength: 8.0/10
-Earnings Quality: 7.5/10
-Valuation: 7.0/10
-Promoter Quality: 8.5/10
-Institutional Interest: 8.5/10
-Growth Visibility: 8.5/10
-News Flow: 8.0/10
-Risk Profile: 7.5/10
-Overall Score: 79.5/100
+Technicals: 8/10
+Fundamentals: 8/10
+Financial Strength: 8/10
+Earnings Quality: 7/10
+Valuation: 7/10
+Promoter Quality: 9/10
+Institutional Interest: 8/10
+Growth Visibility: 8/10
+News Flow: 7/10
+Risk Profile: 8/10
+Overall Score: 78/100
 
 **14. Executive Summary**
-• Why it Corrected: Industry-wide cost of funds pressure, margin compression, and execution uncertainties surrounding the Fincare SFB merger integration.
-• Reasons Resolved?: Deposit costs are stabilizing alongside steady realization of post-merger branch synergies and geographic expansion.
-• Fundamental Recovery: Sustained ~20%+ loan book growth, resilient asset quality in core retail segments, and improving fee-income granularity.
-• Technical & Accumulation Status: Testing and holding a critical multi-month rising trendline support with institutional accumulation evident near the ₹1,091 trigger.
-• Key Positives: Granular retail liability franchise, enhanced reach in South India, and potential valuation re-rating driven by the universal banking license transition.
-• Key Concerns: Elevated credit costs in the acquired microfinance/unsecured portfolio during macro stress.
+• Why it Corrected: Sector-wide compression in Net Interest Margins (NIMs) and integration concerns following the Fincare SFB merger.
+• Reasons Resolved?: Fincare integration synergies are taking shape, and deposit accretion is stabilizing funding costs.
+• Fundamental Recovery: Return on Assets (RoA) remains resilient above 1.5% with steady credit expansion across retail and commercial books.
+• Technical & Accumulation Status: Bouncing cleanly off an ascending trendline support with volume expansion near the ₹1091 trigger.
+• Key Positives: Superior liability franchise among SFBs and high diversification across secured lending products.
+• Key Concerns: Elevated credit costs in the unsecured/MFI portfolio during the transition phase.
 • Overall Conviction Level: High
