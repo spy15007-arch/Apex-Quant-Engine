@@ -1,3 +1,7 @@
-⚠️ **AI Deep Dive is currently DISABLED.**
+### 📊 PETRONET
+**Analysis Failed**: Max retries reached due to Google server quotas and timeouts.
 
-To re-enable AI reports, change `ENABLE_AI_DEEP_DIVE = True` in the master_scanner.py file.
+---
+
+### 📊 SKFINDUS
+**Analysis Failed**: Max retries reached due to Google server quotas and timeouts.
