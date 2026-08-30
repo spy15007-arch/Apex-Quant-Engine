@@ -74,7 +74,7 @@ def display_interactive_table(df, tab_name):
 st.title("📈 Institutional Quant Dashboard")
 st.markdown("Automated Multi-Timeframe Structural Breakout & Retest Scanner")
 
-tabs = st.tabs(["💥 Pre-Breakout", "📈 Swing (1-2 Wk)", "🌙 Perfect BTST", "⚡ Intraday", "💰 Budget (<₹500)", "👑 Index Scalps", "💼 Active Portfolio", "🤖 AI Deep Dive", "📈 Advanced Charting"])
+tabs = st.tabs(["💥 Pre-Breakout", "📈 Swing (1-2 Wk)", "🌙 Perfect BTST", "⚡ Intraday", "💰 Budget (<₹500)", "👑 Index Scalps", "💼 Active Portfolio", "🤖 AI Deep Dive", "🎯 Explosive Triangles"])
 
 df_all = load_data("all_setups.csv")
 
@@ -128,13 +128,11 @@ with tabs[7]:
         for i, report in enumerate(reports):
             if not report.strip(): continue
             
-            # Identify if it's an error block
-            if "Analysis Failed" in report:
-                st.error(report.strip())
+            if "Analysis Failed" in report or "Analysis Skipped" in report:
+                st.warning(report.strip())
             else:
                 st.markdown(f"### 🔥 Setup Option {i+1}")
                 
-                # Parse the clean TradingView text format for nice display
                 scorecard_match = re.search(r'\*\*12\. Final Scorecard\*\*(.*?)(?=\*\*14\. Executive Summary\*\*|$)', report, re.DOTALL)
                 summary_match = re.search(r'\*\*14\. Executive Summary\*\*(.*?)(?=\*\*|$)', report, re.DOTALL)
                 
@@ -147,70 +145,41 @@ with tabs[7]:
                         st.markdown("**📋 14. Executive Summary**")
                         st.markdown(summary_match.group(1).strip())
                 
-                # 1-Click Copy Box
                 st.caption("📋 1-Click Copy for TradingView:")
                 st.code(report.strip(), language="markdown")
             st.divider()
 
-# --- TAB 9: NATIVE QUANTITATIVE CHARTING ENGINE (MACD & VOLUME UPGRADE) ---
+# --- TAB 9: ADVANCED CHARTING (TRADINGVIEW STYLE OVERLAYS) ---
 with tabs[8]:
-    st.header("📈 Interactive Native Charting")
+    st.header("🎯 Explosive Ascending Setups (Interactive)")
+    st.markdown("These charts strictly display stocks currently coiling against ascending support or squeezing in a symmetrical triangle.")
+    
     df_charts = load_data("chart_data.csv")
     
     if df_charts.empty or df_all.empty:
-        st.info("Chart data is currently building. Please wait for the next automated market scan.")
+        st.info("No explosive geometric setups qualified today, or data is still building.")
     else:
         chart_tickers = df_charts['Ticker'].unique().tolist()
         col1, col2 = st.columns([1, 2])
         with col1: selected_ticker = st.selectbox("Select Active Setup to Analyze:", chart_tickers)
-        with col2: engine_choice = st.radio("Select Rendering Engine:", ["Lightweight Charts (Execution)", "Plotly (Deep Dive)"], horizontal=True)
+        with col2: engine_choice = st.radio("Select Rendering Engine:", ["Plotly (Deep Dive)", "Lightweight Charts (Execution)"], horizontal=True)
         
         stock_df = df_charts[df_charts['Ticker'] == selected_ticker].copy()
         stock_df['Date'] = pd.to_datetime(stock_df['Date'])
         
-        # Calculate EMAs
         stock_df['EMA9'] = stock_df['Close'].ewm(span=9, adjust=False).mean()
         stock_df['EMA21'] = stock_df['Close'].ewm(span=21, adjust=False).mean()
         stock_df['EMA50'] = stock_df['Close'].ewm(span=50, adjust=False).mean()
         
-        if engine_choice == "Lightweight Charts (Execution)":
-            st.markdown(f"### {selected_ticker} (Execution View)")
-            lw_candles = json.loads(stock_df[['Date', 'Open', 'High', 'Low', 'Close']].rename(columns={'Date':'time'}).to_json(orient='records'))
-            lw_vol = json.loads(stock_df[['Date', 'Volume']].rename(columns={'Date':'time', 'Volume':'value'}).to_json(orient='records'))
-            lw_ema9 = json.loads(stock_df[['Date', 'EMA9']].rename(columns={'Date':'time', 'EMA9':'value'}).to_json(orient='records'))
-            lw_ema21 = json.loads(stock_df[['Date', 'EMA21']].rename(columns={'Date':'time', 'EMA21':'value'}).to_json(orient='records'))
-            lw_ema50 = json.loads(stock_df[['Date', 'EMA50']].rename(columns={'Date':'time', 'EMA50':'value'}).to_json(orient='records'))
-            
-            for i, v in enumerate(lw_vol): v['color'] = 'rgba(38, 166, 154, 0.5)' if stock_df['Close'].iloc[i] >= stock_df['Open'].iloc[i] else 'rgba(239, 83, 80, 0.5)'
-            
-            chartOptions = {
-                "height": 500,
-                "layout": {"background": {"type": "solid", "color": "#131722"}, "textColor": "#d1d4dc"},
-                "grid": {"vertLines": {"color": "#1f2933"}, "horzLines": {"color": "#1f2933"}},
-                "crosshair": {"mode": 0},
-                "timeScale": {"timeVisible": False, "borderColor": "#2b2b43"},
-            }
-            
-            series = [
-                {"type": "Candlestick", "data": lw_candles, "options": {"upColor": "#26a69a", "downColor": "#ef5350", "borderVisible": False, "wickUpColor": "#26a69a", "wickDownColor": "#ef5350"}},
-                {"type": "Line", "data": lw_ema9, "options": {"color": "#00E5FF", "lineWidth": 2, "title": "9 EMA"}}, # Neon Cyan
-                {"type": "Line", "data": lw_ema21, "options": {"color": "#FF00FF", "lineWidth": 2, "title": "21 EMA"}}, # Magenta
-                {"type": "Line", "data": lw_ema50, "options": {"color": "#FFD700", "lineWidth": 2, "title": "50 EMA"}}, # Gold
-                {"type": "Histogram", "data": lw_vol, "options": {"priceFormat": {"type": "volume"}, "priceScaleId": "", "scaleMargins": {"top": 0.85, "bottom": 0}}}
-            ]
-            renderLightweightCharts([{"chartOptions": chartOptions, "series": series}], 'chart')
-            
-        elif engine_choice == "Plotly (Deep Dive)":
-            st.markdown(f"### {selected_ticker} (Statistical View)")
+        if engine_choice == "Plotly (Deep Dive)":
+            st.markdown(f"### {selected_ticker} (Structural Breakout View)")
             
             # --- CALCULATION ENGINE ---
-            # 1. RSI
             delta = stock_df['Close'].diff()
             gain = (delta.where(delta > 0, 0)).rolling(14).mean()
             loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
             stock_df['RSI'] = 100 - (100 / (1 + gain/loss))
             
-            # 2. MACD
             stock_df['EMA12'] = stock_df['Close'].ewm(span=12, adjust=False).mean()
             stock_df['EMA26'] = stock_df['Close'].ewm(span=26, adjust=False).mean()
             stock_df['MACD'] = stock_df['EMA12'] - stock_df['EMA26']
@@ -230,29 +199,41 @@ with tabs[8]:
             
             fig.add_trace(go.Candlestick(x=stock_df['Date'], open=stock_df['Open'], high=stock_df['High'], low=stock_df['Low'], close=stock_df['Close'], name='Price'), row=1, col=1, secondary_y=False)
             fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA9'], line=dict(color='#00E5FF', width=1.5), name='9 EMA'), row=1, col=1, secondary_y=False)
-            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA21'], line=dict(color='#FF00FF', width=1.5), name='21 EMA'), row=1, col=1, secondary_y=False)
             fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA50'], line=dict(color='#FFD700', width=1.5), name='50 EMA'), row=1, col=1, secondary_y=False)
             
-            # Hide the volume scale so it doesn't squish the price, keeping it trapped at the bottom 25% of the top pane
             fig.update_yaxes(range=[0, stock_df['Volume'].max() * 4], showticklabels=False, showgrid=False, secondary_y=True, row=1, col=1)
 
-            # Automated Geometric Overlays
+            # =========================================================
+            # 🚀 NEW: TRADINGVIEW STYLE RISK/REWARD & TRENDLINE DRAWING
+            # =========================================================
             setup_info = df_all[df_all['RawStock'] == selected_ticker]
             if not setup_info.empty:
                 entry_p = float(setup_info.iloc[0]['Entry'])
                 sl_p = float(setup_info.iloc[0]['EqSL'])
                 t1_p = float(setup_info.iloc[0]['EqT1'])
-                tag_name = str(setup_info.iloc[0].get('Tag', ''))
-                tl_d1 = setup_info.iloc[0].get('TL_D1')
-                tl_v1 = setup_info.iloc[0].get('TL_V1')
-                tl_v2 = setup_info.iloc[0].get('TL_V2')
                 
-                if pd.notna(tl_d1) and pd.notna(tl_v1) and pd.notna(tl_v2) and "Rising Support" in tag_name:
-                    last_date = stock_df['Date'].iloc[-1]
-                    fig.add_trace(go.Scatter(x=[tl_d1, last_date], y=[float(tl_v1), float(tl_v2)], mode='lines', line=dict(color='#ffeb3b', width=2.5, dash='dashdot'), name='Trendline Support'), row=1, col=1, secondary_y=False)
+                # Fetch geometric coordinates from scanner
+                tl_start_date = setup_info.iloc[0].get('TL_StartDate')
+                tl_start_price = setup_info.iloc[0].get('TL_StartPrice')
+                tl_end_price = setup_info.iloc[0].get('TL_EndPrice')
                 
-                fig.add_hline(y=sl_p, line_dash="dash", row=1, col=1, secondary_y=False, line_color="rgba(255, 82, 82, 0.8)", annotation_text=f"SL: ₹{sl_p}", annotation_position="bottom right")
-                fig.add_hline(y=t1_p, line_dash="dash", row=1, col=1, secondary_y=False, line_color="rgba(38, 166, 154, 0.8)", annotation_text=f"T1: ₹{t1_p}", annotation_position="top right")
+                last_date = stock_df['Date'].iloc[-1]
+                future_date = last_date + pd.Timedelta(days=20) # Extends boxes to the right 
+                
+                # 1. DRAW TRADINGVIEW RISK/REWARD BOXES
+                # Green Target Box (Entry -> Target 1)
+                fig.add_shape(type="rect", x0=last_date, y0=entry_p, x1=future_date, y1=t1_p, fillcolor="rgba(38, 166, 154, 0.2)", line=dict(color="rgba(38, 166, 154, 0.8)", width=1), row=1, col=1, secondary_y=False)
+                # Red Risk Box (Entry -> Stop Loss)
+                fig.add_shape(type="rect", x0=last_date, y0=sl_p, x1=future_date, y1=entry_p, fillcolor="rgba(239, 83, 80, 0.2)", line=dict(color="rgba(239, 83, 80, 0.8)", width=1), row=1, col=1, secondary_y=False)
+                
+                # Box Annotations
+                fig.add_annotation(x=future_date, y=t1_p, text=f"🎯 T1: ₹{t1_p}", showarrow=False, xanchor="left", font=dict(color="#26a69a"), row=1, col=1, secondary_y=False)
+                fig.add_annotation(x=future_date, y=sl_p, text=f"🛡️ SL: ₹{sl_p}", showarrow=False, xanchor="left", font=dict(color="#ef5350"), row=1, col=1, secondary_y=False)
+
+                # 2. DRAW ASCENDING SUPPORT / TRIANGLE LINE
+                if pd.notna(tl_start_date) and pd.notna(tl_start_price) and float(tl_start_price) > 0:
+                    fig.add_trace(go.Scatter(x=[tl_start_date, last_date], y=[float(tl_start_price), float(tl_end_price)], mode='lines', line=dict(color='#FFA500', width=2.5, dash='solid'), name='Ascending Support'), row=1, col=1, secondary_y=False)
+            # =========================================================
 
             # Row 2: RSI Panel
             fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['RSI'], line=dict(color='#00d1ff', width=1.5), name='RSI 14'), row=2, col=1)
@@ -265,5 +246,35 @@ with tabs[8]:
             fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['MACD'], line=dict(color='#2962FF', width=1.5), name='MACD Line'), row=3, col=1)
             fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['Signal'], line=dict(color='#FF6D00', width=1.5), name='Signal Line'), row=3, col=1)
 
+            # Removes Weekend Gaps for smooth trendlines!
+            fig.update_xaxes(rangebreaks=[dict(bounds=["sat", "mon"])])
+            
             fig.update_layout(xaxis_rangeslider_visible=False, template="plotly_dark", height=850, margin=dict(l=0, r=0, t=10, b=0))
             st.plotly_chart(fig, use_container_width=True)
+
+        elif engine_choice == "Lightweight Charts (Execution)":
+            st.markdown(f"### {selected_ticker} (Execution View)")
+            lw_candles = json.loads(stock_df[['Date', 'Open', 'High', 'Low', 'Close']].rename(columns={'Date':'time'}).to_json(orient='records'))
+            lw_vol = json.loads(stock_df[['Date', 'Volume']].rename(columns={'Date':'time', 'Volume':'value'}).to_json(orient='records'))
+            lw_ema9 = json.loads(stock_df[['Date', 'EMA9']].rename(columns={'Date':'time', 'EMA9':'value'}).to_json(orient='records'))
+            lw_ema21 = json.loads(stock_df[['Date', 'EMA21']].rename(columns={'Date':'time', 'EMA21':'value'}).to_json(orient='records'))
+            lw_ema50 = json.loads(stock_df[['Date', 'EMA50']].rename(columns={'Date':'time', 'EMA50':'value'}).to_json(orient='records'))
+            
+            for i, v in enumerate(lw_vol): v['color'] = 'rgba(38, 166, 154, 0.5)' if stock_df['Close'].iloc[i] >= stock_df['Open'].iloc[i] else 'rgba(239, 83, 80, 0.5)'
+            
+            chartOptions = {
+                "height": 500,
+                "layout": {"background": {"type": "solid", "color": "#131722"}, "textColor": "#d1d4dc"},
+                "grid": {"vertLines": {"color": "#1f2933"}, "horzLines": {"color": "#1f2933"}},
+                "crosshair": {"mode": 0},
+                "timeScale": {"timeVisible": False, "borderColor": "#2b2b43"},
+            }
+            
+            series = [
+                {"type": "Candlestick", "data": lw_candles, "options": {"upColor": "#26a69a", "downColor": "#ef5350", "borderVisible": False, "wickUpColor": "#26a69a", "wickDownColor": "#ef5350"}},
+                {"type": "Line", "data": lw_ema9, "options": {"color": "#00E5FF", "lineWidth": 2, "title": "9 EMA"}}, 
+                {"type": "Line", "data": lw_ema21, "options": {"color": "#FF00FF", "lineWidth": 2, "title": "21 EMA"}}, 
+                {"type": "Line", "data": lw_ema50, "options": {"color": "#FFD700", "lineWidth": 2, "title": "50 EMA"}}, 
+                {"type": "Histogram", "data": lw_vol, "options": {"priceFormat": {"type": "volume"}, "priceScaleId": "", "scaleMargins": {"top": 0.85, "bottom": 0}}}
+            ]
+            renderLightweightCharts([{"chartOptions": chartOptions, "series": series}], 'chart')
