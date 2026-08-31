@@ -4,46 +4,46 @@
 **12. Final Scorecard**
 Technicals: 8/10
 Fundamentals: 9/10
-Financial Strength: 10/10
+Financial Strength: 9/10
 Earnings Quality: 9/10
-Valuation: 5/10
-Promoter Quality: 8/10
+Valuation: 4/10
+Promoter Quality: 9/10
 Institutional Interest: 9/10
 Growth Visibility: 9/10
 News Flow: 8/10
-Risk Profile: 7/10
+Risk Profile: 8/10
 Overall Score: 82/100
 
 **14. Executive Summary**
-• Explosive Growth Audit: Verified; Q3 FY25 Revenue grew 47.1% YoY to ₹284.2 Cr, and Net Profit surged 40.5% YoY to ₹152.1 Cr.
-• Market Theme: Structural financialization of Indian household savings driving unprecedented retail demat account additions and capital market volume.
-• Technical & Accumulation Status: Extreme price compression within a double-sized symmetrical triangle, indicating strong institutional accumulation before a potential breakout.
-• Key Positives: Quasi-monopolistic duopoly model with robust annuity-like revenue, high operating leverage, and a debt-free, cash-rich balance sheet.
-• Key Concerns: Stretched valuation at 62.3x P/E leaves the stock highly vulnerable to cyclical downturns in capital market volumes.
+• Explosive Growth Audit: Verified explosive momentum with Q3 FY25 Sales surging +41% YoY and Q2 FY25 Sales up +55% YoY, easily clearing the high-growth benchmark.
+• Market Theme: Structural financialization of Indian household savings driving unprecedented retail demat account additions and transaction volumes.
+• Technical & Accumulation Status: Tight consolidation within a massive 2x size symmetrical triangle, showing strong institutional accumulation and price compression just below the ₹1402.5 breakout trigger.
+• Key Positives: High-moat duopoly business model with massive operating leverage (EBITDA margins >60%) and a zero-debt, cash-rich balance sheet. Direct beneficiary of capital market expansion.
+• Key Concerns: Elevated valuation (P/E ~62.3x) leaves little room for operational misses and increases sensitivity to regulatory tariff changes by SEBI.
 • Overall Conviction Level: High
 
 ---
 
-### 📊 LTF (NSE) | 🔺 Symmetrical Triangle Coil (Score: 7/10)
-• Buy Zone: ₹321.0 | Stop Loss: ₹313.2
+### 📊 20MICRONS (NSE) | 🔺 Symmetrical Triangle Coil (Score: 7/10)
+• Buy Zone: ₹218.03 | Stop Loss: ₹209.5
 
 **12. Final Scorecard**
-Technicals: 7/10
-Fundamentals: 8/10
-Financial Strength: 8/10
+Technicals: 8/10
+Fundamentals: 7/10
+Financial Strength: 7/10
 Earnings Quality: 7/10
-Valuation: 6/10
-Promoter Quality: 9/10
-Institutional Interest: 8/10
-Growth Visibility: 8/10
-News Flow: 7/10
-Risk Profile: 7/10
-Overall Score: 75/100
+Valuation: 9/10
+Promoter Quality: 7/10
+Institutional Interest: 4/10
+Growth Visibility: 7/10
+News Flow: 6/10
+Risk Profile: 6/10
+Overall Score: 68/100
 
 **14. Executive Summary**
-• Explosive Growth Audit: Q3 FY25 Net Profit rose 17% YoY to ₹729 Cr driven by 25% YoY Retail book growth, though overall EPS growth is moderated by the rapid wind-down of legacy wholesale assets.
-• Market Theme: Shift toward high-yielding retail credit and digital-first lending models amidst stable margins and tightening system liquidity.
-• Technical & Accumulation Status: Coiling within a tight Symmetrical Triangle under the 100-DMA, exhibiting volume contraction and clear signs of institutional accumulation ahead of the ₹321 trigger.
-• Key Positives: Superior AAA-rated L&T parentage offers a low cost-of-borrowing advantage; retail mix has successfully reached 96% of the overall book with robust asset quality (Net NPA at 0.8%).
-• Key Concerns: Rising pressure on unsecured retail segments and microfinance book due to RBI’s tightened risk-weight norms.
-• Overall Conviction Level: Medium-High
+• Explosive Growth Audit: YoY Sales growth is steady at ~12-15% and Net Profit is up ~20%, showing consistent operating leverage rather than an explosive +50% EPS surge.
+• Market Theme: Surging consumption of industrial micronized minerals and specialty fillers driven by the domestic infrastructure, paints, and automotive plastics boom.
+• Technical & Accumulation Status: Price is coiling tightly inside a multi-week symmetrical triangle near the breakout trigger, showing classic volume contraction before a volatility expansion.
+• Key Positives: Exceptionally cheap valuation (P/E ~11.3x) relative to specialty chemical peers, paired with stable double-digit margins and a healthy debt-to-equity ratio.
+• Key Concerns: Micro-cap scale coupled with low institutional (FII/DII) ownership exposes the stock to higher liquidity and volatility risks.
+• Overall Conviction Level: Medium
