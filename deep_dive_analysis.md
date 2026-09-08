@@ -1,27 +1,39 @@
-
+# Detailed Stock Analysis: API ERROR
 
 ---
 
-### 📊 ARFIN (NSE) | 📈 Rising Support Retest (⭐ 2x Size) (Score: 8/10)
-• Buy Zone: ₹91.8 | Stop Loss: ₹81.3
+### 1. Technical Analysis
+Error
+### 12. Final Scorecard
+**Google API Error 404:**
+{
+  "error": {
+    "code": 404,
+    "message": "models/gemini-1.5-pro-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "status": "NOT_FOUND"
+  }
+}
 
-**12. Final Scorecard**
-Technicals: 8/10
-Fundamentals: 5/10
-Financial Strength: 6/10
-Earnings Quality: 5/10
-Valuation: 3/10
-Promoter Quality: 7/10
-Institutional Interest: 2/10
-Growth Visibility: 6/10
-News Flow: 6/10
-Risk Profile: 4/10
-Overall Score: 52/100
+### 14. Executive Summary
+Google rejected the AI request.
 
-**14. Executive Summary**
-• Explosive Growth Audit: YoY Net Profit surged over 70% in recent quarterly results (EPS growth >50%), while revenue growth remains moderate at ~15% YoY.
-• Market Theme: Increasing global and domestic shift toward ESG-compliant green metal recycling and circular economy frameworks.
-• Technical & Accumulation Status: Price is successfully retesting structural rising support on 2x average volume, confirming active HNI/retail accumulation.
-• Key Positives: Exceptionally high promoter holding of ~74.5% with zero pledging and improving operational margins.
-• Key Concerns: Stretched valuation at a 76.5 P/E multiple with virtually no institutional (FII/DII) sponsorship.
-• Overall Conviction Level: Medium
+---
+
+# Detailed Stock Analysis: API ERROR
+
+---
+
+### 1. Technical Analysis
+Error
+### 12. Final Scorecard
+**Google API Error 404:**
+{
+  "error": {
+    "code": 404,
+    "message": "models/gemini-1.5-pro-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "status": "NOT_FOUND"
+  }
+}
+
+### 14. Executive Summary
+Google rejected the AI request.
