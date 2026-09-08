@@ -2,6 +2,7 @@ import os
 import requests
 import json
 import time
+import threading
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -17,12 +18,23 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
-# --- THE NATIVE YAHOO FINANCE RATE-LIMIT BYPASS ---
-# We use a standard requests.Session (allowed by yfinance) but inject a physical 
-# 0.5-second delay into every call to perfectly bypass 429 and 401 rate-limit errors.
+# --- THE INSTITUTIONAL THREAD-LOCKED RATE LIMITER ---
+# By using a threading.Lock(), we can turn multithreading back ON (threads=True) 
+# for massive speed, while mathematically forcing the threads to wait in line 
+# and hit Yahoo at exactly 2.5 requests per second to bypass firewalls.
 class RateLimitedSession(requests.Session):
+    def __init__(self):
+        super().__init__()
+        self._lock = threading.Lock()
+        self._last_call = 0.0
+
     def request(self, *args, **kwargs):
-        time.sleep(0.5) 
+        with self._lock:
+            now = time.time()
+            elapsed = now - self._last_call
+            if elapsed < 0.4:  
+                time.sleep(0.4 - elapsed)
+            self._last_call = time.time()
         return super().request(*args, **kwargs)
 
 session = RateLimitedSession()
@@ -91,8 +103,9 @@ EXTENDED_UNIVERSE_FALLBACK = list(set(("360ONE 3IINFOTECH 3MINDIA 5PAISA 63MOONS
 def get_complete_nse_universe():
     headers = {'User-Agent': 'Mozilla/5.0'}
     symbols = set()
+    # Pulling strictly the Nifty Total Market (750) and Microcap (250)
+    # Banning the raw EQUITY_L.csv list to purge 1,500 illiquid penny stocks
     urls = [
-        "https://archives.nseindia.com/content/equities/EQUITY_L.csv",
         "https://archives.nseindia.com/content/indices/ind_niftytotalmarket_list.csv",
         "https://archives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv"
     ]
@@ -106,7 +119,11 @@ def get_complete_nse_universe():
                         sym = parts[0].strip().replace('"', '')
                         if sym.isalnum() and not sym.startswith("SGB") and not sym.startswith("EBB"): symbols.add(sym)
         except: continue
-    if len(symbols) > 300: return sorted(list(symbols))
+        
+    if len(symbols) > 300:
+        symbols.update(STATIC_FNO)
+        symbols.update(EXTENDED_UNIVERSE_FALLBACK)
+        return sorted(list(symbols))
     return sorted(list(set(STATIC_FNO + EXTENDED_UNIVERSE_FALLBACK)))
 
 def calculate_leading_sectors(nifty_return_20d):
@@ -129,13 +146,14 @@ def calculate_leading_sectors(nifty_return_20d):
     except: pass
     return leading_sectors
 
-def download_in_chunks(tickers, chunk_size=40):
+def download_in_chunks(tickers, chunk_size=150):
     opens_list, closes_list, highs_list, lows_list, vols_list = [], [], [], [], []
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=False, session=session)
+        # Multithreading is back ON, fully protected by our Thread Lock
+        d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=True, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
                 if 'Open' in d.columns.levels[0]: opens_list.append(d['Open'])
@@ -150,7 +168,6 @@ def download_in_chunks(tickers, chunk_size=40):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(1.0)
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -388,7 +405,7 @@ def run():
     leading_sectors = calculate_leading_sectors(nifty_return_20d)
     universe = get_complete_nse_universe()
     
-    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=40)
+    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=150)
     if closes.empty: return
 
     ema_50_daily = closes.ewm(span=50).mean()
@@ -446,7 +463,6 @@ def run():
         symbol = ticker.replace(".NS", "")
         
         # --- THE QUALITY EQUITY FILTER ---
-        # Strictly bans ETFs, Bees, Bonds, and Index proxies to ensure actual company stocks only.
         if any(sub in symbol for sub in ["BEES", "ETF", "LIQUID", "GSEC", "SGB", "INFRAINV"]): continue
 
         try:
@@ -495,7 +511,6 @@ def run():
             is_swing_retest = ((0.025 <= ((recent_high - close_p) / close_p) <= 0.15) and (close_p >= d_ema20) and (float(df_l.iloc[-1]) <= d_ema20 * 1.015) and (vol_vs <= 1.0) and lower_wick_ok and (macd_val - macd_sig >= -0.15 * atr))
             
             # --- THE NEW MACD SCANNER ENGINE ---
-            # Identifies when MACD specifically crosses ABOVE the Signal Line while explicitly greater than Zero.
             is_macd_bullish_cross = (prev_macd_val <= prev_macd_sig) and (macd_val > macd_sig) and (macd_val > 0)
 
             recent_daily_high = float(df_h.iloc[-1])
