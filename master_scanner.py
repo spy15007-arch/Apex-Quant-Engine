@@ -9,6 +9,7 @@ import datetime
 import math
 from scipy.stats import norm
 import warnings
+from requests_cache import CachedSession
 warnings.filterwarnings('ignore')
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -17,15 +18,13 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
-# --- THE NATIVE YAHOO FINANCE RATE-LIMIT BYPASS ---
-# We use a standard requests.Session (allowed by yfinance) but inject a physical 
-# 0.5-second delay into every call to perfectly bypass 429 and 401 rate-limit errors.
-class RateLimitedSession(requests.Session):
+# --- THE BULLETPROOF YAHOO FINANCE RATE-LIMIT BYPASS ---
+class RateLimitedSession(CachedSession):
     def request(self, *args, **kwargs):
         time.sleep(0.5) 
         return super().request(*args, **kwargs)
 
-session = RateLimitedSession()
+session = RateLimitedSession(cache_name="yfinance.cache", backend="sqlite")
 session.headers.update({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
     'Accept': '*/*',
@@ -135,7 +134,6 @@ def download_in_chunks(tickers, chunk_size=40):
         chunk = tickers[i:i+chunk_size]
         print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
-        # Inject the specialized rate-limiting session and force sequential downloading
         d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=False, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
@@ -151,7 +149,6 @@ def download_in_chunks(tickers, chunk_size=40):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(1.0)
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -445,6 +442,11 @@ def run():
     valid_setups = []
     for ticker in closes.columns:
         symbol = ticker.replace(".NS", "")
+        
+        # --- THE QUALITY EQUITY FILTER ---
+        # Strictly bans ETFs, Bees, Bonds, and Index proxies to ensure actual company stocks only.
+        if any(sub in symbol for sub in ["BEES", "ETF", "LIQUID", "GSEC", "SGB", "INFRAINV"]): continue
+
         try:
             df_c, df_h, df_l = closes[ticker].dropna(), highs[ticker].dropna(), lows[ticker].dropna()
             if len(df_c) < 20: continue
@@ -469,6 +471,9 @@ def run():
             is_super_trend = momentum_6m >= 0.50
 
             rsi_val, macd_val, macd_sig = float(rsi_daily.iloc[-1][ticker]), float(macd_daily.iloc[-1][ticker]), float(macd_signal_daily.iloc[-1][ticker])
+            prev_macd_val = float(macd_daily.iloc[-2][ticker]) if len(macd_daily) > 1 else 0.0
+            prev_macd_sig = float(macd_signal_daily.iloc[-2][ticker]) if len(macd_signal_daily) > 1 else 0.0
+
             d_ema, w_ema, atr = float(ema_50_daily.iloc[-1][ticker]), float(ema_50_weekly.iloc[-1][ticker]), float(atr_daily.iloc[-1][ticker])
             d_ema20, d_ema200 = float(ema_20_daily.iloc[-1][ticker]), float(ema_200_daily.iloc[-1][ticker]) if not pd.isna(ema_200_daily.iloc[-1][ticker]) else 0.0
             prev_ema20 = float(ema_20_daily.iloc[-2][ticker]) if len(ema_20_daily) > 1 else d_ema20
@@ -486,6 +491,11 @@ def run():
             is_200ma_retest = (d_ema200 > 0) and (abs(close_p - d_ema200)/d_ema200 <= 0.025) and (vol_vs <= 1.0) and (close_p >= d_ema200)
             lower_wick_ok = True if daily_range == 0 else (close_p >= (float(df_l.iloc[-1]) + 0.35 * daily_range))
             is_swing_retest = ((0.025 <= ((recent_high - close_p) / close_p) <= 0.15) and (close_p >= d_ema20) and (float(df_l.iloc[-1]) <= d_ema20 * 1.015) and (vol_vs <= 1.0) and lower_wick_ok and (macd_val - macd_sig >= -0.15 * atr))
+            
+            # --- THE NEW MACD SCANNER ENGINE ---
+            # Identifies when MACD specifically crosses ABOVE the Signal Line while explicitly greater than Zero.
+            is_macd_bullish_cross = (prev_macd_val <= prev_macd_sig) and (macd_val > macd_sig) and (macd_val > 0)
+
             recent_daily_high = float(df_h.iloc[-1])
             is_btst = (close_p >= 0.98 * recent_daily_high) and (close_p > prev_close) and (close_p > d_ema20) and (vol_vs >= 1.0) and (50 <= rsi_val <= 75)
             is_rsi_div = check_bullish_divergence(df_c, rsi_daily[ticker].dropna())
@@ -499,6 +509,7 @@ def run():
             elif is_pre_breakout: hor, sl_m, tag = "Pre-Breakout", 1.0, "💥 Pre-Breakout Coil"
             elif is_200ma_retest: hor, sl_m, tag = "Swing", 1.5, "🏦 200 MA Retest"
             elif is_swing_retest: hor, sl_m, tag = "Swing", 1.2, "🔄 Breakout Retest"
+            elif is_macd_bullish_cross: hor, sl_m, tag = "Swing", 1.2, "🌊 MACD Bullish Zero-Cross"
             elif is_btst: hor, sl_m, tag = "BTST", 1.0, "🌙 Strong Close BTST"
             elif vol_vs >= 1.5: hor, sl_m, tag = "Intraday", 0.8, "🚀 Volume Breakout"
             else: continue
