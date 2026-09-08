@@ -22,7 +22,7 @@ def load_data(file_path):
 def load_markdown(file_path):
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as f: return f.read()
-    return "Pending Analysis: Waiting for active market setups."
+    return "*AI Analysis is pending or no qualifying setups were found today.*"
 
 # --- PORTFOLIO ACTION FUNCTIONS ---
 def add_to_portfolio(raw_stock, df_source):
@@ -51,6 +51,10 @@ def display_interactive_table(df, tab_name):
     if df.empty:
         st.info(f"No qualifying setups matched the criteria for {tab_name} today.")
         return
+    
+    # Sorts the table from Best to Worst based on Score and Institutional Volume
+    df = df.sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False])
+    
     df['Chart'] = "https://in.tradingview.com/chart/?symbol=NSE:" + df['RawStock']
     display_cols = ['Stock', 'Tag', 'Entry', 'EqSL', 'EqT1', 'EqT2', 'Score', 'Vol vs 50d', 'RSI', 'Chart', 'RawStock']
     display_df = df[[col for col in display_cols if col in df.columns]]
@@ -74,17 +78,25 @@ def display_interactive_table(df, tab_name):
 st.title("📈 Institutional Quant Dashboard")
 st.markdown("Automated Multi-Timeframe Structural Breakout & Retest Scanner")
 
-tabs = st.tabs(["💥 Pre-Breakout", "📈 Swing (1-2 Wk)", "🌙 Perfect BTST", "⚡ Intraday", "💰 Budget (<₹500)", "👑 Index Scalps", "💼 Active Portfolio", "🤖 AI Deep Dive", "🎯 Explosive Triangles"])
+# Budget tab completely removed, MACD tab added.
+tabs = st.tabs(["💥 Pre-Breakout", "🌊 MACD Zero-Cross", "📈 Swing (1-2 Wk)", "🌙 Perfect BTST", "⚡ Intraday", "👑 Index Scalps", "💼 Active Portfolio", "🤖 AI Deep Dive", "📈 Advanced Charting"])
 
 df_all = load_data("all_setups.csv")
 
-# --- POPULATE TABLES ---
+# --- POPULATE TABLES (STRICT ISOLATION LOGIC) ---
 if not df_all.empty:
-    with tabs[0]: st.header("💥 Pre-Breakout Coils"); display_interactive_table(df_all[df_all['Horizon'] == 'Pre-Breakout'], "Pre-Breakout")
-    with tabs[1]: st.header("📈 Swing Trades"); display_interactive_table(df_all[df_all['Horizon'] == 'Swing'], "Swing Trades")
-    with tabs[2]: st.header("🌙 Perfect BTST"); display_interactive_table(df_all[df_all['Horizon'] == 'BTST'], "BTST")
-    with tabs[3]: st.header("⚡ Intraday Momentum"); display_interactive_table(df_all[df_all['Horizon'] == 'Intraday'], "Intraday")
-    with tabs[4]: st.header("💰 Budget Picks (<₹500)"); display_interactive_table(df_all[df_all['Entry'] < 500], "Budget Stocks")
+    df_pre = df_all[df_all['Horizon'] == 'Pre-Breakout']
+    df_macd = df_all[df_all['Tag'] == '🌊 MACD Bullish Zero-Cross']
+    # Banning MACD setups from the generic Swing tab to prevent duplicates
+    df_swing = df_all[(df_all['Horizon'] == 'Swing') & (df_all['Tag'] != '🌊 MACD Bullish Zero-Cross')]
+    df_btst = df_all[df_all['Horizon'] == 'BTST']
+    df_intra = df_all[df_all['Horizon'] == 'Intraday']
+
+    with tabs[0]: st.header("💥 Pre-Breakout Coils"); display_interactive_table(df_pre, "Pre-Breakout")
+    with tabs[1]: st.header("🌊 MACD Zero-Cross Momentum"); display_interactive_table(df_macd, "MACD Zero-Cross")
+    with tabs[2]: st.header("📈 Structural Swing Trades"); display_interactive_table(df_swing, "Swing Trades")
+    with tabs[3]: st.header("🌙 Perfect BTST"); display_interactive_table(df_btst, "BTST")
+    with tabs[4]: st.header("⚡ Intraday Momentum"); display_interactive_table(df_intra, "Intraday")
 else:
     for i in range(5):
         with tabs[i]: st.info("No quantitative setups passed the institutional guardrails today. Capital protected.")
@@ -115,54 +127,50 @@ with tabs[6]:
         else: st.info("No active trades currently.")
     else: st.info("Your portfolio is currently empty.")
 
-# --- TAB 8: AI DEEP DIVE (TRADINGVIEW OVERLAYS) ---
+# --- TAB 8: AI DEEP DIVE ---
 with tabs[7]:
-    st.header("🔬 TradingView Overlays (AI Analysis)")
-    st.markdown("Copy these concise blocks and paste them directly into a TradingView text box on your charts.")
-    
+    st.header("🔬 Institutional Fundamental Analysis")
     raw_ai_report = load_markdown("deep_dive_analysis.md")
     if "Pending Analysis" in raw_ai_report or "No qualifying setups" in raw_ai_report: 
         st.info("AI Analysis is pending or no qualifying setups were found today.")
     else:
         reports = raw_ai_report.split("\n\n---\n\n")
-        for i, report in enumerate(reports):
+        for report in reports:
             if not report.strip(): continue
+            lines = report.strip().split('\n')
+            title = lines[0].replace("# Detailed Stock Analysis:", "").strip() if lines else "Stock Analysis"
             
-            if "Analysis Failed" in report or "Analysis Skipped" in report:
-                st.warning(report.strip())
-            else:
-                st.markdown(f"### 🔥 Setup Option {i+1}")
-                
-                scorecard_match = re.search(r'\*\*12\. Final Scorecard\*\*(.*?)(?=\*\*14\. Executive Summary\*\*|$)', report, re.DOTALL)
-                summary_match = re.search(r'\*\*14\. Executive Summary\*\*(.*?)(?=\*\*|$)', report, re.DOTALL)
-                
-                if scorecard_match and summary_match:
-                    col1, col2 = st.columns([1, 2])
-                    with col1:
-                        st.markdown("**🏆 12. Final Scorecard**")
-                        st.markdown(scorecard_match.group(1).strip())
-                    with col2:
-                        st.markdown("**📋 14. Executive Summary**")
-                        st.markdown(summary_match.group(1).strip())
-                
-                st.caption("📋 1-Click Copy for TradingView:")
-                st.code(report.strip(), language="markdown")
+            scorecard_match = re.search(r'### 12\. Final Scorecard(.*?)(?=### 13\.|$)', report, re.DOTALL)
+            summary_match = re.search(r'### 14\. Executive Summary(.*?)(?=###|$)', report, re.DOTALL)
+            tech_match = re.search(r'### 1\. Technical Analysis(.*?)(?=### 2\.|$)', report, re.DOTALL)
+            
+            scorecard_text = scorecard_match.group(1).strip() if scorecard_match else "Data error."
+            summary_text = summary_match.group(1).strip() if summary_match else "Data error."
+            tech_text = tech_match.group(1).strip() if tech_match else "Data error."
+            
+            st.markdown(f"### {title}")
+            
+            ai_tab1, ai_tab2, ai_tab3, ai_tab4 = st.tabs(["📋 Executive Summary", "📊 Technical View", "🏆 Scorecard", "📖 Full Report"])
+            
+            with ai_tab1: st.markdown(summary_text)
+            with ai_tab2: st.markdown(tech_text)
+            with ai_tab3: st.markdown(scorecard_text)
+            with ai_tab4: st.markdown(report)
+            
             st.divider()
 
-# --- TAB 9: ADVANCED CHARTING (TRADINGVIEW STYLE OVERLAYS) ---
+# --- TAB 9: NATIVE QUANTITATIVE CHARTING ENGINE ---
 with tabs[8]:
-    st.header("🎯 Explosive Ascending Setups (Interactive)")
-    st.markdown("These charts strictly display stocks currently coiling against ascending support or squeezing in a symmetrical triangle.")
-    
+    st.header("📈 Interactive Native Charting")
     df_charts = load_data("chart_data.csv")
     
     if df_charts.empty or df_all.empty:
-        st.info("No explosive geometric setups qualified today, or data is still building.")
+        st.info("Chart data is currently building. Please wait for the next automated market scan.")
     else:
         chart_tickers = df_charts['Ticker'].unique().tolist()
         col1, col2 = st.columns([1, 2])
         with col1: selected_ticker = st.selectbox("Select Active Setup to Analyze:", chart_tickers)
-        with col2: engine_choice = st.radio("Select Rendering Engine:", ["Plotly (Deep Dive)", "Lightweight Charts (Execution)"], horizontal=True)
+        with col2: engine_choice = st.radio("Select Rendering Engine:", ["Lightweight Charts (Execution)", "Plotly (Deep Dive)"], horizontal=True)
         
         stock_df = df_charts[df_charts['Ticker'] == selected_ticker].copy()
         stock_df['Date'] = pd.to_datetime(stock_df['Date'])
@@ -171,88 +179,7 @@ with tabs[8]:
         stock_df['EMA21'] = stock_df['Close'].ewm(span=21, adjust=False).mean()
         stock_df['EMA50'] = stock_df['Close'].ewm(span=50, adjust=False).mean()
         
-        if engine_choice == "Plotly (Deep Dive)":
-            st.markdown(f"### {selected_ticker} (Structural Breakout View)")
-            
-            # --- CALCULATION ENGINE ---
-            delta = stock_df['Close'].diff()
-            gain = (delta.where(delta > 0, 0)).rolling(14).mean()
-            loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
-            stock_df['RSI'] = 100 - (100 / (1 + gain/loss))
-            
-            stock_df['EMA12'] = stock_df['Close'].ewm(span=12, adjust=False).mean()
-            stock_df['EMA26'] = stock_df['Close'].ewm(span=26, adjust=False).mean()
-            stock_df['MACD'] = stock_df['EMA12'] - stock_df['EMA26']
-            stock_df['Signal'] = stock_df['MACD'].ewm(span=9, adjust=False).mean()
-            stock_df['MACD_Hist'] = stock_df['MACD'] - stock_df['Signal']
-            
-            # --- 3-PANE CHART LAYOUT ---
-            fig = make_subplots(
-                rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.04, 
-                row_heights=[0.6, 0.2, 0.2], 
-                specs=[[{"secondary_y": True}], [{}], [{}]]
-            )
-            
-            # Row 1: Price, EMAs, & Smart Volume
-            vol_colors = ['rgba(38, 166, 154, 0.4)' if c >= o else 'rgba(239, 83, 80, 0.4)' for c, o in zip(stock_df['Close'], stock_df['Open'])]
-            fig.add_trace(go.Bar(x=stock_df['Date'], y=stock_df['Volume'], marker_color=vol_colors, name='Volume', showlegend=False), row=1, col=1, secondary_y=True)
-            
-            fig.add_trace(go.Candlestick(x=stock_df['Date'], open=stock_df['Open'], high=stock_df['High'], low=stock_df['Low'], close=stock_df['Close'], name='Price'), row=1, col=1, secondary_y=False)
-            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA9'], line=dict(color='#00E5FF', width=1.5), name='9 EMA'), row=1, col=1, secondary_y=False)
-            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA50'], line=dict(color='#FFD700', width=1.5), name='50 EMA'), row=1, col=1, secondary_y=False)
-            
-            fig.update_yaxes(range=[0, stock_df['Volume'].max() * 4], showticklabels=False, showgrid=False, secondary_y=True, row=1, col=1)
-
-            # =========================================================
-            # 🚀 NEW: TRADINGVIEW STYLE RISK/REWARD & TRENDLINE DRAWING
-            # =========================================================
-            setup_info = df_all[df_all['RawStock'] == selected_ticker]
-            if not setup_info.empty:
-                entry_p = float(setup_info.iloc[0]['Entry'])
-                sl_p = float(setup_info.iloc[0]['EqSL'])
-                t1_p = float(setup_info.iloc[0]['EqT1'])
-                
-                # Fetch geometric coordinates from scanner
-                tl_start_date = setup_info.iloc[0].get('TL_StartDate')
-                tl_start_price = setup_info.iloc[0].get('TL_StartPrice')
-                tl_end_price = setup_info.iloc[0].get('TL_EndPrice')
-                
-                last_date = stock_df['Date'].iloc[-1]
-                future_date = last_date + pd.Timedelta(days=20) # Extends boxes to the right 
-                
-                # 1. DRAW TRADINGVIEW RISK/REWARD BOXES
-                # Green Target Box (Entry -> Target 1)
-                fig.add_shape(type="rect", x0=last_date, y0=entry_p, x1=future_date, y1=t1_p, fillcolor="rgba(38, 166, 154, 0.2)", line=dict(color="rgba(38, 166, 154, 0.8)", width=1), row=1, col=1, secondary_y=False)
-                # Red Risk Box (Entry -> Stop Loss)
-                fig.add_shape(type="rect", x0=last_date, y0=sl_p, x1=future_date, y1=entry_p, fillcolor="rgba(239, 83, 80, 0.2)", line=dict(color="rgba(239, 83, 80, 0.8)", width=1), row=1, col=1, secondary_y=False)
-                
-                # Box Annotations
-                fig.add_annotation(x=future_date, y=t1_p, text=f"🎯 T1: ₹{t1_p}", showarrow=False, xanchor="left", font=dict(color="#26a69a"), row=1, col=1, secondary_y=False)
-                fig.add_annotation(x=future_date, y=sl_p, text=f"🛡️ SL: ₹{sl_p}", showarrow=False, xanchor="left", font=dict(color="#ef5350"), row=1, col=1, secondary_y=False)
-
-                # 2. DRAW ASCENDING SUPPORT / TRIANGLE LINE
-                if pd.notna(tl_start_date) and pd.notna(tl_start_price) and float(tl_start_price) > 0:
-                    fig.add_trace(go.Scatter(x=[tl_start_date, last_date], y=[float(tl_start_price), float(tl_end_price)], mode='lines', line=dict(color='#FFA500', width=2.5, dash='solid'), name='Ascending Support'), row=1, col=1, secondary_y=False)
-            # =========================================================
-
-            # Row 2: RSI Panel
-            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['RSI'], line=dict(color='#00d1ff', width=1.5), name='RSI 14'), row=2, col=1)
-            fig.add_hline(y=70, line_dash="dot", row=2, col=1, line_color="rgba(255, 82, 82, 0.5)")
-            fig.add_hline(y=30, line_dash="dot", row=2, col=1, line_color="rgba(38, 166, 154, 0.5)")
-            
-            # Row 3: MACD Panel
-            macd_colors = ['#26a69a' if val >= 0 else '#ef5350' for val in stock_df['MACD_Hist']]
-            fig.add_trace(go.Bar(x=stock_df['Date'], y=stock_df['MACD_Hist'], marker_color=macd_colors, name='MACD Histogram', showlegend=False), row=3, col=1)
-            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['MACD'], line=dict(color='#2962FF', width=1.5), name='MACD Line'), row=3, col=1)
-            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['Signal'], line=dict(color='#FF6D00', width=1.5), name='Signal Line'), row=3, col=1)
-
-            # Removes Weekend Gaps for smooth trendlines!
-            fig.update_xaxes(rangebreaks=[dict(bounds=["sat", "mon"])])
-            
-            fig.update_layout(xaxis_rangeslider_visible=False, template="plotly_dark", height=850, margin=dict(l=0, r=0, t=10, b=0))
-            st.plotly_chart(fig, use_container_width=True)
-
-        elif engine_choice == "Lightweight Charts (Execution)":
+        if engine_choice == "Lightweight Charts (Execution)":
             st.markdown(f"### {selected_ticker} (Execution View)")
             lw_candles = json.loads(stock_df[['Date', 'Open', 'High', 'Low', 'Close']].rename(columns={'Date':'time'}).to_json(orient='records'))
             lw_vol = json.loads(stock_df[['Date', 'Volume']].rename(columns={'Date':'time', 'Volume':'value'}).to_json(orient='records'))
@@ -278,3 +205,62 @@ with tabs[8]:
                 {"type": "Histogram", "data": lw_vol, "options": {"priceFormat": {"type": "volume"}, "priceScaleId": "", "scaleMargins": {"top": 0.85, "bottom": 0}}}
             ]
             renderLightweightCharts([{"chartOptions": chartOptions, "series": series}], 'chart')
+            
+        elif engine_choice == "Plotly (Deep Dive)":
+            st.markdown(f"### {selected_ticker} (Statistical View)")
+            
+            delta = stock_df['Close'].diff()
+            gain = (delta.where(delta > 0, 0)).rolling(14).mean()
+            loss = (-delta.where(delta < 0, 0)).rolling(14).mean()
+            stock_df['RSI'] = 100 - (100 / (1 + gain/loss))
+            
+            stock_df['EMA12'] = stock_df['Close'].ewm(span=12, adjust=False).mean()
+            stock_df['EMA26'] = stock_df['Close'].ewm(span=26, adjust=False).mean()
+            stock_df['MACD'] = stock_df['EMA12'] - stock_df['EMA26']
+            stock_df['Signal'] = stock_df['MACD'].ewm(span=9, adjust=False).mean()
+            stock_df['MACD_Hist'] = stock_df['MACD'] - stock_df['Signal']
+            
+            fig = make_subplots(
+                rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.04, 
+                row_heights=[0.6, 0.2, 0.2], 
+                specs=[[{"secondary_y": True}], [{}], [{}]]
+            )
+            
+            vol_colors = ['rgba(38, 166, 154, 0.4)' if c >= o else 'rgba(239, 83, 80, 0.4)' for c, o in zip(stock_df['Close'], stock_df['Open'])]
+            fig.add_trace(go.Bar(x=stock_df['Date'], y=stock_df['Volume'], marker_color=vol_colors, name='Volume', showlegend=False), row=1, col=1, secondary_y=True)
+            
+            fig.add_trace(go.Candlestick(x=stock_df['Date'], open=stock_df['Open'], high=stock_df['High'], low=stock_df['Low'], close=stock_df['Close'], name='Price'), row=1, col=1, secondary_y=False)
+            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA9'], line=dict(color='#00E5FF', width=1.5), name='9 EMA'), row=1, col=1, secondary_y=False)
+            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA21'], line=dict(color='#FF00FF', width=1.5), name='21 EMA'), row=1, col=1, secondary_y=False)
+            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['EMA50'], line=dict(color='#FFD700', width=1.5), name='50 EMA'), row=1, col=1, secondary_y=False)
+            
+            fig.update_yaxes(range=[0, stock_df['Volume'].max() * 4], showticklabels=False, showgrid=False, secondary_y=True, row=1, col=1)
+
+            setup_info = df_all[df_all['RawStock'] == selected_ticker]
+            if not setup_info.empty:
+                entry_p = float(setup_info.iloc[0]['Entry'])
+                sl_p = float(setup_info.iloc[0]['EqSL'])
+                t1_p = float(setup_info.iloc[0]['EqT1'])
+                tag_name = str(setup_info.iloc[0].get('Tag', ''))
+                tl_d1 = setup_info.iloc[0].get('TL_D1')
+                tl_v1 = setup_info.iloc[0].get('TL_V1')
+                tl_v2 = setup_info.iloc[0].get('TL_V2')
+                
+                if pd.notna(tl_d1) and pd.notna(tl_v1) and pd.notna(tl_v2) and "Rising Support" in tag_name:
+                    last_date = stock_df['Date'].iloc[-1]
+                    fig.add_trace(go.Scatter(x=[tl_d1, last_date], y=[float(tl_v1), float(tl_v2)], mode='lines', line=dict(color='#ffeb3b', width=2.5, dash='dashdot'), name='Trendline Support'), row=1, col=1, secondary_y=False)
+                
+                fig.add_hline(y=sl_p, line_dash="dash", row=1, col=1, secondary_y=False, line_color="rgba(255, 82, 82, 0.8)", annotation_text=f"SL: ₹{sl_p}", annotation_position="bottom right")
+                fig.add_hline(y=t1_p, line_dash="dash", row=1, col=1, secondary_y=False, line_color="rgba(38, 166, 154, 0.8)", annotation_text=f"T1: ₹{t1_p}", annotation_position="top right")
+
+            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['RSI'], line=dict(color='#00d1ff', width=1.5), name='RSI 14'), row=2, col=1)
+            fig.add_hline(y=70, line_dash="dot", row=2, col=1, line_color="rgba(255, 82, 82, 0.5)")
+            fig.add_hline(y=30, line_dash="dot", row=2, col=1, line_color="rgba(38, 166, 154, 0.5)")
+            
+            macd_colors = ['#26a69a' if val >= 0 else '#ef5350' for val in stock_df['MACD_Hist']]
+            fig.add_trace(go.Bar(x=stock_df['Date'], y=stock_df['MACD_Hist'], marker_color=macd_colors, name='MACD Histogram', showlegend=False), row=3, col=1)
+            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['MACD'], line=dict(color='#2962FF', width=1.5), name='MACD Line'), row=3, col=1)
+            fig.add_trace(go.Scatter(x=stock_df['Date'], y=stock_df['Signal'], line=dict(color='#FF6D00', width=1.5), name='Signal Line'), row=3, col=1)
+
+            fig.update_layout(xaxis_rangeslider_visible=False, template="plotly_dark", height=850, margin=dict(l=0, r=0, t=10, b=0))
+            st.plotly_chart(fig, use_container_width=True)
