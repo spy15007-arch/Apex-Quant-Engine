@@ -2,7 +2,6 @@ import os
 import requests
 import json
 import time
-import threading
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -10,34 +9,39 @@ import datetime
 import math
 from scipy.stats import norm
 import warnings
-from requests_ratelimiter import LimiterSession
-
 warnings.filterwarnings('ignore')
-
-# ==========================================
-# 🎛️ MASTER SWITCHES
-# ==========================================
-ENABLE_AI_DEEP_DIVE = True
-ENABLE_5_STAR_STRICT_MODE = True  # Strict Institutional Checklist Enabled
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
-# ==========================================
 
-session = LimiterSession(per_second=5)
+# --- THE NATIVE YAHOO FINANCE RATE-LIMIT BYPASS ---
+# We use a standard requests.Session (allowed by yfinance) but inject a physical 
+# 0.5-second delay into every call to perfectly bypass 429 and 401 rate-limit errors.
+class RateLimitedSession(requests.Session):
+    def request(self, *args, **kwargs):
+        time.sleep(0.5) 
+        return super().request(*args, **kwargs)
+
+session = RateLimitedSession()
 session.headers.update({
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
     'Accept': '*/*',
     'Connection': 'keep-alive'
 })
 
 SECTOR_INDICES = {
-    "^CNXAUTO": "Consumer Cyclical", "^CNXIT": "Technology", "^CNXMETAL": "Basic Materials",
-    "^CNXREALTY": "Real Estate", "^CNXENERGY": "Energy", "^CNXPHARMA": "Healthcare",
-    "^CNXFMCG": "Consumer Defensive", "^CNXINFRA": "Industrials", "^NSEBANK": "Financial Services"
+    "^CNXAUTO": "Consumer Cyclical",
+    "^CNXIT": "Technology",
+    "^CNXMETAL": "Basic Materials",
+    "^CNXREALTY": "Real Estate",
+    "^CNXENERGY": "Energy",
+    "^CNXPHARMA": "Healthcare",
+    "^CNXFMCG": "Consumer Defensive",
+    "^CNXINFRA": "Industrials",
+    "^NSEBANK": "Financial Services"
 }
 
 def send_telegram_message(message):
@@ -82,7 +86,7 @@ STATIC_FNO = [
     "TATACHEM", "TATACOMM", "TATACONSUM", "TATAMOTORS", "TATAPOWER", "TATASTEEL", "TCS", "TECHM", "TITAN", "TORNTPHARM", 
     "TRENT", "TVSMOTOR", "UBL", "ULTRACEMCO", "UPL", "VEDL", "VOLTAS", "WIPRO", "ZEEL", "ZYDUSLIFE"
 ]
-EXTENDED_UNIVERSE_FALLBACK = list(set(("360ONE 3IINFOTECH 3MINDIA 5PAISA 63MOONS AARTIIND ACC ADANIENT ADANIPORTS APOLLOHOSP ASIANPAINT AXISBANK BAJAJ-AUTO BAJFINANCE BEL BHARTIARTL COALINDIA HDFCBANK HEROMOTOCO HINDALCO ICICIBANK INFY JSWSTEEL KOTAKBANK LT MARUTI NTPC RELIANCE SBIN TCS TATASTEEL WIPRO").split()))
+EXTENDED_UNIVERSE_FALLBACK = list(set(("360ONE 3IINFOTECH 3MINDIA 5PAISA 63MOONS AARTIIND ACC ADANIENT ADANIPORTS APOLLOHOSP ASIANPAINT AXISBANK BAJAJ-AUTO BAJFINANCE BEL BHARTIARTL COALINDIA HDFCBANK INFY ITC LT MARUTI RELIANCE SBIN TCS TITAN TRENT WIPRO").split()))
 
 def get_complete_nse_universe():
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -125,12 +129,13 @@ def calculate_leading_sectors(nifty_return_20d):
     except: pass
     return leading_sectors
 
-def download_in_chunks(tickers, chunk_size=250):
+def download_in_chunks(tickers, chunk_size=40):
     opens_list, closes_list, highs_list, lows_list, vols_list = [], [], [], [], []
     for i in range(0, len(tickers), chunk_size):
         chunk = tickers[i:i+chunk_size]
-        print(f"📡 Downloading batch {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
+        print(f"📡 Downloading chunk {i//chunk_size + 1}/{math.ceil(len(tickers)/chunk_size)}...")
         
+        # Inject the specialized rate-limiting session and force sequential downloading
         d = yf.download(chunk, period="1y", interval="1d", progress=False, threads=False, session=session)
         if not d.empty:
             if isinstance(d.columns, pd.MultiIndex):
@@ -146,7 +151,7 @@ def download_in_chunks(tickers, chunk_size=250):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
-        time.sleep(0.1) 
+        time.sleep(1.0)
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
@@ -171,8 +176,7 @@ def get_new_alerts(df, category_name):
     if alerts_db.get("date") != today_str: alerts_db = {"date": today_str, "sent": []}
     new_rows = []
     for idx, row in df.iterrows():
-        tag_val = row.get('Tag', 'Index Scalp')
-        alert_id = f"{row['Stock']}_{tag_val}_{category_name}"
+        alert_id = f"{row['Stock']}_{row['Tag']}_{category_name}"
         if alert_id not in alerts_db["sent"]:
             new_rows.append(row)
             alerts_db["sent"].append(alert_id)
@@ -226,45 +230,6 @@ def generate_quant_option(symbol, price, t1, t2, t3, t4, t5, eq_sl, df_h, df_l, 
 def check_structure_hh_hl(df_h, df_l):
     if len(df_h) < 20: return True
     return (df_h.iloc[-10:].max() >= df_h.iloc[-20:-10].max()) and (df_l.iloc[-10:].min() >= df_l.iloc[-20:-10].min())
-
-def check_explosive_triangle(df_c, df_h, df_l, lookback=60):
-    try:
-        if len(df_c) < lookback: return False, 0.0, None, 0.0
-        highs = df_h.tail(lookback).values
-        lows = df_l.tail(lookback).values
-        closes = df_c.tail(lookback).values
-        dates = df_c.tail(lookback).index
-        
-        window1_h = highs[:30]
-        p1_idx = np.argmax(window1_h)
-        p1 = window1_h[p1_idx]
-        
-        window2_h = highs[30:55]
-        if len(window2_h) < 2: return False, 0.0, None, 0.0
-        p2_idx = 30 + np.argmax(window2_h)
-        p2 = window2_h[p2_idx - 30]
-        
-        window1_l = lows[:30]
-        t1_idx = np.argmin(window1_l)
-        t1 = window1_l[t1_idx]
-        d1 = dates[t1_idx].strftime('%Y-%m-%d')
-        
-        window2_l = lows[30:55]
-        if len(window2_l) < 2: return False, 0.0, None, 0.0
-        t2_idx = 30 + np.argmin(window2_l)
-        t2 = window2_l[t2_idx - 30]
-        
-        if p2 >= p1 or t2 <= t1: return False, 0.0, None, 0.0
-        
-        res_slope = (p2 - p1) / (p2_idx - p1_idx) if p2_idx != p1_idx else 0
-        curr_idx = lookback - 1
-        proj_res = p2 + res_slope * (curr_idx - p2_idx)
-        
-        curr_close = closes[-1]
-        if (proj_res * 0.985) <= curr_close <= (proj_res * 1.02):
-            return True, proj_res, d1, t1
-    except: pass
-    return False, 0.0, None, 0.0
 
 def check_bullish_divergence(closes, rsi):
     try:
@@ -334,8 +299,7 @@ def get_index_options_ideas():
             t1, t2, t3, t4, t5 = (round(close_p + m*atr_5m, 1) for m in [0.8, 1.6, 2.4, 3.2, 4.0]) if direction == "Bullish" else (round(close_p - m*atr_5m, 1) for m in [0.8, 1.6, 2.4, 3.2, 4.0])
             eq_sl = round(close_p - 1.0*atr_5m, 1) if direction == "Bullish" else round(close_p + 1.0*atr_5m, 1)
             opt, prem, pt1, pt2, pt3, pt4, pt5, opt_sl = generate_quant_option(ticker, close_p, t1, t2, t3, t4, t5, eq_sl, df_h, df_l, df_c, direction)
-            
-            results.append({'Stock': f"{name} ({'Call' if direction == 'Bullish' else 'Put'})", 'RawStock': "NIFTY" if "NIFTY 50" in name else "BANKNIFTY", 'Horizon': 'Intraday', 'Tag': '👑 Index Scalp', 'Entry': round(close_p, 2), 'EntryZone': f'₹{close_p}', 'RSI': round(rsi_val, 1), 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Opt': opt, 'Prem': round(prem, 1), 'PT1': pt1, 'PT2': pt2, 'PT3': pt3, 'PT4': pt4, 'PT5': pt5, 'OptSL': opt_sl, 'Score': 8.0})
+            results.append({'Stock': f"{name} ({'Call' if direction == 'Bullish' else 'Put'})", 'RawStock': "NIFTY" if "NIFTY 50" in name else "BANKNIFTY", 'Horizon': 'Intraday', 'Entry': round(close_p, 2), 'EntryZone': f"₹{round(close_p - 0.2*atr_5m,1)} - ₹{round(close_p + 0.2*atr_5m,1)} (🎯 ₹{round(close_p, 1)})", 'RSI': round(rsi_val, 1), 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Opt': opt, 'Prem': prem, 'PT1': pt1, 'PT2': pt2, 'PT3': pt3, 'PT4': pt4, 'PT5': pt5, 'OptSL': opt_sl, 'Score': 10, 'Tag': 'Index 5m Scalp'})
         except: pass
     return pd.DataFrame(results)
 
@@ -350,7 +314,7 @@ def format_telegram_text(df_stocks, df_index, title, regime="Neutral"):
         msg += "📊 *TOP POSITION SIZED SETUPS*\n"
         for idx, r in df_stocks.head(25).reset_index().iterrows():
             stock_clean = r['Stock'].replace(" (↑)", "")
-            msg += f"{idx+1}. *{stock_clean}* | *{r.get('Tag', 'N/A')}* (Score: *{r['Score']}/10*)\n"
+            msg += f"{idx+1}. *{stock_clean}* | *{r['Tag']}* (Score: *{r['Score']}/10*)\n"
             msg += f"   ⚡ *Entry Zone: {r.get('EntryZone', '₹'+str(r['Entry']))}* | SL: ₹{r['EqSL']}\n"
             msg += f"   🎯 TGT: T1:{r['EqT1']} | T2:{r['EqT2']} | T3:{r['EqT3']}\n"
             if "N/A" not in str(r['Opt']) and str(r['Prem']) not in ["-", "nan"]: msg += f"   🔹 *Option:* {r['Opt']} @ Buy > ₹{r['Prem']}\n"
@@ -358,126 +322,51 @@ def format_telegram_text(df_stocks, df_index, title, regime="Neutral"):
     return msg
 
 def generate_ai_deep_dive(top_candidates):
-    if not ENABLE_AI_DEEP_DIVE:
-        print("⏭️ AI Deep Dive is disabled by user flag. Skipping to save time.")
-        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: 
-            f.write("⚠️ **AI Deep Dive is currently DISABLED.**\n\nTo re-enable AI reports, change `ENABLE_AI_DEEP_DIVE = True` in the master_scanner.py file.")
-        return
-
     if not GEMINI_API_KEY or not top_candidates:
-        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: 
-            f.write("Pending Analysis: Waiting for active market setups.")
+        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: f.write("# 🔬 Institutional Deep Dive Analysis\n\n*Pending Analysis: Waiting for active market setups.*")
         return
-        
-    print("🤖 Initiating Automated AI Executive Summary & 5-Star Audit...")
+    print("🤖 Initiating Automated AI 14-Pillar Fundamental Analysis...")
     all_dossiers = []
-    
-    for idx, candidate in enumerate(top_candidates[:2]):
-        if idx > 0:
-            print("⏳ Pausing for 15 seconds to respect Gemini rate limits...")
-            time.sleep(15)
-            
-        sym = candidate['RawStock']
-        entry = candidate['Entry']
-        eq_sl = candidate['EqSL']
-        tag = candidate.get('Tag', 'N/A')
-        score = candidate['Score']
-        
+    for candidate in top_candidates[:2]:
+        sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
         try:
             info = yf.Ticker(f"{sym}.NS", session=session).info
-            pe = info.get('trailingPE', 'N/A')
-            sector = info.get('sector', 'N/A')
-        except: 
-            pe, sector = "N/A", "N/A"
-            
-        prompt = f"""You are an Elite Institutional Equity Research Analyst auditing a momentum breakout. 
-        Analyze **{sym} (NSE: {sym})**. Context: Setup: {tag} | Quant Score: {score}/10 | Buy Trigger: ₹{entry} | SL: ₹{eq_sl} | Sector: {sector} | P/E: {pe}. 
-        
-        Search the web for the latest corporate earnings and news. 
-        
-        Provide ONLY a concise text block designed to be pasted as an overlay on a trading chart. Do not include any introductory or concluding text. Format EXACTLY like this:
-
-        ### 📊 {sym} (NSE) | {tag} (Score: {score}/10)
-        • Buy Zone: ₹{entry} | Stop Loss: ₹{eq_sl}
-
-        **12. Final Scorecard**
-        Technicals: [Score]/10
-        Fundamentals: [Score]/10
-        Financial Strength: [Score]/10
-        Earnings Quality: [Score]/10
-        Valuation: [Score]/10
-        Promoter Quality: [Score]/10
-        Institutional Interest: [Score]/10
-        Growth Visibility: [Score]/10
-        News Flow: [Score]/10
-        Risk Profile: [Score]/10
-        Overall Score: [Total]/100
-
-        **14. Executive Summary**
-        • Explosive Growth Audit: [State if recent YoY EPS is near +50% or Sales near +20%]
-        • Market Theme: [1 sentence on current industry tailwinds]
-        • Technical & Accumulation Status: [1 concise sentence]
-        • Key Positives: [1 to 2 concise sentences]
-        • Key Concerns: [1 concise sentence]
-        • Overall Conviction Level: [Low/Medium/High]"""
-        
-        # Switched to the highly stable Flash production model
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={GEMINI_API_KEY}"
-        
-        max_retries = 3
-        success = False
-        
-        for attempt in range(max_retries):
-            try:
-                res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=25)
-                
-                if res.status_code == 200: 
-                    res_json = res.json()
-                    try:
-                        text_content = res_json['candidates'][0]['content']['parts'][0]['text']
-                        all_dossiers.append(text_content)
-                        success = True
-                        break 
-                    except KeyError:
-                        reason = res_json.get('candidates', [{}])[0].get('finishReason', 'UNKNOWN')
-                        all_dossiers.append(f"### 📊 {sym}\n**Analysis Failed**: Blocked by Gemini Safety Filter ({reason})")
-                        success = True 
-                        break
-                        
-                elif res.status_code == 429:
-                    print(f"⚠️ Quota Exceeded (429). Fast Failing to save time.")
-                    break
-                    
-                elif res.status_code == 503:
-                    # Exponential Backoff: Waits 10s, then 25s, then 45s
-                    wait_time = 10 + (15 * attempt)
-                    print(f"⚠️ API Overloaded (503). Retrying {attempt+1}/{max_retries} in {wait_time}s...")
-                    time.sleep(wait_time)
-                    
-                else:
-                    all_dossiers.append(f"### 📊 {sym}\n**Google API Error {res.status_code}**: {res.text}")
-                    success = True 
-                    break 
-                    
-            except requests.exceptions.Timeout:
-                wait_time = 10 + (15 * attempt)
-                print(f"⚠️ API Timeout. Retrying {attempt+1}/{max_retries} in {wait_time}s...")
-                time.sleep(wait_time)
-            except Exception as e:
-                all_dossiers.append(f"### 📊 {sym}\n**System Exception**: {str(e)}")
-                success = True
-                break
-                
-        if not success:
-            all_dossiers.append(f"### 📊 {sym}\n**Analysis Skipped**: Google Servers busy. Scan completed.")
+            pe, sector = info.get('trailingPE', 'N/A'), info.get('sector', 'N/A')
+        except: pe, sector = "N/A", "N/A"
+        prompt = f"""You are an Elite Institutional Equity Research Analyst. Write a rigorous 14-section institutional research report on **{sym} (NSE: {sym})**. Context: Setup Type: {tag} (Score: {score}/10) | Buy Trigger: ₹{entry} | SL: ₹{eq_sl} | Targets: ₹{t1} | Sector: {sector} | P/E: {pe}. Format EXACTLY as:
+# Detailed Stock Analysis: {sym} (NSE: {sym})
+---
+### 1. Technical Analysis
+### 2. Why Did the Stock Fall Earlier?
+### 3. Has the Company Recovered?
+### 4. Latest News & Business Developments
+### 5. Fundamental Analysis
+### 6. Shareholding Pattern
+### 7. Quarterly & Annual Financial Performance
+### 8. Five-Year Financial Trend
+### 9. Valuation Summary
+### 10. Key Risks
+### 11. Key Growth Triggers
+### 12. Final Scorecard
+### 13. Final Investment View
+### 14. Executive Summary"""
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_API_KEY}"
+            res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
+            if res.status_code == 200: 
+                all_dossiers.append(res.json()['candidates'][0]['content']['parts'][0]['text'])
+            else:
+                error_msg = f"# Detailed Stock Analysis: API ERROR\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**Google API Error {res.status_code}:**\n{res.text}\n### 14. Executive Summary\nGoogle rejected the AI request."
+                all_dossiers.append(error_msg)
+        except Exception as e:
+            error_msg = f"# Detailed Stock Analysis: SYSTEM ERROR\n\n---\n\n### 1. Technical Analysis\nError\n### 12. Final Scorecard\n**System Exception:**\n{str(e)}\n### 14. Executive Summary\nFailed to connect to Google API."
+            all_dossiers.append(error_msg)
             
     with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
-        f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "No setups qualified for analysis today.")
-
+        f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "# 🔬 Analysis Completed.")
 
 def run():
-    start_time = time.time()
-    print("🚀 Starting High-Performance Master Quant Scanner...")
+    print("🚀 Starting Automated Master Quant Scanner...")
     maintenance_purge()
     if os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch" and not is_market_open(): return
 
@@ -500,17 +389,10 @@ def run():
     leading_sectors = calculate_leading_sectors(nifty_return_20d)
     universe = get_complete_nse_universe()
     
-    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=250)
-    if closes.empty: 
-        print("❌ No price data retrieved. Ending scan.")
-        return
+    opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=40)
+    if closes.empty: return
 
-    ema_20_daily = closes.ewm(span=20).mean()
     ema_50_daily = closes.ewm(span=50).mean()
-    ema_200_daily = closes.ewm(span=200).mean()
-    std_20_daily = closes.rolling(20).std()
-    sma_20_daily = closes.rolling(20).mean()
-    
     total_stocks = len(closes.columns)
     stocks_above_50ema = (closes.iloc[-1] > ema_50_daily.iloc[-1]).sum()
     breadth_50_pct = stocks_above_50ema / total_stocks if total_stocks > 0 else 0
@@ -531,8 +413,8 @@ def run():
             if row['Status'] != 'Active': continue
             sym, sec = row['RawStock'], row.get('Sector', 'Unknown')
             if sec == 'Unknown' or pd.isna(sec):
-                sec = 'Unknown'
-                pf.at[i, 'Sector'] = sec
+                try: sec = yf.Ticker(f"{sym}.NS", session=session).info.get('sector', 'Unknown'); pf.at[i, 'Sector'] = sec
+                except: sec = 'Unknown'
             active_sectors_count[sec] = active_sectors_count.get(sec, 0) + 1
             ticker = f"{sym}.NS"
             if ticker in closes.columns:
@@ -547,13 +429,14 @@ def run():
     highs_weekly = highs.resample('W').max().dropna(how='all')
     lows_weekly = lows.resample('W').min().dropna(how='all')
     
+    ema_20_daily, ema_200_daily = closes.ewm(span=20).mean(), closes.ewm(span=200).mean()
     vol_50d_avg_daily = volumes.rolling(50).mean()
     delta = closes.diff()
     gain, loss = (delta.where(delta > 0, 0)).rolling(14).mean(), (-delta.where(delta < 0, 0)).rolling(14).mean()
     rsi_daily = 100 - (100 / (1 + (gain / loss)))
     macd_daily = closes.ewm(span=12, adjust=False).mean() - closes.ewm(span=26, adjust=False).mean()
     macd_signal_daily = macd_daily.ewm(span=9, adjust=False).mean()
-    atr_daily = pd.DataFrame(np.maximum((highs - lows).values, np.maximum((highs - closes.shift(1)).abs().values, (lows - closes.shift(1)).abs().values)), index=highs.index, columns=highs.columns)
+    atr_daily = pd.DataFrame(np.maximum((highs - lows).values, np.maximum((highs - closes.shift(1)).abs().values, (lows - closes.shift(1)).abs().values)), index=highs.index, columns=highs.columns).ewm(alpha=1/14).mean()
     ema_50_weekly = closes_weekly.ewm(span=50).mean()
 
     obv = (np.sign(delta) * volumes).fillna(0).cumsum()
@@ -568,11 +451,11 @@ def run():
             
             close_p, vol_today, vol_50_avg = float(df_c.iloc[-1]), float(volumes.iloc[-1][ticker]), float(vol_50d_avg_daily.iloc[-1][ticker])
             turnover_avg = close_p * vol_50_avg
-            
             if close_p < 20 or turnover_avg < 15000000 or vol_50_avg < 50000: continue
             is_micro_tier = turnover_avg < 50000000 
             
-            std_20, sma_20 = float(std_20_daily[ticker].iloc[-1]), float(sma_20_daily[ticker].iloc[-1])
+            std_20_series = df_c.rolling(20).std()
+            std_20, sma_20 = float(std_20_series.iloc[-1]), float(df_c.rolling(20).mean().iloc[-1])
             if float(df_l.iloc[-1]) > (sma_20 + (2 * std_20)): continue
             
             adjusted_vol_50 = vol_50_avg * (minutes_elapsed / 360.0) 
@@ -582,68 +465,34 @@ def run():
             if daily_range > 0 and ((float(df_h.iloc[-1]) - max(close_p, prev_close)) / daily_range) > 0.5 and vol_vs > 2.0 and close_p < prev_close: continue 
             if len(df_c) >= 10 and ((close_p / float(df_c.iloc[-10])) - 1) > 0.40 and vol_vs > 3.0 and close_p < float(df_h.iloc[-1]): continue 
             
-            momentum_1y = (close_p / float(df_c.iloc[-250])) - 1 if len(df_c) >= 250 else ((close_p / float(df_c.iloc[0])) - 1)
-            is_5_star_momentum = momentum_1y >= 0.50
-
-            recent_vols = volumes[ticker].tail(20)
-            recent_closes = closes[ticker].tail(20)
-            recent_50_vols = vol_50d_avg_daily[ticker].tail(20)
-            inst_vol_days = ((recent_closes > recent_closes.shift(1)) & (recent_vols >= (1.5 * recent_50_vols))).sum()
-            has_inst_volume = inst_vol_days >= 3
+            momentum_6m = (close_p / float(df_c.iloc[-125])) - 1 if len(df_c) >= 125 else 0
+            is_super_trend = momentum_6m >= 0.50
 
             rsi_val, macd_val, macd_sig = float(rsi_daily.iloc[-1][ticker]), float(macd_daily.iloc[-1][ticker]), float(macd_signal_daily.iloc[-1][ticker])
-            
-            is_optimal_rsi = 50 <= rsi_val <= 72
-
             d_ema, w_ema, atr = float(ema_50_daily.iloc[-1][ticker]), float(ema_50_weekly.iloc[-1][ticker]), float(atr_daily.iloc[-1][ticker])
-            
-            # --- SAFETY NET FOR NAN/MISSING DATA ---
-            if math.isnan(atr) or math.isnan(close_p) or atr == 0: 
-                continue
-
             d_ema20, d_ema200 = float(ema_20_daily.iloc[-1][ticker]), float(ema_200_daily.iloc[-1][ticker]) if not pd.isna(ema_200_daily.iloc[-1][ticker]) else 0.0
             prev_ema20 = float(ema_20_daily.iloc[-2][ticker]) if len(ema_20_daily) > 1 else d_ema20
             
             recent_vol_avg, recent_range_avg, recent_high = float(volumes[ticker].tail(3).mean()), float((highs[ticker].tail(3) - lows[ticker].tail(3)).mean()), float(highs[ticker].tail(20).max())
             
-            is_trendline_retest, tl_val, tl_d1, tl_v1 = False, 0.0, None, 0.0
-            if close_p > d_ema20 and 40 <= rsi_val <= 65:
-                try: is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna())
-                except: pass
+            try: is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna())
+            except: is_trendline_retest, tl_val, tl_d1, tl_v1 = False, 0.0, None, None
             
-            is_triangle, tri_res_val, tri_d1, tri_v1 = check_explosive_triangle(df_c, df_h, df_l)
-            
-            min_std_20 = float(std_20_daily[ticker].tail(20).min())
+            min_std_20 = float(std_20_series.tail(20).min())
             is_base_ignition = (std_20 <= min_std_20 * 1.1 if min_std_20 > 0 else False) and (prev_close < prev_ema20) and (close_p > d_ema20) and (1.0 <= vol_vs <= 2.5) and (45 <= rsi_val <= 65)
+            is_squeeze = (recent_vol_avg < vol_50_avg * 0.85) and (recent_range_avg < atr * 0.85)
+            is_relative_strong = (float(df_c.iloc[-1] / df_c.iloc[-20] - 1) > nifty_return_20d) if len(df_c) >= 20 else False
             is_pre_breakout = (0.002 <= ((recent_high - close_p)/close_p) <= 0.035) and (close_p > d_ema20) and (vol_vs <= 1.25)
             is_200ma_retest = (d_ema200 > 0) and (abs(close_p - d_ema200)/d_ema200 <= 0.025) and (vol_vs <= 1.0) and (close_p >= d_ema200)
-            
-            daily_range = float(df_h.iloc[-1] - df_l.iloc[-1])
             lower_wick_ok = True if daily_range == 0 else (close_p >= (float(df_l.iloc[-1]) + 0.35 * daily_range))
-            is_swing_retest = ((0.025 <= ((recent_high - close_p) / close_p) <= 0.15) and (close_p >= d_ema20) and (float(df_l.iloc[-1]) <= d_ema20 * 1.015) and (vol_vs <= 1.0) and lower_wick_ok)
+            is_swing_retest = ((0.025 <= ((recent_high - close_p) / close_p) <= 0.15) and (close_p >= d_ema20) and (float(df_l.iloc[-1]) <= d_ema20 * 1.015) and (vol_vs <= 1.0) and lower_wick_ok and (macd_val - macd_sig >= -0.15 * atr))
             recent_daily_high = float(df_h.iloc[-1])
             is_btst = (close_p >= 0.98 * recent_daily_high) and (close_p > prev_close) and (close_p > d_ema20) and (vol_vs >= 1.0) and (50 <= rsi_val <= 75)
-            
-            sqz_on, sqz_fired = False, False
-            if is_pre_breakout or is_base_ignition:
-                sqz_on, sqz_fired = check_ttm_squeeze(df_c, df_h, df_l)
+            is_rsi_div = check_bullish_divergence(df_c, rsi_daily[ticker].dropna())
+            sqz_on, sqz_fired = check_ttm_squeeze(df_c, df_h, df_l)
 
             hor, sl_m, tag = "", 0.0, ""
-            tl_start_date, tl_start_price, tl_end_price = "", 0.0, 0.0
-            
-            is_5_star_candidate = (is_triangle or is_trendline_retest) and is_5_star_momentum and has_inst_volume and is_optimal_rsi
-            
-            if is_5_star_candidate:
-                hor, sl_m = "Explosive", 0.8
-                tag = "⭐ 5-Star Institutional Squeeze"
-                if is_triangle: tl_start_date, tl_start_price, tl_end_price = tri_d1, tri_v1, tri_res_val
-                else: tl_start_date, tl_start_price, tl_end_price = tl_d1, tl_v1, tl_val
-            elif is_triangle: 
-                hor, sl_m, tag = "Explosive", 0.8, "🔺 Symmetrical Triangle Coil"
-                tl_start_date, tl_start_price, tl_end_price = tri_d1, tri_v1, tri_res_val
-            elif is_trendline_retest: 
-                hor, sl_m, tag = "Explosive", 1.2, "📈 Rising Support Retest"
-                tl_start_date, tl_start_price, tl_end_price = tl_d1, tl_v1, tl_val
+            if is_trendline_retest: hor, sl_m, tag = "Swing", 1.2, "📈 Rising Support Retest"
             elif is_base_ignition: hor, sl_m, tag = "Pre-Breakout", 0.8, "🌱 Base Ignition"
             elif sqz_fired: hor, sl_m, tag = "Pre-Breakout", 1.0, "🔥 Squeeze Breakout"
             elif sqz_on and is_pre_breakout: hor, sl_m, tag = "Pre-Breakout", 1.0, "🗜️ TTM Squeeze Coil"
@@ -654,28 +503,30 @@ def run():
             elif vol_vs >= 1.5: hor, sl_m, tag = "Intraday", 0.8, "🚀 Volume Breakout"
             else: continue
             
-            is_rsi_div = check_bullish_divergence(df_c, rsi_daily[ticker].dropna())
             if is_rsi_div: tag += " (📉 +RSI Div)"
+            if is_super_trend: tag += " 🏆 Super-Trend"
 
-            if (close_p > d_ema and close_p > w_ema and check_structure_hh_hl(df_h, df_l)) and ((macd_val > macd_sig) if hor not in ["Pre-Breakout", "Swing", "Explosive"] else True) and (45 <= rsi_val <= 85):
-                t1, t2, t3, t4, t5 = calculate_dynamic_targets(close_p, atr, df_h, df_l, "Bullish", False)
+            if (close_p > d_ema and close_p > w_ema and check_structure_hh_hl(df_h, df_l)) and ((macd_val > macd_sig) if hor not in ["Pre-Breakout", "Swing"] else True) and (45 <= rsi_val <= 85) and (is_relative_strong if hor not in ["Pre-Breakout", "Swing"] else True):
+                t1, t2, t3, t4, t5 = calculate_dynamic_targets(close_p, atr, df_h, df_l, "Bullish", is_squeeze)
                 eq_sl = round(close_p - sl_m * atr, 1)
                 if (close_p - eq_sl) <= 0: continue
                 
                 curr_obv, curr_obv_ema = float(obv[ticker].iloc[-1]), float(obv_ema20[ticker].iloc[-1])
                 is_accumulating = curr_obv > curr_obv_ema
 
-                score = min(10, sum([
-                    1 if close_p > d_ema else 0, 
-                    1 if close_p > w_ema else 0, 
-                    2 if 55 <= rsi_val <= 70 else (1 if 45 <= rsi_val <= 85 else 0), 
-                    1 if macd_val > macd_sig else 0, 
-                    1 if is_accumulating else 0, 
-                    1 if (float(df_c.iloc[-1] / df_c.iloc[-20] - 1) > nifty_return_20d) else 0, 
-                    2 if is_5_star_candidate else (1 if hor in ["Swing", "Explosive"] else 0)
-                ]))
+                score = min(10, sum([1 if close_p > d_ema else 0, 1 if close_p > w_ema else 0, 2 if 55 <= rsi_val <= 70 else (1 if 45 <= rsi_val <= 85 else 0), 1 if macd_val > macd_sig else 0, 1 if macd_val > 0 else 0, 1 if is_relative_strong else 0, 2 if sqz_on or is_base_ignition else (3 if sqz_fired else 0), 1 if is_rsi_div else 0, 1 if is_super_trend else 0, 1 if is_accumulating else -2]))
                 if score < 6: continue 
 
+                try:
+                    stock_sector = yf.Ticker(ticker, session=session).info.get('sector', 'Unknown')
+                    if stock_sector in leading_sectors:
+                        score = min(10, score + 1)
+                        tag += " 🚀 Sector-Leader"
+                    if stock_sector in active_sectors_count and active_sectors_count[stock_sector] >= 2:
+                        score -= 1
+                        tag += " ⚠️ [Sector Maxed]"
+                except: pass
+                
                 active_base_capital = BASE_CAPITAL_PER_TRADE
                 if breadth_50_pct < 0.40: active_base_capital *= 0.5 
                 
@@ -684,62 +535,56 @@ def run():
                     score = max(0, score - 1)
                     cash_qty = int((active_base_capital * 0.5) / close_p)
                 else:
-                    if (score >= 8 or is_5_star_candidate) and hor not in ["Pre-Breakout", "Swing"]: 
+                    if score >= 8 and hor not in ["Pre-Breakout", "Swing"]: 
                         tag += " (⭐ 2x Size)"
                         cash_qty = int((active_base_capital * HIGH_CONVICTION_MULTIPLIER) / close_p)
                     else:
                         cash_qty = int(active_base_capital / close_p)
 
                 is_pullback_candle = (close_p < prev_close) or ((recent_daily_high - close_p) > 0.35 * atr)
-                if "Rising Support Retest" in tag or "5-Star" in tag: ez_low, ez_high, best_entry, eq_sl = round(tl_val * 0.99, 1), round(close_p, 1), round(tl_val * 1.01, 1), round(tl_val - 0.75 * atr, 1)
-                elif "Symmetrical Triangle Coil" in tag: ez_low, ez_high, best_entry, eq_sl = round(tri_res_val * 0.99, 1), round(close_p, 1), round(tri_res_val * 1.01, 1), round(tri_res_val - 0.75 * atr, 1)
+                if "Rising Support Retest" in tag: ez_low, ez_high, best_entry, eq_sl = round(tl_val * 0.99, 1), round(close_p, 1), round(tl_val * 1.01, 1), round(tl_val - 0.75 * atr, 1)
                 elif "Base Ignition" in tag: ez_low, ez_high, best_entry, eq_sl = round(d_ema20, 1), round(close_p, 1), round(close_p, 1), round(d_ema20 - 0.5 * atr, 1)
                 elif "200 MA Retest" in tag: ez_low, ez_high, best_entry = round(d_ema200 - 0.15 * atr, 1), round(close_p + 0.1 * atr, 1), round(d_ema200 + 0.05 * atr, 1)
-                elif "Breakout Retest" in tag or (is_pullback_candle and close_p > d_ema20): ez_low, ez_high, best_entry = round(d_ema20 - 0.15 * atr, 1), round(close_p, 1), round(d_ema20 + 0.1 * atr, 1)
+                elif "Breakout Retest" in tag or (is_pullback_candle and close_p > d_ema20): ez_low, ez_high, best_entry = round(d_ema20 - 0.15 * atr, 1), round(close_p, 1), round(d_ema20 + 0.1 * atr, 1) 
                 elif hor in ["Swing", "BTST"]: ez_low, ez_high, best_entry = round(close_p - 0.3 * atr, 1), round(close_p + 0.1 * atr, 1), round(close_p - 0.15 * atr, 1)
                 else: ez_low, ez_high, best_entry = round(close_p - 0.1 * atr, 1), round(close_p + 0.4 * atr, 1), round(close_p + 0.05 * atr, 1)
 
                 ez_low, ez_high = min(ez_low, ez_high), max(ez_low, ez_high)
                 best_entry = max(ez_low, min(best_entry, ez_high))
                 entry_zone_str = f"₹{ez_low} - ₹{ez_high} (🎯 ₹{best_entry})"
-                opt_info = generate_quant_option(symbol, close_p, t1, t2, t3, t4, t5, eq_sl, df_h, df_l, df_c, "Bullish") if symbol in STATIC_FNO else ("N/A (Cash)", "-", "-", "-", "-", "-", "-", 0)
+                opt_info = generate_quant_option(symbol, close_p, t1, t2, t3, t4, t5, eq_sl, df_h, df_l, df_c, "Bullish") if symbol in STATIC_FNO else ("N/A (Cash)", "-", "-", "-", "-", "-", "-", "-")
                 
-                valid_setups.append({'Stock': f"{symbol} (↑)", 'RawStock': symbol, 'Horizon': hor, 'Tag': tag, 'Entry': round(close_p, 2), 'EntryZone': entry_zone_str, 'Qty': cash_qty, 'Risk': round(close_p - eq_sl, 2), 'RSI': round(rsi_val, 1), 'Vol vs 50d': vol_vs, 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Score': score, 'Opt': opt_info[0], 'Prem': opt_info[1], 'PT1': opt_info[2], 'PT2': opt_info[3], 'PT3': opt_info[4], 'PT4': opt_info[5], 'PT5': opt_info[6], 'OptSL': opt_info[7], 'TL_StartDate': tl_start_date, 'TL_StartPrice': tl_start_price, 'TL_EndPrice': tl_end_price})
+                valid_setups.append({'Stock': f"{symbol} (↑)", 'RawStock': symbol, 'Horizon': hor, 'Tag': tag, 'Entry': round(close_p, 2), 'EntryZone': entry_zone_str, 'Qty': cash_qty, 'Risk': round(cash_qty * (close_p - eq_sl), 2), 'RSI': round(rsi_val,1), 'Vol vs 50d': vol_vs, 'EqSL': eq_sl, 'EqT1': t1, 'EqT2': t2, 'EqT3': t3, 'EqT4': t4, 'EqT5': t5, 'Opt': opt_info[0], 'Prem': opt_info[1], 'PT1': opt_info[2], 'PT2': opt_info[3], 'PT3': opt_info[4], 'PT4': opt_info[5], 'PT5': opt_info[6], 'OptSL': opt_info[7], 'Score': score, 'TL_D1': tl_d1, 'TL_V1': tl_v1, 'TL_V2': tl_val})
         except: continue
 
     df_all = pd.DataFrame(valid_setups).drop_duplicates(subset=['Stock']).sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]) if valid_setups else pd.DataFrame()
-    df_all.to_csv("all_setups.csv", index=False) if not df_all.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','Qty','Risk','RSI','Vol vs 50d','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Score','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','TL_StartDate','TL_StartPrice','TL_EndPrice']).to_csv("all_setups.csv", index=False)
+    df_all.to_csv("all_setups.csv", index=False) if not df_all.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','Qty','Risk','RSI','Vol vs 50d','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','Score','TL_D1','TL_V1','TL_V2']).to_csv("all_setups.csv", index=False)
     
-    chart_setups = [r for r in valid_setups if r['Horizon'] == 'Explosive']
+    # --- CHART DATA EXTRACTION ---
     chart_data_list = []
-    if chart_setups:
-        for r in chart_setups:
+    if valid_setups:
+        for r in valid_setups:
             sym = r['RawStock']
             t = f"{sym}.NS"
             try:
                 if t in opens.columns:
-                    temp = pd.DataFrame({'Date': opens.index.strftime('%Y-%m-%d'), 'Ticker': sym, 'Open': opens[t], 'High': highs[t], 'Low': lows[t], 'Close': closes[t], 'Volume': volumes[t]}).dropna()
+                    temp = pd.DataFrame({'Date': opens.index.strftime('%Y-%m-%d'), 'Ticker': sym, 'Open': opens[t], 'High': highs[t], 'Low': lows[t], 'Close': closes[t], 'Volume': volumes[t]}).dropna().tail(150)
                     chart_data_list.append(temp)
             except: pass
-        if chart_data_list: pd.concat(chart_data_list).to_csv("chart_data.csv", index=False)
-    else: 
-        pd.DataFrame(columns=['Date','Ticker','Open','High','Low','Close','Volume']).to_csv("chart_data.csv", index=False)
+    if chart_data_list: pd.concat(chart_data_list).to_csv("chart_data.csv", index=False)
+    else: pd.DataFrame(columns=['Date','Ticker','Open','High','Low','Close','Volume']).to_csv("chart_data.csv", index=False)
 
-    df_index.to_csv("index_setups.csv", index=False) if not df_index.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Tag','Entry','EntryZone','RSI','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','Score']).to_csv("index_setups.csv", index=False)
+    df_index.to_csv("index_setups.csv", index=False) if not df_index.empty else pd.DataFrame(columns=['Stock','RawStock','Horizon','Entry','EntryZone','RSI','EqSL','EqT1','EqT2','EqT3','EqT4','EqT5','Opt','Prem','PT1','PT2','PT3','PT4','PT5','OptSL','Score','Tag']).to_csv("index_setups.csv", index=False)
 
-    df_explosive = df_all[df_all['Horizon'] == 'Explosive'].sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
     df_pre = df_all[df_all['Horizon'] == 'Pre-Breakout'].sort_values(by=['Score', 'RSI'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
     df_intra = df_all[df_all['Horizon'] == 'Intraday'].sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
     df_btst = df_all[df_all['Horizon'] == 'BTST'].sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
     df_swing = df_all[df_all['Horizon'] == 'Swing'].sort_values(by=['Score', 'RSI'], ascending=[False, False]).head(25) if not df_all.empty else pd.DataFrame()
 
-    if not df_all.empty: generate_ai_deep_dive(sorted(valid_setups, key=lambda x: (x['Horizon'] == 'Explosive', x['Score']), reverse=True))
+    if not df_all.empty: generate_ai_deep_dive(sorted(valid_setups, key=lambda x: (x['Score'], x['Horizon'] == 'Swing'), reverse=True))
     else:
-        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: f.write("Pending Analysis: Waiting for active market setups.")
+        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: f.write("# 🔬 Institutional Deep Dive Analysis\n\n*No qualifying setups found today.*")
 
-    if not df_explosive.empty:
-        new_explosive = get_new_alerts(df_explosive, "Explosive")
-        if not new_explosive.empty: send_telegram_message(format_telegram_text(new_explosive, pd.DataFrame(), f"⭐ 5-STAR SQUEEZE & COIL ALERTS", nifty_regime))
     if not df_pre.empty: 
         new_pre = get_new_alerts(df_pre.head(25), "PreBreakout")
         if not new_pre.empty: send_telegram_message(format_telegram_text(new_pre, pd.DataFrame(), f"💥 Soon to Breakout", nifty_regime))
@@ -753,10 +598,8 @@ def run():
         new_swing = get_new_alerts(df_swing.head(25), "Swing")
         if not new_swing.empty: send_telegram_message(format_telegram_text(new_swing, pd.DataFrame(), f"📈 Swing Trade Report", nifty_regime))
 
-    if df_explosive.empty and df_pre.empty and df_intra.empty and df_btst.empty and df_swing.empty and df_index.empty:
+    if df_pre.empty and df_intra.empty and df_btst.empty and df_swing.empty and df_index.empty:
         send_telegram_message(f"✅ *{sess_title} Complete*\n\n📉 *Result:* Zero stocks passed the institutional guardrails today. Capital protected.\n🧭 {nifty_regime}")
-        
-    print(f"✅ Scan completed in {round((time.time() - start_time) / 60, 2)} minutes.")
 
 if __name__ == "__main__":
     run()
