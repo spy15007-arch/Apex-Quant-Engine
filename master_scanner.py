@@ -9,7 +9,6 @@ import datetime
 import math
 from scipy.stats import norm
 import warnings
-from requests_cache import CachedSession
 warnings.filterwarnings('ignore')
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -18,13 +17,15 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
-# --- THE BULLETPROOF YAHOO FINANCE RATE-LIMIT BYPASS ---
-class RateLimitedSession(CachedSession):
+# --- THE NATIVE YAHOO FINANCE RATE-LIMIT BYPASS ---
+# We use a standard requests.Session (allowed by yfinance) but inject a physical 
+# 0.5-second delay into every call to perfectly bypass 429 and 401 rate-limit errors.
+class RateLimitedSession(requests.Session):
     def request(self, *args, **kwargs):
         time.sleep(0.5) 
         return super().request(*args, **kwargs)
 
-session = RateLimitedSession(cache_name="yfinance.cache", backend="sqlite")
+session = RateLimitedSession()
 session.headers.update({
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
     'Accept': '*/*',
@@ -149,6 +150,7 @@ def download_in_chunks(tickers, chunk_size=40):
                 highs_list.append(d[['High']].rename(columns={'High': sym}))
                 lows_list.append(d[['Low']].rename(columns={'Low': sym}))
                 vols_list.append(d[['Volume']].rename(columns={'Volume': sym}))
+        time.sleep(1.0)
         
     opens = pd.concat(opens_list, axis=1) if opens_list else pd.DataFrame()
     closes = pd.concat(closes_list, axis=1) if closes_list else pd.DataFrame()
