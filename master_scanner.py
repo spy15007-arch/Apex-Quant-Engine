@@ -13,7 +13,6 @@ warnings.filterwarnings('ignore')
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 BASE_CAPITAL_PER_TRADE = 50000  
 HIGH_CONVICTION_MULTIPLIER = 2  
 
@@ -77,26 +76,27 @@ def is_market_open():
     return False if now_ist.strftime("%m-%d") in nse_holidays else True
 
 STATIC_FNO = [
-    "AARTIIND", "ABB", "ABBOTINDIA", "ABCAPITAL", "ABFRL", "ACC", "ACCELYA", "ACTIONCONST", "ADANIENSOL", "ADANIENT", 
+    "AARTIIND", "ABB", "ABBOTINDIA", "ABCAPITAL", "ABFRL", "ACC", "ACCELYA", "ACE", "ADANIENSOL", "ADANIENT", 
     "ADANIGREEN", "ADANIPORTS", "ADANIPOWER", "ALKEM", "AMBUJACEM", "APOLLOHOSP", "APOLLOTYRE", "ASHOKLEY", "ASIANPAINT", 
     "ASTRAL", "ATUL", "AUBANK", "AUROPHARMA", "AXISBANK", "BAJAJ-AUTO", "BAJAJFINSV", "BAJFINANCE", "BALKRISIND", 
     "BALRAMCHIN", "BANDHANBNK", "BANKBARODA", "BATAINDIA", "BEL", "BERGEPAINT", "BHARATFORG", "BHARTIARTL", "BHEL", 
     "BIOCON", "BOSCHLTD", "BPCL", "BRITANNIA", "CANBK", "CANFINHOME", "CHAMBLFERT", "CHOLAFIN", "CIPLA", "COALINDIA", 
     "COFORGE", "COLPAL", "CONCOR", "COROMANDEL", "CROMPTON", "CUB", "CUMMINSIND", "DABUR", "DALBHARAT", "DEEPAKNTR", 
     "DIVISLAB", "DIXON", "DLF", "DRREDDY", "EICHERMOT", "ESCORTS", "EXIDEIND", "FEDERALBNK", "GAIL", "GLENMARK", 
-    "GMRINFRA", "GNFC", "GODREJCP", "GODREJPROP", "GRANULES", "GRASIM", "GUJGASLTD", "HAL", "HAVELLS", "HCLTECH", 
+    "GMRAIRPORT", "GNFC", "GODREJCP", "GODREJPROP", "GRANULES", "GRASIM", "GUJENERGY", "HAL", "HAVELLS", "HCLTECH", 
     "HDFCAMC", "HDFCBANK", "HDFCLIFE", "HEROMOTOCO", "HINDALCO", "HINDCOPPER", "HINDPETRO", "HINDUNILVR", "ICICIBANK", 
     "ICICIGI", "ICICIPRULI", "IDEA", "IDFCFIRSTB", "IEX", "IGL", "INDHOTEL", "INDIACEM", "INDIAMART", "INDIGO", 
     "INDUSINDBK", "INFY", "IOC", "IPCALAB", "IRCTC", "ITC", "JINDALSTEL", "JSWSTEEL", "JUBLFOOD", "KOTAKBANK", 
-    "LALPATHLAB", "LAURUSLABS", "LICHSGFIN", "LT", "LTIM", "LTTS", "LUPIN", "M&M", "M&MFIN", "MANAPPURAM", "MARICO", 
-    "MARUTI", "MCDOWELL-N", "MCX", "METROPOLIS", "MFSL", "MGL", "MOTHERSON", "MPHASIS", "MRF", "MUTHOOTFIN", "NATIONALUM", 
-    "NAUKRI", "NAVINFLUOR", "NESTLEIND", "NMDC", "NTPC", "OBEROIRLTY", "OFSS", "ONGC", "PAGEIND", "PEL", "PETRONET", 
+    "LALPATHLAB", "LAURUSLABS", "LICHSGFIN", "LT", "LTM", "LTTS", "LUPIN", "M&M", "M&MFIN", "MANAPPURAM", "MARICO", 
+    "MARUTI", "UNITDSPR", "MCX", "METROPOLIS", "MFSL", "MGL", "MOTHERSON", "MPHASIS", "MRF", "MUTHOOTFIN", "NATIONALUM", 
+    "NAUKRI", "NAVINFLUOR", "NESTLEIND", "NMDC", "NTPC", "OBEROIRLTY", "OFSS", "ONGC", "PAGEIND", "PETRONET", 
     "PFC", "PIDILITIND", "PIIND", "PNB", "POLYCAB", "POWERGRID", "PVRINOX", "RAMCOCEM", "RBLBANK", "RECLTD", "RELIANCE", 
     "SAIL", "SBICARD", "SBILIFE", "SBIN", "SHREECEM", "SHRIRAMFIN", "SIEMENS", "SRF", "SUNPHARMA", "SUNTV", "SYNGENE", 
-    "TATACHEM", "TATACOMM", "TATACONSUM", "TATAMOTORS", "TATAPOWER", "TATASTEEL", "TCS", "TECHM", "TITAN", "TORNTPHARM", 
+    "TATACHEM", "TATACOMM", "TATACONSUM", "TMPV", "TMCV", "TATAPOWER", "TATASTEEL", "TCS", "TECHM", "TITAN", "TORNTPHARM", 
     "TRENT", "TVSMOTOR", "UBL", "ULTRACEMCO", "UPL", "VEDL", "VOLTAS", "WIPRO", "ZEEL", "ZYDUSLIFE"
 ]
-EXTENDED_FALLBACK = list(set(("360ONE 3IINFOTECH 3MINDIA 5PAISA 63MOONS AARTIIND ACC ADANIENT ADANIPORTS APOLLOHOSP ASIANPAINT AXISBANK BAJAJ-AUTO BAJFINANCE BEL BHARTIARTL COALINDIA HDFCBANK INFY ITC LT MARUTI RELIANCE SBIN TCS TITAN TRENT WIPRO").split()))
+
+EXTENDED_FALLBACK = list(set(("360ONE 3IINFOLTD 3MINDIA 5PAISA 63MOONS AARTIIND ACC ADANIENT ADANIPORTS APOLLOHOSP ASIANPAINT AXISBANK BAJAJ-AUTO BAJFINANCE BEL BHARTIARTL COALINDIA HDFCBANK INFY ITC LT MARUTI RELIANCE SBIN TCS TITAN TRENT WIPRO").split()))
 
 def get_complete_nse_universe():
     headers = {'User-Agent': 'Mozilla/5.0'}
@@ -256,49 +256,6 @@ def format_telegram_text(df_stocks, title, regime="Neutral"):
             msg += f"   🔗 [TradingView](https://in.tradingview.com/chart/?symbol=NSE:{r['RawStock']})\n\n"
     return msg
 
-def generate_ai_deep_dive(top_candidates):
-    if not GEMINI_API_KEY or not top_candidates:
-        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: 
-            f.write("# 🔬 Institutional Deep Dive Analysis\n\n*Pending Analysis: Waiting for active market setups.*")
-        return
-    print("🤖 Generating AI 14-Pillar Fundamental Analysis...")
-    all_dossiers = []
-    for candidate in top_candidates[:2]:
-        sym, entry, eq_sl, t1, tag, score = candidate['RawStock'], candidate['Entry'], candidate['EqSL'], candidate['EqT1'], candidate['Tag'], candidate['Score']
-        try:
-            info = yf.Ticker(f"{sym}.NS", session=session).info
-            pe, sector = info.get('trailingPE', 'N/A'), info.get('sector', 'N/A')
-        except: pe, sector = "N/A", "N/A"
-        prompt = f"""You are an Elite Institutional Equity Research Analyst. Write a rigorous 14-section research dossier on **{sym} (NSE: {sym})**. Setup Context: Category: {tag} (Score: {score}/100) | Buy: ₹{entry} | SL: ₹{eq_sl} | Target 1: ₹{t1} | Sector: {sector} | P/E: {pe}. Format EXACTLY as:
-# Detailed Stock Analysis: {sym} (NSE: {sym})
----
-### 1. Technical Analysis
-### 2. Why Did the Stock Fall Earlier?
-### 3. Has the Company Recovered?
-### 4. Latest News & Business Developments
-### 5. Fundamental Analysis
-### 6. Shareholding Pattern
-### 7. Quarterly & Annual Financial Performance
-### 8. Five-Year Financial Trend
-### 9. Valuation Summary
-### 10. Key Risks
-### 11. Key Growth Triggers
-### 12. Final Scorecard
-### 13. Final Investment View
-### 14. Executive Summary"""
-        try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_API_KEY}"
-            res = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, timeout=60)
-            if res.status_code == 200: 
-                all_dossiers.append(res.json()['candidates'][0]['content']['parts'][0]['text'])
-            else:
-                all_dossiers.append(f"# Detailed Stock Analysis: API ERROR\n\n### 12. Final Scorecard\nError: {res.status_code}\n### 14. Executive Summary\nGoogle API error.")
-        except Exception as e:
-            all_dossiers.append(f"# Detailed Stock Analysis: SYSTEM ERROR\n\n### 12. Final Scorecard\nError: {str(e)}\n### 14. Executive Summary\nAPI connection failure.")
-            
-    with open("deep_dive_analysis.md", "w", encoding="utf-8") as f:
-        f.write("\n\n---\n\n".join(all_dossiers) if all_dossiers else "# 🔬 Analysis Completed.")
-
 def run():
     print("🚀 Starting Automated Daily/Weekly Quant Scanner...")
     maintenance_purge()
@@ -321,7 +278,6 @@ def run():
     opens, closes, highs, lows, volumes = download_in_chunks([f"{s}.NS" for s in universe], chunk_size=150)
     if closes.empty: return
 
-    # --- MARKET BREADTH & REGIME ---
     ema_50_daily = closes.ewm(span=50).mean()
     total_stocks = len(closes.columns)
     stocks_above_50ema = (closes.iloc[-1] > ema_50_daily.iloc[-1]).sum()
@@ -331,7 +287,6 @@ def run():
     elif breadth_50_pct < 0.40: nifty_regime = f"🔴 Bearish - Capital Protection Mode ({breadth_str})"
     else: nifty_regime = f"🟡 Neutral Consolidation ({breadth_str})"
 
-    # --- ATR TRAILING STOP ENGINE ---
     portfolio_file = "portfolio.csv"
     if os.path.exists(portfolio_file): 
         pf = pd.read_csv(portfolio_file)
@@ -365,7 +320,6 @@ def run():
         pf.to_csv(portfolio_file, index=False)
         if trail_alerts: send_telegram_message("🔔 *TRAILING STOP PORTFOLIO ENGINE*\n\n" + "\n".join(trail_alerts))
 
-    # --- TECHNICAL PRE-COMPUTATIONS ---
     closes_weekly = closes.resample('W').last().dropna(how='all')
     highs_weekly = highs.resample('W').max().dropna(how='all')
     lows_weekly = lows.resample('W').min().dropna(how='all')
@@ -408,7 +362,6 @@ def run():
             vol_today = float(df_v.iloc[-1])
             vol_50_avg = float(vol_50d_avg_daily.iloc[-1][ticker])
             
-            # Liquidity Filters: Absolute Minimum Requirements
             turnover_avg = close_p * vol_50_avg
             if close_p < 25 or turnover_avg < 20000000 or vol_50_avg < 50000: continue
             
@@ -416,11 +369,9 @@ def run():
             daily_high, daily_low = float(df_h.iloc[-1]), float(df_l.iloc[-1])
             daily_range = daily_high - daily_low
 
-            # Reject High-Volume Distribution Candles
             if daily_range > 0 and ((daily_high - max(close_p, prev_close)) / daily_range) > 0.55 and vol_vs > 2.0 and close_p < prev_close:
                 continue
 
-            # Key Moving Averages
             d_ema20 = float(ema_20_daily.iloc[-1][ticker])
             d_ema50 = float(ema_50_daily.iloc[-1][ticker])
             d_ema200 = float(ema_200_daily.iloc[-1][ticker]) if not pd.isna(ema_200_daily.iloc[-1][ticker]) else 0.0
@@ -435,42 +386,35 @@ def run():
             prev_macd_val = float(macd_daily.iloc[-2][ticker])
             prev_macd_sig = float(macd_signal_daily.iloc[-2][ticker])
 
-            # 52-Week Range Metrics
             high_52w = float(df_h.tail(250).max())
             low_52w = float(df_l.tail(250).min())
 
-            # --- MARK MINERVINI STAGE 2 TREND TEMPLATE ---
             is_stage_2 = (
                 close_p > d_ema50 and
                 d_ema50 > d_ema200 and
-                d_ema200 >= d_ema200_20d_ago and      # 200 EMA trending upward
-                close_p >= low_52w * 1.25 and         # At least 25% above 52w low
-                close_p >= high_52w * 0.75 and        # Within 25% of 52w high
-                close_p > w_ema30                     # Above weekly 30-week base
+                d_ema200 >= d_ema200_20d_ago and      
+                close_p >= low_52w * 1.25 and         
+                close_p >= high_52w * 0.75 and        
+                close_p > w_ema30                     
             )
 
-            # --- RELATIVE STRENGTH (RS) CALCULATION ---
             stock_ret_20d = float(df_c.iloc[-1] / df_c.iloc[-20] - 1)
             stock_ret_60d = float(df_c.iloc[-1] / df_c.iloc[-60] - 1)
             rs_score_composite = (stock_ret_20d - nifty_return_20d) * 0.5 + (stock_ret_60d - nifty_return_60d) * 0.5
             is_rs_outperformer = rs_score_composite > 0
 
-            # --- VOLATILITY CONTRACTION PATTERN (VCP) ---
             atr_3d_avg = float((df_h.tail(3) - df_l.tail(3)).mean())
             atr_20d_avg = float((df_h.tail(20) - df_l.tail(20)).mean())
             is_range_contracted = atr_3d_avg <= (atr_20d_avg * 0.68)
             is_volume_dryup = vol_today <= (vol_50_avg * 0.75)
             is_vcp = is_range_contracted and is_volume_dryup and (close_p >= d_ema20)
 
-            # --- MACD BULLISH ZERO-CROSS ---
             is_macd_bullish_cross = (prev_macd_val <= prev_macd_sig) and (macd_val > macd_sig) and (macd_val > 0)
 
-            # --- PRE-BREAKOUT COIL ---
             recent_20d_high = float(df_h.tail(20).max())
             dist_to_pivot = (recent_20d_high - close_p) / close_p
             is_pre_breakout = (0.002 <= dist_to_pivot <= 0.035) and (close_p >= d_ema20) and (vol_vs <= 1.2)
 
-            # --- HIGH-TIGHT BTST (INSTITUTIONAL CLOSE) ---
             close_position = ((close_p - daily_low) / daily_range) if daily_range > 0 else 1.0
             is_btst = (
                 close_position >= 0.82 and 
@@ -480,7 +424,6 @@ def run():
                 (55 <= rsi_val <= 78)
             )
 
-            # --- STRUCTURAL PULLBACK / RETEST ---
             is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(
                 closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna()
             )
@@ -489,79 +432,56 @@ def run():
                 (daily_low <= d_ema20 and close_p > d_ema20)
             ) and (vol_vs <= 0.95)
 
-            # Filter Categorization
             horizon, sl_multiplier, tag = "", 1.0, ""
-            if is_btst:
-                horizon, sl_multiplier, tag = "BTST", 1.0, "🌙 High-Tight BTST"
-            elif is_vcp:
-                horizon, sl_multiplier, tag = "Pre-Breakout", 0.8, "🗜️ VCP Contraction Dry-Up"
-            elif is_macd_bullish_cross:
-                horizon, sl_multiplier, tag = "MACD", 1.2, "🌊 MACD Bullish Zero-Cross"
-            elif is_pre_breakout:
-                horizon, sl_multiplier, tag = "Pre-Breakout", 0.9, "💥 Pre-Breakout Coil"
-            elif is_trendline_retest:
-                horizon, sl_multiplier, tag = "Swing", 1.2, "📈 Rising Support Retest"
-            elif is_ema_retest and is_stage_2:
-                horizon, sl_multiplier, tag = "Swing", 1.0, "🔄 20-EMA Pullback Retest"
-            else:
-                continue
+            if is_btst: horizon, sl_multiplier, tag = "BTST", 1.0, "🌙 High-Tight BTST"
+            elif is_vcp: horizon, sl_multiplier, tag = "Pre-Breakout", 0.8, "🗜️ VCP Contraction Dry-Up"
+            elif is_macd_bullish_cross: horizon, sl_multiplier, tag = "MACD", 1.2, "🌊 MACD Bullish Zero-Cross"
+            elif is_pre_breakout: horizon, sl_multiplier, tag = "Pre-Breakout", 0.9, "💥 Pre-Breakout Coil"
+            elif is_trendline_retest: horizon, sl_multiplier, tag = "Swing", 1.2, "📈 Rising Support Retest"
+            elif is_ema_retest and is_stage_2: horizon, sl_multiplier, tag = "Swing", 1.0, "🔄 20-EMA Pullback Retest"
+            else: continue
 
-            # Trend and divergence checks
             is_rsi_div = check_bullish_divergence(df_c, rsi_daily[ticker].dropna())
             if is_rsi_div: tag += " (+RSI Div)"
 
-            # Targets & Stop Loss (ATR-driven)
             t1, t2, t3 = calculate_dynamic_targets(close_p, atr, df_h, df_l)
             eq_sl = round(close_p - sl_multiplier * atr, 1)
             if (close_p - eq_sl) <= 0: continue
 
-            # --- 100-POINT INSTITUTIONAL COMPOSITE SCORING MATRIX ---
             score = 0
-            # 1. Stage 2 Trend Template (Max 25 pts)
             if is_stage_2: score += 15
             if d_ema20 > d_ema50: score += 5
             if check_structure_hh_hl(df_h, df_l): score += 5
 
-            # 2. Relative Strength vs. Nifty (Max 25 pts)
             if rs_score_composite > 0.10: score += 25
             elif rs_score_composite > 0.04: score += 18
             elif rs_score_composite > 0: score += 12
 
-            # 3. Base Contraction & Volatility (Max 20 pts)
             if is_vcp or is_range_contracted: score += 12
             if is_volume_dryup or vol_vs <= 1.0: score += 8
 
-            # 4. Volume Accumulation / OBV (Max 15 pts)
             curr_obv = float(obv[ticker].iloc[-1])
             curr_obv_ema = float(obv_ema20[ticker].iloc[-1])
             if curr_obv > curr_obv_ema: score += 10
             if vol_vs >= 1.5 and close_p > prev_close: score += 5
 
-            # 5. Momentum Health (Max 15 pts)
             if 55 <= rsi_val <= 70: score += 8
             elif 48 <= rsi_val <= 75: score += 4
             if macd_val > macd_sig and macd_val > 0: score += 7
 
-            # Sector Bonus
             try:
                 stock_sec = yf.Ticker(ticker, session=session).info.get('sector', 'Unknown')
                 if stock_sec in leading_sectors: score = min(100, score + 5)
             except: pass
 
-            # Institutional Quality Cutoff: Minimum 65 Points
             if score < 65: continue
 
-            # Capital Sizing
             cash_qty = int(BASE_CAPITAL_PER_TRADE / close_p)
             if score >= 85: cash_qty = int((BASE_CAPITAL_PER_TRADE * HIGH_CONVICTION_MULTIPLIER) / close_p)
 
-            # Entry Zones
-            if "BTST" in tag:
-                ez_low, ez_high, best_entry = round(close_p - 0.2 * atr, 1), round(close_p + 0.1 * atr, 1), round(close_p, 1)
-            elif "Pullback" in tag or "Support" in tag:
-                ez_low, ez_high, best_entry = round(d_ema20 - 0.2 * atr, 1), round(close_p, 1), round(d_ema20, 1)
-            else:
-                ez_low, ez_high, best_entry = round(close_p - 0.15 * atr, 1), round(close_p + 0.3 * atr, 1), round(close_p + 0.05 * atr, 1)
+            if "BTST" in tag: ez_low, ez_high, best_entry = round(close_p - 0.2 * atr, 1), round(close_p + 0.1 * atr, 1), round(close_p, 1)
+            elif "Pullback" in tag or "Support" in tag: ez_low, ez_high, best_entry = round(d_ema20 - 0.2 * atr, 1), round(close_p, 1), round(d_ema20, 1)
+            else: ez_low, ez_high, best_entry = round(close_p - 0.15 * atr, 1), round(close_p + 0.3 * atr, 1), round(close_p + 0.05 * atr, 1)
 
             entry_zone_str = f"₹{ez_low} - ₹{ez_high} (🎯 ₹{best_entry})"
             rs_rating_display = f"+{round(rs_score_composite*100, 1)}%" if rs_score_composite > 0 else f"{round(rs_score_composite*100, 1)}%"
@@ -589,11 +509,9 @@ def run():
             })
         except: continue
 
-    # --- SAVE CLEAN CSV EXPORTS ---
     df_all = pd.DataFrame(valid_setups).drop_duplicates(subset=['Stock']).sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False]) if valid_setups else pd.DataFrame()
     df_all.to_csv("all_setups.csv", index=False) if not df_all.empty else pd.DataFrame(columns=['Stock', 'RawStock', 'Horizon', 'Tag', 'Entry', 'EntryZone', 'Qty', 'Risk', 'RSI', 'RS_Rating', 'Vol vs 50d', 'EqSL', 'EqT1', 'EqT2', 'EqT3', 'Score']).to_csv("all_setups.csv", index=False)
 
-    # Chart Data Extraction
     chart_data_list = []
     if valid_setups:
         for r in valid_setups:
@@ -601,34 +519,18 @@ def run():
             t = f"{sym}.NS"
             try:
                 if t in opens.columns:
-                    temp = pd.DataFrame({
-                        'Date': opens.index.strftime('%Y-%m-%d'),
-                        'Ticker': sym,
-                        'Open': opens[t],
-                        'High': highs[t],
-                        'Low': lows[t],
-                        'Close': closes[t],
-                        'Volume': volumes[t]
-                    }).dropna().tail(150)
+                    temp = pd.DataFrame({'Date': opens.index.strftime('%Y-%m-%d'), 'Ticker': sym, 'Open': opens[t], 'High': highs[t], 'Low': lows[t], 'Close': closes[t], 'Volume': volumes[t]}).dropna().tail(150)
                     chart_data_list.append(temp)
             except: pass
+            
     if chart_data_list: pd.concat(chart_data_list).to_csv("chart_data.csv", index=False)
     else: pd.DataFrame(columns=['Date', 'Ticker', 'Open', 'High', 'Low', 'Close', 'Volume']).to_csv("chart_data.csv", index=False)
 
-    # Segmented Buckets
     df_vcp = df_all[df_all['Horizon'] == 'Pre-Breakout'].head(20) if not df_all.empty else pd.DataFrame()
     df_macd = df_all[df_all['Horizon'] == 'MACD'].head(20) if not df_all.empty else pd.DataFrame()
     df_swing = df_all[df_all['Horizon'] == 'Swing'].head(20) if not df_all.empty else pd.DataFrame()
     df_btst = df_all[df_all['Horizon'] == 'BTST'].head(20) if not df_all.empty else pd.DataFrame()
 
-    # AI Deep Dive on Top 2 Stocks
-    if not df_all.empty: 
-        generate_ai_deep_dive(df_all.to_dict('records'))
-    else:
-        with open("deep_dive_analysis.md", "w", encoding="utf-8") as f: 
-            f.write("# 🔬 Institutional Deep Dive Analysis\n\n*No qualifying setups met the institutional 65-point cutoff today.*")
-
-    # --- TELEGRAM DISPATCH ---
     if not df_btst.empty:
         new_btst = get_new_alerts(df_btst, "BTST")
         if not new_btst.empty: send_telegram_message(format_telegram_text(new_btst, "🌙 Institutional BTST Alerts", nifty_regime))
