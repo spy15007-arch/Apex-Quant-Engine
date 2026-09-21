@@ -10,7 +10,7 @@ from streamlit_lightweight_charts import renderLightweightCharts
 st.set_page_config(page_title="Apex Quant Engine", layout="wide", page_icon="📈")
 
 # --- DATA LOADING FUNCTIONS ---
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=30)
 def load_data(file_path):
     if os.path.exists(file_path):
         try: return pd.read_csv(file_path)
@@ -46,8 +46,8 @@ def display_interactive_table(df, tab_name):
         return
     
     df = df.sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False])
+    df['Chart'] = "https://in.tradingview.com/chart/?symbol=NSE:" + df['RawStock'].astype(str)
     
-    df['Chart'] = "https://in.tradingview.com/chart/?symbol=NSE:" + df['RawStock']
     display_cols = ['Stock', 'Tag', 'Entry', 'EqSL', 'EqT1', 'EqT2', 'Score', 'RS_Rating', 'Vol vs 50d', 'RSI', 'Chart', 'RawStock']
     display_df = df[[col for col in display_cols if col in df.columns]]
     column_config = {
@@ -82,12 +82,13 @@ tabs = st.tabs([
 
 df_all = load_data("all_setups.csv")
 
-# --- POPULATE TABLES ---
+# --- POPULATE TABLES USING ROBUST TAG MATCHING ---
 if not df_all.empty:
-    df_pre = df_all[df_all['Horizon'] == 'Pre-Breakout']
-    df_macd = df_all[df_all['Horizon'] == 'MACD']
-    df_swing = df_all[df_all['Horizon'] == 'Swing']
-    df_btst = df_all[df_all['Horizon'] == 'BTST']
+    # Match by Tag to ensure setups never get dropped due to Horizon naming mismatches
+    df_macd = df_all[df_all['Tag'].str.contains('MACD', case=False, na=False)]
+    df_pre = df_all[df_all['Tag'].str.contains('VCP|Pre-Breakout|Coil', case=False, na=False) | (df_all['Horizon'] == 'Pre-Breakout')]
+    df_btst = df_all[df_all['Tag'].str.contains('BTST', case=False, na=False) | (df_all['Horizon'] == 'BTST')]
+    df_swing = df_all[(df_all['Horizon'] == 'Swing') & (~df_all['Tag'].str.contains('MACD', case=False, na=False))]
 
     with tabs[0]: st.header("💥 Pre-Breakout & VCP Contraction"); display_interactive_table(df_pre, "Pre-Breakout")
     with tabs[1]: st.header("🌊 MACD Bullish Zero-Cross"); display_interactive_table(df_macd, "MACD Zero-Cross")
@@ -197,7 +198,6 @@ with tabs[5]:
 
             setup_info = df_all[df_all['RawStock'] == selected_ticker]
             if not setup_info.empty:
-                entry_p = float(setup_info.iloc[0]['Entry'])
                 sl_p = float(setup_info.iloc[0]['EqSL'])
                 t1_p = float(setup_info.iloc[0]['EqT1'])
                 tag_name = str(setup_info.iloc[0].get('Tag', ''))
