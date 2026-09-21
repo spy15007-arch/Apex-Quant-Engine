@@ -1,14 +1,13 @@
 import streamlit as st
 import pandas as pd
 import os
-import re
 import json
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from streamlit_lightweight_charts import renderLightweightCharts
 
 # --- PAGE CONFIGURATION ---
-st.set_page_config(page_title="Master Quant Engine", layout="wide", page_icon="📈")
+st.set_page_config(page_title="Apex Quant Engine", layout="wide", page_icon="📈")
 
 # --- DATA LOADING FUNCTIONS ---
 @st.cache_data(ttl=60)
@@ -17,12 +16,6 @@ def load_data(file_path):
         try: return pd.read_csv(file_path)
         except: return pd.DataFrame()
     return pd.DataFrame()
-
-@st.cache_data(ttl=60)
-def load_markdown(file_path):
-    if os.path.exists(file_path):
-        with open(file_path, "r", encoding="utf-8") as f: return f.read()
-    return "*AI Analysis is pending or no qualifying setups were found today.*"
 
 # --- PORTFOLIO ACTION FUNCTIONS ---
 def add_to_portfolio(raw_stock, df_source):
@@ -52,7 +45,6 @@ def display_interactive_table(df, tab_name):
         st.info(f"No qualifying setups matched the criteria for {tab_name} today.")
         return
     
-    # Sorts the table from Best to Worst based on the new 100-Point Score
     df = df.sort_values(by=['Score', 'Vol vs 50d'], ascending=[False, False])
     
     df['Chart'] = "https://in.tradingview.com/chart/?symbol=NSE:" + df['RawStock']
@@ -76,17 +68,15 @@ def display_interactive_table(df, tab_name):
         if st.button(f"➕ Add to Portfolio", key=f"btn_{tab_name}", use_container_width=True): add_to_portfolio(selected_stock, df)
 
 # --- MAIN UI DASHBOARD LAYOUT ---
-st.title("📈 Institutional Quant Dashboard")
+st.title("📈 Apex Quant Engine")
 st.markdown("Automated Stage 2 Trend & Volatility Contraction Scanner")
 
-# Streamlined Tabs - Intraday & Budget fully removed
 tabs = st.tabs([
     "💥 Pre-Breakout (VCP)", 
     "🌊 MACD Zero-Cross", 
     "📈 Swing Structural", 
     "🌙 High-Tight BTST", 
     "💼 Active Portfolio", 
-    "🤖 AI Deep Dive", 
     "📊 Advanced Charting"
 ])
 
@@ -128,40 +118,8 @@ with tabs[4]:
         else: st.info("No active trades currently.")
     else: st.info("Your portfolio is currently empty.")
 
-# --- TAB 6: AI DEEP DIVE ---
+# --- TAB 6: NATIVE QUANTITATIVE CHARTING ENGINE ---
 with tabs[5]:
-    st.header("🔬 Institutional Fundamental Analysis")
-    raw_ai_report = load_markdown("deep_dive_analysis.md")
-    if "Pending Analysis" in raw_ai_report or "No qualifying setups" in raw_ai_report: 
-        st.info("AI Analysis is pending or no qualifying setups were found today.")
-    else:
-        reports = raw_ai_report.split("\n\n---\n\n")
-        for report in reports:
-            if not report.strip(): continue
-            lines = report.strip().split('\n')
-            title = lines[0].replace("# Detailed Stock Analysis:", "").strip() if lines else "Stock Analysis"
-            
-            scorecard_match = re.search(r'### 12\. Final Scorecard(.*?)(?=### 13\.|$)', report, re.DOTALL)
-            summary_match = re.search(r'### 14\. Executive Summary(.*?)(?=###|$)', report, re.DOTALL)
-            tech_match = re.search(r'### 1\. Technical Analysis(.*?)(?=### 2\.|$)', report, re.DOTALL)
-            
-            scorecard_text = scorecard_match.group(1).strip() if scorecard_match else "Data error."
-            summary_text = summary_match.group(1).strip() if summary_match else "Data error."
-            tech_text = tech_match.group(1).strip() if tech_match else "Data error."
-            
-            st.markdown(f"### {title}")
-            
-            ai_tab1, ai_tab2, ai_tab3, ai_tab4 = st.tabs(["📋 Executive Summary", "📊 Technical View", "🏆 Scorecard", "📖 Full Report"])
-            
-            with ai_tab1: st.markdown(summary_text)
-            with ai_tab2: st.markdown(tech_text)
-            with ai_tab3: st.markdown(scorecard_text)
-            with ai_tab4: st.markdown(report)
-            
-            st.divider()
-
-# --- TAB 7: NATIVE QUANTITATIVE CHARTING ENGINE ---
-with tabs[6]:
     st.header("📊 Interactive Native Charting")
     df_charts = load_data("chart_data.csv")
     
