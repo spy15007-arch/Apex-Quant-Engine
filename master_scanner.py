@@ -332,7 +332,8 @@ def run():
     gain, loss = (delta.where(delta > 0, 0)).rolling(14).mean(), (-delta.where(delta < 0, 0)).rolling(14).mean()
     rsi_daily = 100 - (100 / (1 + (gain / loss)))
     
-    macd_daily = closes.ewm(span=12, adjust=False).mean() - closes.ewm(span=26, adjust=False).mean()
+    # --- FAST INSTITUTIONAL MACD (8, 17, 9) ---
+    macd_daily = closes.ewm(span=8, adjust=False).mean() - closes.ewm(span=17, adjust=False).mean()
     macd_signal_daily = macd_daily.ewm(span=9, adjust=False).mean()
     
     atr_daily = pd.DataFrame(
@@ -362,8 +363,9 @@ def run():
             vol_today = float(df_v.iloc[-1])
             vol_50_avg = float(vol_50d_avg_daily.iloc[-1][ticker])
             
+            # --- INSTITUTIONAL LIQUIDITY FILTER (Min ₹10 Cr Turnover & 100k Volume) ---
             turnover_avg = close_p * vol_50_avg
-            if close_p < 25 or turnover_avg < 20000000 or vol_50_avg < 50000: continue
+            if close_p < 50 or turnover_avg < 100000000 or vol_50_avg < 100000: continue
             
             vol_vs = round(vol_today / vol_50_avg, 2) if vol_50_avg > 0 else 1.0
             daily_high, daily_low = float(df_h.iloc[-1]), float(df_l.iloc[-1])
@@ -409,7 +411,9 @@ def run():
             is_volume_dryup = vol_today <= (vol_50_avg * 0.75)
             is_vcp = is_range_contracted and is_volume_dryup and (close_p >= d_ema20)
 
-            is_macd_bullish_cross = (prev_macd_val <= prev_macd_sig) and (macd_val > macd_sig) and (macd_val > 0)
+            # --- STRICT MACD CROSS LOGIC (Requires expanding momentum) ---
+            macd_hist = macd_val - macd_sig
+            is_macd_bullish_cross = (prev_macd_val <= prev_macd_sig) and (macd_val > macd_sig) and (macd_val > 0) and (macd_hist > 0.05 * atr)
 
             recent_20d_high = float(df_h.tail(20).max())
             dist_to_pivot = (recent_20d_high - close_p) / close_p
@@ -435,7 +439,10 @@ def run():
             horizon, sl_multiplier, tag = "", 1.0, ""
             if is_btst: horizon, sl_multiplier, tag = "BTST", 1.0, "🌙 High-Tight BTST"
             elif is_vcp: horizon, sl_multiplier, tag = "Pre-Breakout", 0.8, "🗜️ VCP Contraction Dry-Up"
-            elif is_macd_bullish_cross: horizon, sl_multiplier, tag = "MACD", 1.2, "🌊 MACD Bullish Zero-Cross"
+            
+            # --- VOLUME-BACKED MACD TAG (Requires 1.3x Volume Spike) ---
+            elif is_macd_bullish_cross and vol_vs >= 1.3: horizon, sl_multiplier, tag = "MACD", 1.2, "🌊 MACD Vol-Backed Cross"
+            
             elif is_pre_breakout: horizon, sl_multiplier, tag = "Pre-Breakout", 0.9, "💥 Pre-Breakout Coil"
             elif is_trendline_retest: horizon, sl_multiplier, tag = "Swing", 1.2, "📈 Rising Support Retest"
             elif is_ema_retest and is_stage_2: horizon, sl_multiplier, tag = "Swing", 1.0, "🔄 20-EMA Pullback Retest"
@@ -541,7 +548,7 @@ def run():
         
     if not df_macd.empty:
         new_macd = get_new_alerts(df_macd, "MACD")
-        if not new_macd.empty: send_telegram_message(format_telegram_text(new_macd, "🌊 MACD Bullish Zero-Cross", nifty_regime))
+        if not new_macd.empty: send_telegram_message(format_telegram_text(new_macd, "🌊 MACD Vol-Backed Zero-Cross", nifty_regime))
 
     if not df_swing.empty:
         new_swing = get_new_alerts(df_swing, "Swing")
