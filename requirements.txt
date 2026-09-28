@@ -1,8 +1,4 @@
-yfinance
-pandas
-numpy
-scipy
-requests
-streamlit
-plotly
-streamlit-lightweight-charts
+streamlit>=1.35.0
+pandas==2.2.2
+plotly>=5.18.0
+streamlit-lightweight-charts==1.0.0
