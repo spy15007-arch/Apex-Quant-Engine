@@ -1,4 +1,4 @@
-streamlit>=1.35.0
-pandas==2.2.2
-plotly>=5.18.0
-streamlit-lightweight-charts==1.0.0
+streamlit
+pandas<3.0.0
+plotly
+streamlit-lightweight-charts
