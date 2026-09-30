@@ -3,8 +3,8 @@ name: Apex Quant Engine
 on:
   workflow_dispatch: # Allows you to manually click "Run workflow"
   schedule:
-    # Runs automatically at 4:00 PM IST (10:30 AM UTC) Monday through Friday
-    - cron: '30 10 * * 1-5'
+    # Runs automatically at 2:15 PM IST (8:45 AM UTC) Monday through Friday
+    - cron: '45 8 * * 1-5'
 
 jobs:
   run-scanner:
