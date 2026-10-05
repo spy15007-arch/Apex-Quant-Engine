@@ -1,2 +1,6 @@
 Stock,RawStock,Horizon,Tag,Entry,EntryZone,Qty,Risk,RSI,RS_Rating,Vol vs 50d,EqSL,EqT1,EqT2,EqT3,Score,TL_D1,TL_V1,TL_V2
-GNFC (↑),GNFC,Swing,🔄 20-EMA Pullback Retest,589.15,₹586.5 - ₹589.2 (🎯 ₹590.4),84,1642.2,58.7,+18.2%,0.73,569.6,613.5,631.1,656.4,76,,,0.0
+LALPATHLAB (↑),LALPATHLAB,Pre-Breakout,💥 Pre-Breakout Coil (+RSI Div),1972.5,₹1963.2 - ₹1991.1 (🎯 ₹1975.6),25,1397.5,61.7,+15.5%,0.95,1916.6,2030.2,2074.0,2134.8,78,,,0.0
+GNFC (↑),GNFC,Swing,🔄 20-EMA Pullback Retest,588.0,₹586.3 - ₹588.0 (🎯 ₹590.2),85,1657.5,58.2,+17.9%,0.32,568.5,612.3,629.9,655.2,76,,,0.0
+ACE (↑),ACE,Pre-Breakout,💥 Pre-Breakout Coil,1229.0,₹1222.9 - ₹1241.2 (🎯 ₹1231.0),40,1464.0,71.2,+24.0%,0.74,1192.4,1274.9,1308.5,1356.4,72,,,0.0
+DLF (↑),DLF,Pre-Breakout,💥 Pre-Breakout Coil,673.0,₹670.4 - ₹678.2 (🎯 ₹673.9),74,1154.4,58.1,+6.3%,0.98,657.4,692.1,706.1,726.0,71,,,0.0
+IPCALAB (↑),IPCALAB,Swing,🔄 20-EMA Pullback Retest,1957.1,₹1940.3 - ₹1957.1 (🎯 ₹1951.6),25,1420.0,48.3,+10.1%,0.45,1900.3,2009.7,2049.6,2105.0,67,,,0.0
