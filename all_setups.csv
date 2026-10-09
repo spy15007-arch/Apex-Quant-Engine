@@ -1,4 +1,6 @@
 Stock,RawStock,Horizon,Tag,Entry,EntryZone,Qty,Risk,RSI,RS_Rating,Vol vs 50d,EqSL,EqT1,EqT2,EqT3,Score,TL_D1,TL_V1,TL_V2
-LAURUSLABS (↑),LAURUSLABS,Pre-Breakout,💥 Pre-Breakout Coil,1997.9,₹1990.8 - ₹2012.0 (🎯 ₹2000.3),25,1060.0,56.9,+22.4%,0.59,1955.5,2049.9,2088.2,2142.6,76,,,0.0
-MCX (↑),MCX,Swing,🔄 20-EMA Pullback Retest,3255.6,₹3240.8 - ₹3255.6 (🎯 ₹3262.2),15,1602.0,49.8,+15.5%,0.91,3148.8,3369.8,3454.2,3573.7,72,,,0.0
-GNFC (↑),GNFC,Swing,🔄 20-EMA Pullback Retest,599.25,₹592.3 - ₹599.2 (🎯 ₹596.3),83,1672.45,53.3,+21.5%,0.43,579.1,624.0,641.9,667.7,72,,,0.0
+COFORGE (↑),COFORGE,Pre-Breakout,💥 Pre-Breakout Coil,1867.9,₹1858.7 - ₹1886.2 (🎯 ₹1871.0),26,1430.0,53.9,+17.4%,0.97,1812.9,1925.4,1968.8,2029.4,79,,,0.0
+LAURUSLABS (↑),LAURUSLABS,Pre-Breakout,💥 Pre-Breakout Coil (+RSI Div),2036.6,₹2028.9 - ₹2051.9 (🎯 ₹2039.2),24,1104.0,61.6,+23.0%,0.55,1990.6,2091.1,2131.4,2188.5,76,,,0.0
+BALRAMCHIN (↑),BALRAMCHIN,Swing,🔄 20-EMA Pullback Retest,678.15,₹672.5 - ₹678.2 (🎯 ₹678.4),73,2135.25,51.4,+10.1%,0.19,648.9,705.1,725.5,753.9,74,,,0.0
+MCX (↑),MCX,Swing,🔄 20-EMA Pullback Retest (+RSI Div),3318.2,₹3246.6 - ₹3318.2 (🎯 ₹3269.6),15,1728.0,52.9,+14.6%,0.71,3203.0,3437.4,3526.0,3651.0,72,,,0.0
+GNFC (↑),GNFC,Swing,🔄 20-EMA Pullback Retest,592.7,₹591.7 - ₹592.7 (🎯 ₹596.0),84,1814.4,51.1,+17.1%,0.36,571.1,618.3,636.9,663.6,72,,,0.0
