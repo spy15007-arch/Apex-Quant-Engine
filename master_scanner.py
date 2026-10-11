@@ -287,38 +287,62 @@ def run():
     elif breadth_50_pct < 0.40: nifty_regime = f"🔴 Bearish - Capital Protection Mode ({breadth_str})"
     else: nifty_regime = f"🟡 Neutral Consolidation ({breadth_str})"
 
+    # --- ADVANCED PORTFOLIO OUTCOME ENGINE ---
     portfolio_file = "portfolio.csv"
     if os.path.exists(portfolio_file): 
         pf = pd.read_csv(portfolio_file)
-        if 'Sector' not in pf.columns: pf['Sector'] = 'Unknown'
     else: 
         pf = pd.DataFrame(columns=['Stock', 'RawStock', 'Entry', 'Qty', 'Current_SL', 'T1', 'T2', 'T3', 'Status', 'Sector'])
         
     active_sectors_count, trail_alerts = {}, []
     if not pf.empty:
+        for col in ['Exit_Price', 'Outcome', 'Realized_R', 'Initial_SL', 'Sector']:
+            if col not in pf.columns: pf[col] = None
+
         for i, row in pf.iterrows():
             if row['Status'] != 'Active': continue
             sym, sec = row['RawStock'], row.get('Sector', 'Unknown')
-            if sec == 'Unknown' or pd.isna(sec):
+            if sec == 'Unknown' or pd.isna(sec) or sec is None:
                 try: 
                     sec = yf.Ticker(f"{sym}.NS", session=session).info.get('sector', 'Unknown')
                     pf.at[i, 'Sector'] = sec
                 except: sec = 'Unknown'
             active_sectors_count[sec] = active_sectors_count.get(sec, 0) + 1
+            
             ticker = f"{sym}.NS"
             if ticker in closes.columns:
-                latest_p, curr_sl, entry_p, t1, t2 = float(closes[ticker].iloc[-1]), float(row['Current_SL']), float(row['Entry']), float(row['T1']), float(row['T2'])
+                latest_p, curr_sl, entry_p = float(closes[ticker].iloc[-1]), float(row['Current_SL']), float(row['Entry'])
+                t1, t2 = float(row['T1']), float(row['T2'])
+                
                 if latest_p < curr_sl: 
                     pf.at[i, 'Status'] = 'Closed'
-                    trail_alerts.append(f"🔴 *STOP OUT:* {sym} closed below SL (₹{curr_sl}).")
+                    pf.at[i, 'Exit_Price'] = curr_sl
+                    
+                    if curr_sl > entry_p:
+                        pf.at[i, 'Outcome'] = 'Win'
+                        trail_alerts.append(f"🟢 *PROFIT LOCKED:* {sym} closed at trailing SL (₹{curr_sl}).")
+                    elif curr_sl == entry_p:
+                        pf.at[i, 'Outcome'] = 'Breakeven'
+                        trail_alerts.append(f"🟡 *BREAKEVEN:* {sym} closed at cost (₹{curr_sl}).")
+                    else:
+                        pf.at[i, 'Outcome'] = 'Loss'
+                        trail_alerts.append(f"🔴 *STOP OUT:* {sym} hit initial SL (₹{curr_sl}).")
+                        
+                    init_sl_val = float(row['Current_SL']) if pd.isna(row.get('Initial_SL')) or row.get('Initial_SL') is None else float(row.get('Initial_SL'))
+                    initial_risk = entry_p - init_sl_val
+                    pf.at[i, 'Realized_R'] = round((curr_sl - entry_p) / initial_risk, 2) if initial_risk > 0 else 0
+
                 elif latest_p >= t2 and curr_sl < t1: 
+                    if pd.isna(row.get('Initial_SL')) or row.get('Initial_SL') is None: pf.at[i, 'Initial_SL'] = curr_sl
                     pf.at[i, 'Current_SL'] = t1
                     trail_alerts.append(f"🟢 *PROFIT LOCK:* {sym} hit T2! SL moved to T1 (₹{t1}).")
                 elif latest_p >= t1 and curr_sl < entry_p: 
+                    if pd.isna(row.get('Initial_SL')) or row.get('Initial_SL') is None: pf.at[i, 'Initial_SL'] = curr_sl
                     pf.at[i, 'Current_SL'] = entry_p
                     trail_alerts.append(f"🟡 *BREAKEVEN:* {sym} hit T1! SL moved to Cost (₹{entry_p}).")
+                    
         pf.to_csv(portfolio_file, index=False)
-        if trail_alerts: send_telegram_message("🔔 *TRAILING STOP PORTFOLIO ENGINE*\n\n" + "\n".join(trail_alerts))
+        if trail_alerts: send_telegram_message("🔔 *PORTFOLIO OUTCOME ENGINE*\n\n" + "\n".join(trail_alerts))
 
     closes_weekly = closes.resample('W').last().dropna(how='all')
     highs_weekly = highs.resample('W').max().dropna(how='all')
@@ -332,7 +356,6 @@ def run():
     gain, loss = (delta.where(delta > 0, 0)).rolling(14).mean(), (-delta.where(delta < 0, 0)).rolling(14).mean()
     rsi_daily = 100 - (100 / (1 + (gain / loss)))
     
-    # --- FAST INSTITUTIONAL MACD (8, 17, 9) ---
     macd_daily = closes.ewm(span=8, adjust=False).mean() - closes.ewm(span=17, adjust=False).mean()
     macd_signal_daily = macd_daily.ewm(span=9, adjust=False).mean()
     
@@ -363,7 +386,6 @@ def run():
             vol_today = float(df_v.iloc[-1])
             vol_50_avg = float(vol_50d_avg_daily.iloc[-1][ticker])
             
-            # --- INSTITUTIONAL LIQUIDITY FILTER (Min ₹10 Cr Turnover & 100k Volume) ---
             turnover_avg = close_p * vol_50_avg
             if close_p < 50 or turnover_avg < 100000000 or vol_50_avg < 100000: continue
             
@@ -411,7 +433,6 @@ def run():
             is_volume_dryup = vol_today <= (vol_50_avg * 0.75)
             is_vcp = is_range_contracted and is_volume_dryup and (close_p >= d_ema20)
 
-            # --- STRICT MACD CROSS LOGIC (Requires expanding momentum) ---
             macd_hist = macd_val - macd_sig
             is_macd_bullish_cross = (prev_macd_val <= prev_macd_sig) and (macd_val > macd_sig) and (macd_val > 0) and (macd_hist > 0.05 * atr)
 
@@ -427,6 +448,9 @@ def run():
                 vol_vs >= 1.25 and 
                 (55 <= rsi_val <= 78)
             )
+            
+            # --- INSTITUTIONAL BREAKOUT LOGIC ---
+            is_fresh_breakout = (close_p >= recent_20d_high) and (vol_vs >= 2.0) and (close_p > prev_close)
 
             is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(
                 closes_weekly[ticker].dropna(), lows_weekly[ticker].dropna(), highs_weekly[ticker].dropna()
@@ -437,12 +461,12 @@ def run():
             ) and (vol_vs <= 0.95)
 
             horizon, sl_multiplier, tag = "", 1.0, ""
-            if is_btst: horizon, sl_multiplier, tag = "BTST", 1.0, "🌙 High-Tight BTST"
+            
+            # --- NEW STRICT TAGGING HIERARCHY ---
+            if is_fresh_breakout: horizon, sl_multiplier, tag = "Breakout", 1.0, "🚀 Fresh Vol-Backed Breakout"
+            elif is_btst: horizon, sl_multiplier, tag = "BTST", 1.0, "🌙 High-Tight BTST"
             elif is_vcp: horizon, sl_multiplier, tag = "Pre-Breakout", 0.8, "🗜️ VCP Contraction Dry-Up"
-            
-            # --- VOLUME-BACKED MACD TAG (Requires 1.3x Volume Spike) ---
             elif is_macd_bullish_cross and vol_vs >= 1.3: horizon, sl_multiplier, tag = "MACD", 1.2, "🌊 MACD Vol-Backed Cross"
-            
             elif is_pre_breakout: horizon, sl_multiplier, tag = "Pre-Breakout", 0.9, "💥 Pre-Breakout Coil"
             elif is_trendline_retest: horizon, sl_multiplier, tag = "Swing", 1.2, "📈 Rising Support Retest"
             elif is_ema_retest and is_stage_2: horizon, sl_multiplier, tag = "Swing", 1.0, "🔄 20-EMA Pullback Retest"
@@ -533,10 +557,15 @@ def run():
     if chart_data_list: pd.concat(chart_data_list).to_csv("chart_data.csv", index=False)
     else: pd.DataFrame(columns=['Date', 'Ticker', 'Open', 'High', 'Low', 'Close', 'Volume']).to_csv("chart_data.csv", index=False)
 
+    df_breakout = df_all[df_all['Horizon'] == 'Breakout'].head(20) if not df_all.empty else pd.DataFrame()
     df_vcp = df_all[df_all['Horizon'] == 'Pre-Breakout'].head(20) if not df_all.empty else pd.DataFrame()
     df_macd = df_all[df_all['Horizon'] == 'MACD'].head(20) if not df_all.empty else pd.DataFrame()
     df_swing = df_all[df_all['Horizon'] == 'Swing'].head(20) if not df_all.empty else pd.DataFrame()
     df_btst = df_all[df_all['Horizon'] == 'BTST'].head(20) if not df_all.empty else pd.DataFrame()
+
+    if not df_breakout.empty:
+        new_breakout = get_new_alerts(df_breakout, "Breakout")
+        if not new_breakout.empty: send_telegram_message(format_telegram_text(new_breakout, "🚀 Fresh Vol-Backed Breakouts", nifty_regime))
 
     if not df_btst.empty:
         new_btst = get_new_alerts(df_btst, "BTST")
