@@ -72,11 +72,13 @@ st.title("📈 Apex Quant Engine")
 st.markdown("Automated Stage 2 Trend & Volatility Contraction Scanner")
 
 tabs = st.tabs([
+    "🚀 Fresh Breakouts",
     "💥 Pre-Breakout (VCP)", 
     "🌊 MACD Zero-Cross", 
     "📈 Swing Structural", 
     "🌙 High-Tight BTST", 
     "💼 Active Portfolio", 
+    "🏆 Trade Analytics",
     "📊 Advanced Charting"
 ])
 
@@ -84,22 +86,23 @@ df_all = load_data("all_setups.csv")
 
 # --- POPULATE TABLES USING ROBUST TAG MATCHING ---
 if not df_all.empty:
-    # Match by Tag to ensure setups never get dropped due to Horizon naming mismatches
+    df_breakout = df_all[df_all['Horizon'] == 'Breakout']
     df_macd = df_all[df_all['Tag'].str.contains('MACD', case=False, na=False)]
     df_pre = df_all[df_all['Tag'].str.contains('VCP|Pre-Breakout|Coil', case=False, na=False) | (df_all['Horizon'] == 'Pre-Breakout')]
     df_btst = df_all[df_all['Tag'].str.contains('BTST', case=False, na=False) | (df_all['Horizon'] == 'BTST')]
     df_swing = df_all[(df_all['Horizon'] == 'Swing') & (~df_all['Tag'].str.contains('MACD', case=False, na=False))]
 
-    with tabs[0]: st.header("💥 Pre-Breakout & VCP Contraction"); display_interactive_table(df_pre, "Pre-Breakout")
-    with tabs[1]: st.header("🌊 MACD Bullish Zero-Cross"); display_interactive_table(df_macd, "MACD Zero-Cross")
-    with tabs[2]: st.header("📈 Stage 2 Swing Retests"); display_interactive_table(df_swing, "Swing Trades")
-    with tabs[3]: st.header("🌙 High-Tight Institutional BTST"); display_interactive_table(df_btst, "BTST")
+    with tabs[0]: st.header("🚀 Fresh Vol-Backed Breakouts"); display_interactive_table(df_breakout, "Fresh Breakouts")
+    with tabs[1]: st.header("💥 Pre-Breakout & VCP Contraction"); display_interactive_table(df_pre, "Pre-Breakout")
+    with tabs[2]: st.header("🌊 MACD Bullish Zero-Cross"); display_interactive_table(df_macd, "MACD Zero-Cross")
+    with tabs[3]: st.header("📈 Stage 2 Swing Retests"); display_interactive_table(df_swing, "Swing Trades")
+    with tabs[4]: st.header("🌙 High-Tight Institutional BTST"); display_interactive_table(df_btst, "BTST")
 else:
-    for i in range(4):
+    for i in range(5):
         with tabs[i]: st.info("Zero stocks passed the institutional quality filters today. Capital protected.")
 
 # --- TAB 5: ACTIVE PORTFOLIO ---
-with tabs[4]:
+with tabs[5]:
     st.header("Active Trailing Portfolio")
     df_portfolio = load_data("portfolio.csv")
     if not df_portfolio.empty:
@@ -119,8 +122,47 @@ with tabs[4]:
         else: st.info("No active trades currently.")
     else: st.info("Your portfolio is currently empty.")
 
-# --- TAB 6: NATIVE QUANTITATIVE CHARTING ENGINE ---
-with tabs[5]:
+# --- TAB 6: TRADE OUTCOME TRACKER ---
+with tabs[6]:
+    st.header("🏆 Trade Analytics & System Edge")
+    if not df_portfolio.empty and 'Status' in df_portfolio.columns:
+        closed_pf = df_portfolio[df_portfolio['Status'] == 'Closed'].copy()
+        
+        if not closed_pf.empty:
+            total_trades = len(closed_pf)
+            wins = len(closed_pf[closed_pf['Outcome'] == 'Win'])
+            losses = len(closed_pf[closed_pf['Outcome'] == 'Loss'])
+            win_rate = (wins / total_trades) * 100 if total_trades > 0 else 0
+            
+            closed_pf['Pct_Return'] = ((closed_pf['Exit_Price'] - closed_pf['Entry']) / closed_pf['Entry']) * 100
+            avg_win = closed_pf[closed_pf['Outcome'] == 'Win']['Pct_Return'].mean() if wins > 0 else 0
+            avg_loss = closed_pf[closed_pf['Outcome'] == 'Loss']['Pct_Return'].mean() if losses > 0 else 0
+            
+            col1, col2, col3, col4 = st.columns(4)
+            col1.metric("Total Closed Trades", total_trades)
+            col2.metric("System Win Rate", f"{win_rate:.1f}%")
+            col3.metric("Avg Winner", f"+{avg_win:.2f}%" if pd.notna(avg_win) else "0%")
+            col4.metric("Avg Loser", f"{avg_loss:.2f}%" if pd.notna(avg_loss) else "0%")
+            
+            st.markdown("### Closed Trade Ledger")
+            display_cols = ['Stock', 'Sector', 'Entry', 'Exit_Price', 'Outcome', 'Pct_Return']
+            st.dataframe(
+                closed_pf[display_cols].sort_index(ascending=False), 
+                use_container_width=True, 
+                hide_index=True,
+                column_config={
+                    "Entry": st.column_config.NumberColumn("Entry Price", format="₹%.2f"),
+                    "Exit_Price": st.column_config.NumberColumn("Exit Price", format="₹%.2f"),
+                    "Pct_Return": st.column_config.NumberColumn("Net ROI", format="%.2f%%")
+                }
+            )
+        else:
+            st.info("No closed trades yet. Your outcome metrics will appear here once active trades hit their trailing stops.")
+    else:
+        st.info("Portfolio tracking initialized. Awaiting first trade closure.")
+
+# --- TAB 7: NATIVE QUANTITATIVE CHARTING ENGINE ---
+with tabs[7]:
     st.header("📊 Interactive Native Charting")
     df_charts = load_data("chart_data.csv")
     
