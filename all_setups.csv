@@ -1,7 +1,7 @@
 Stock,RawStock,Horizon,Tag,Entry,EntryZone,Qty,Risk,RSI,RS_Rating,Vol vs 50d,EqSL,EqT1,EqT2,EqT3,Score,TL_D1,TL_V1,TL_V2
-MCX (↑),MCX,Pre-Breakout,💥 Pre-Breakout Coil,3390.0,₹3372.9 - ₹3424.2 (🎯 ₹3395.7),14,1435.0,58.8,+19.8%,0.73,3287.5,3508.4,3596.4,3720.5,78,,,0.0
-BALRAMCHIN (↑),BALRAMCHIN,Pre-Breakout,💥 Pre-Breakout Coil,700.8,₹696.4 - ₹709.5 (🎯 ₹702.3),71,1860.2,59.0,+14.9%,0.3,674.6,727.6,747.9,776.2,78,,,0.0
-PVRINOX (↑),PVRINOX,BTST,🌙 High-Tight BTST,1401.3,₹1390.6 - ₹1406.7 (🎯 ₹1401.3),35,1876.0,55.3,+33.0%,1.73,1347.7,1460.7,1504.4,1566.5,75,,,0.0
-NAVINFLUOR (↑),NAVINFLUOR,Pre-Breakout,💥 Pre-Breakout Coil,8561.0,₹8527.7 - ₹8627.5 (🎯 ₹8572.1),5,997.5,52.6,+12.8%,0.34,8361.5,8772.4,8931.8,9154.3,74,,,0.0
-GNFC (↑),GNFC,Swing,🔄 20-EMA Pullback Retest,594.0,₹591.6 - ₹594.0 (🎯 ₹595.8),84,1789.2,51.2,+20.3%,0.34,572.7,619.4,637.9,664.3,67,,,0.0
-KOTAKBANK (↑),KOTAKBANK,Pre-Breakout,💥 Pre-Breakout Coil,443.4,₹442.0 - ₹446.2 (🎯 ₹443.9),112,952.0,70.1,+16.0%,1.14,434.9,455.1,463.5,475.6,66,,,0.0
+COFORGE (↑),COFORGE,BTST,🌙 High-Tight BTST,1929.0,₹1916.3 - ₹1935.3 (🎯 ₹1929.0),51,3228.3,65.1,+20.3%,1.64,1865.7,1993.7,2041.8,2109.7,85,,,0.0
+LAURUSLABS (↑),LAURUSLABS,Pre-Breakout,💥 Pre-Breakout Coil (+RSI Div),2059.4,₹2051.7 - ₹2074.9 (🎯 ₹2062.0),24,1113.6,56.6,+23.6%,0.47,2013.0,2114.2,2154.7,2212.0,83,,,0.0
+BALRAMCHIN (↑),BALRAMCHIN,Pre-Breakout,💥 Pre-Breakout Coil,720.2,₹715.6 - ₹729.4 (🎯 ₹721.7),69,1897.5,62.5,+15.6%,0.31,692.7,748.7,770.3,800.4,78,,,0.0
+MCX (↑),MCX,Swing,🔄 20-EMA Pullback Retest,3308.0,₹3250.4 - ₹3308.0 (🎯 ₹3273.3),15,1713.0,55.1,+14.8%,0.71,3193.8,3426.6,3514.7,3639.0,76,,,0.0
+CUB (↑),CUB,Pre-Breakout,💥 Pre-Breakout Coil,234.53,₹233.3 - ₹237.1 (🎯 ₹235.0),213,1625.19,49.7,+8.3%,0.5,226.9,243.0,249.3,258.1,72,,,0.0
+LICHSGFIN (↑),LICHSGFIN,Pre-Breakout,💥 Pre-Breakout Coil,564.0,₹561.3 - ₹569.3 (🎯 ₹564.9),88,1408.0,48.6,+6.4%,0.54,548.0,584.0,598.7,619.7,65,,,0.0
