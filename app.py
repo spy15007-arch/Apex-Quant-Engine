@@ -72,37 +72,40 @@ st.title("📈 Apex Quant Engine")
 st.markdown("Automated Stage 2 Trend & Volatility Contraction Scanner")
 
 tabs = st.tabs([
-    "🚀 Fresh Breakouts",
-    "💥 Pre-Breakout (VCP)", 
-    "🌊 MACD Zero-Cross", 
-    "📈 Swing Structural", 
-    "🌙 High-Tight BTST", 
-    "💼 Active Portfolio", 
-    "🏆 Trade Analytics",
-    "📊 Advanced Charting"
+    "💎 Deep Value",
+    "🚀 Breakouts",
+    "💥 VCP Coil", 
+    "🌊 MACD Cross", 
+    "📈 Swing", 
+    "🌙 BTST", 
+    "💼 Portfolio", 
+    "🏆 Analytics",
+    "📊 Charting"
 ])
 
 df_all = load_data("all_setups.csv")
 
 # --- POPULATE TABLES USING ROBUST TAG MATCHING ---
 if not df_all.empty:
+    df_value = df_all[df_all['Horizon'] == 'Value']
     df_breakout = df_all[df_all['Horizon'] == 'Breakout']
     df_macd = df_all[df_all['Tag'].str.contains('MACD', case=False, na=False)]
     df_pre = df_all[df_all['Tag'].str.contains('VCP|Pre-Breakout|Coil', case=False, na=False) | (df_all['Horizon'] == 'Pre-Breakout')]
     df_btst = df_all[df_all['Tag'].str.contains('BTST', case=False, na=False) | (df_all['Horizon'] == 'BTST')]
     df_swing = df_all[(df_all['Horizon'] == 'Swing') & (~df_all['Tag'].str.contains('MACD', case=False, na=False))]
 
-    with tabs[0]: st.header("🚀 Fresh Vol-Backed Breakouts"); display_interactive_table(df_breakout, "Fresh Breakouts")
-    with tabs[1]: st.header("💥 Pre-Breakout & VCP Contraction"); display_interactive_table(df_pre, "Pre-Breakout")
-    with tabs[2]: st.header("🌊 MACD Bullish Zero-Cross"); display_interactive_table(df_macd, "MACD Zero-Cross")
-    with tabs[3]: st.header("📈 Stage 2 Swing Retests"); display_interactive_table(df_swing, "Swing Trades")
-    with tabs[4]: st.header("🌙 High-Tight Institutional BTST"); display_interactive_table(df_btst, "BTST")
+    with tabs[0]: st.header("💎 Deep Value First Breakouts"); display_interactive_table(df_value, "Deep Value")
+    with tabs[1]: st.header("🚀 Fresh Vol-Backed Breakouts"); display_interactive_table(df_breakout, "Fresh Breakouts")
+    with tabs[2]: st.header("💥 Pre-Breakout & VCP Contraction"); display_interactive_table(df_pre, "Pre-Breakout")
+    with tabs[3]: st.header("🌊 MACD Bullish Zero-Cross"); display_interactive_table(df_macd, "MACD Zero-Cross")
+    with tabs[4]: st.header("📈 Stage 2 Swing Retests"); display_interactive_table(df_swing, "Swing Trades")
+    with tabs[5]: st.header("🌙 High-Tight Institutional BTST"); display_interactive_table(df_btst, "BTST")
 else:
-    for i in range(5):
+    for i in range(6):
         with tabs[i]: st.info("Zero stocks passed the institutional quality filters today. Capital protected.")
 
-# --- TAB 5: ACTIVE PORTFOLIO ---
-with tabs[5]:
+# --- TAB 7: ACTIVE PORTFOLIO ---
+with tabs[6]:
     st.header("Active Trailing Portfolio")
     df_portfolio = load_data("portfolio.csv")
     if not df_portfolio.empty:
@@ -122,8 +125,8 @@ with tabs[5]:
         else: st.info("No active trades currently.")
     else: st.info("Your portfolio is currently empty.")
 
-# --- TAB 6: TRADE OUTCOME TRACKER ---
-with tabs[6]:
+# --- TAB 8: TRADE OUTCOME TRACKER ---
+with tabs[7]:
     st.header("🏆 Trade Analytics & System Edge")
     if not df_portfolio.empty and 'Status' in df_portfolio.columns:
         closed_pf = df_portfolio[df_portfolio['Status'] == 'Closed'].copy()
@@ -161,8 +164,8 @@ with tabs[6]:
     else:
         st.info("Portfolio tracking initialized. Awaiting first trade closure.")
 
-# --- TAB 7: NATIVE QUANTITATIVE CHARTING ENGINE ---
-with tabs[7]:
+# --- TAB 9: NATIVE QUANTITATIVE CHARTING ENGINE ---
+with tabs[8]:
     st.header("📊 Interactive Native Charting")
     df_charts = load_data("chart_data.csv")
     
