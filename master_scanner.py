@@ -449,7 +449,14 @@ def run():
                 (55 <= rsi_val <= 78)
             )
             
-            # --- INSTITUTIONAL BREAKOUT LOGIC ---
+            # --- INSTITUTIONAL VALUE & FIRST BREAKOUT LOGIC ---
+            dist_from_52w_low = (close_p - low_52w) / low_52w if low_52w > 0 else 0
+            is_deep_value_base = (0.05 <= dist_from_52w_low <= 0.45) # 5% to 45% off absolute 52w bottom
+            crosses_200_ema = (prev_close <= d_ema200_20d_ago) and (close_p > d_ema200) 
+            
+            is_value_first_breakout = is_deep_value_base and crosses_200_ema and (vol_vs >= 2.0) and (close_p > prev_close)
+
+            # --- INSTITUTIONAL FRESH BREAKOUT LOGIC ---
             is_fresh_breakout = (close_p >= recent_20d_high) and (vol_vs >= 2.0) and (close_p > prev_close)
 
             is_trendline_retest, tl_val, tl_d1, tl_v1 = check_ascending_trendline_support(
@@ -463,7 +470,8 @@ def run():
             horizon, sl_multiplier, tag = "", 1.0, ""
             
             # --- NEW STRICT TAGGING HIERARCHY ---
-            if is_fresh_breakout: horizon, sl_multiplier, tag = "Breakout", 1.0, "🚀 Fresh Vol-Backed Breakout"
+            if is_value_first_breakout: horizon, sl_multiplier, tag = "Value", 1.0, "💎 Deep Value First Breakout"
+            elif is_fresh_breakout: horizon, sl_multiplier, tag = "Breakout", 1.0, "🚀 Fresh Vol-Backed Breakout"
             elif is_btst: horizon, sl_multiplier, tag = "BTST", 1.0, "🌙 High-Tight BTST"
             elif is_vcp: horizon, sl_multiplier, tag = "Pre-Breakout", 0.8, "🗜️ VCP Contraction Dry-Up"
             elif is_macd_bullish_cross and vol_vs >= 1.3: horizon, sl_multiplier, tag = "MACD", 1.2, "🌊 MACD Vol-Backed Cross"
@@ -557,11 +565,16 @@ def run():
     if chart_data_list: pd.concat(chart_data_list).to_csv("chart_data.csv", index=False)
     else: pd.DataFrame(columns=['Date', 'Ticker', 'Open', 'High', 'Low', 'Close', 'Volume']).to_csv("chart_data.csv", index=False)
 
+    df_value = df_all[df_all['Horizon'] == 'Value'].head(20) if not df_all.empty else pd.DataFrame()
     df_breakout = df_all[df_all['Horizon'] == 'Breakout'].head(20) if not df_all.empty else pd.DataFrame()
     df_vcp = df_all[df_all['Horizon'] == 'Pre-Breakout'].head(20) if not df_all.empty else pd.DataFrame()
     df_macd = df_all[df_all['Horizon'] == 'MACD'].head(20) if not df_all.empty else pd.DataFrame()
     df_swing = df_all[df_all['Horizon'] == 'Swing'].head(20) if not df_all.empty else pd.DataFrame()
     df_btst = df_all[df_all['Horizon'] == 'BTST'].head(20) if not df_all.empty else pd.DataFrame()
+
+    if not df_value.empty:
+        new_value = get_new_alerts(df_value, "Value")
+        if not new_value.empty: send_telegram_message(format_telegram_text(new_value, "💎 Deep Value First Breakout", nifty_regime))
 
     if not df_breakout.empty:
         new_breakout = get_new_alerts(df_breakout, "Breakout")
