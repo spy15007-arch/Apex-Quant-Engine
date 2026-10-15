@@ -1,10 +1,9 @@
 Stock,RawStock,Horizon,Tag,Entry,EntryZone,Qty,Risk,RSI,RS_Rating,Vol vs 50d,EqSL,EqT1,EqT2,EqT3,Score,TL_D1,TL_V1,TL_V2
-PVRINOX (↑),PVRINOX,Pre-Breakout,💥 Pre-Breakout Coil,1381.0,₹1373.0 - ₹1397.1 (🎯 ₹1383.7),36,1735.2,56.5,+28.5%,0.66,1332.8,1441.9,1486.5,1550.1,83,,,0.0
-BHEL (↑),BHEL,Breakout,🚀 Fresh Vol-Backed Breakout (+RSI Div),464.0,₹461.8 - ₹468.4 (🎯 ₹464.7),107,1562.2,67.7,+17.2%,4.29,449.4,480.0,491.8,508.6,80,,,0.0
-COFORGE (↑),COFORGE,Pre-Breakout,💥 Pre-Breakout Coil,1928.0,₹1918.8 - ₹1946.5 (🎯 ₹1931.1),25,1387.5,68.5,+23.8%,1.2,1872.5,1994.2,2043.2,2112.5,80,,,0.0
-HAL (↑),HAL,Pre-Breakout,💥 Pre-Breakout Coil,4933.0,₹4915.8 - ₹4967.5 (🎯 ₹4938.7),10,1034.0,54.1,+11.0%,0.79,4829.6,5049.1,5135.7,5257.5,79,,,0.0
-BALRAMCHIN (↑),BALRAMCHIN,Pre-Breakout,💥 Pre-Breakout Coil,713.85,₹709.4 - ₹722.7 (🎯 ₹715.3),70,1858.5,58.7,+14.6%,0.53,687.3,743.1,765.1,795.8,78,,,0.0
-SUNTV (↑),SUNTV,Pre-Breakout,💥 Pre-Breakout Coil,653.1,₹649.2 - ₹661.0 (🎯 ₹654.4),76,1801.2,85.1,+41.9%,0.42,629.4,694.4,723.4,766.1,75,,,0.0
-LAURUSLABS (↑),LAURUSLABS,Pre-Breakout,💥 Pre-Breakout Coil (+RSI Div),2036.9,₹2029.4 - ₹2051.9 (🎯 ₹2039.4),24,1077.6,50.5,+21.9%,0.54,1992.0,2091.1,2131.1,2187.9,72,,,0.0
-LALPATHLAB (↑),LALPATHLAB,Swing,🔄 20-EMA Pullback Retest,1938.0,₹1924.8 - ₹1938.0 (🎯 ₹1937.8),25,1625.0,51.8,+12.8%,0.8,1873.0,1997.5,2042.7,2105.4,67,,,0.0
-NAVINFLUOR (↑),NAVINFLUOR,Pre-Breakout,💥 Pre-Breakout Coil,8457.0,₹8423.7 - ₹8523.6 (🎯 ₹8468.1),5,999.0,50.0,+10.0%,0.3,8257.2,8666.6,8824.9,9045.6,67,,,0.0
+PVRINOX (↑),PVRINOX,Pre-Breakout,💥 Pre-Breakout Coil,1381.9,₹1374.2 - ₹1397.4 (🎯 ₹1384.5),36,1670.4,64.6,+26.6%,0.39,1335.5,1441.6,1485.2,1547.4,83,,,0.0
+COFORGE (↑),COFORGE,Pre-Breakout,💥 Pre-Breakout Coil,1934.3,₹1925.2 - ₹1952.4 (🎯 ₹1937.3),25,1360.0,68.7,+22.5%,1.13,1879.9,1999.9,2048.2,2116.8,80,,,0.0
+BALRAMCHIN (↑),BALRAMCHIN,Pre-Breakout,💥 Pre-Breakout Coil,726.0,₹721.6 - ₹734.7 (🎯 ₹727.5),68,1774.8,65.9,+14.5%,0.28,699.9,755.0,776.7,807.1,78,,,0.0
+PETRONET (↑),PETRONET,Pre-Breakout,💥 Pre-Breakout Coil,295.2,₹294.3 - ₹297.0 (🎯 ₹295.5),169,929.5,59.9,+7.5%,0.94,289.7,301.1,305.5,311.8,76,,,0.0
+HAL (↑),HAL,Pre-Breakout,💥 Pre-Breakout Coil,4910.0,₹4893.0 - ₹4943.9 (🎯 ₹4915.7),10,1017.0,55.9,+7.7%,0.87,4808.3,5025.2,5111.1,5231.9,76,,,0.0
+TECHM (↑),TECHM,Breakout,🚀 Fresh Vol-Backed Breakout,1650.0,₹1643.1 - ₹1663.8 (🎯 ₹1652.3),30,1374.0,65.0,+8.4%,3.61,1604.2,1702.0,1740.1,1794.3,68,,,0.0
+DLF (↑),DLF,Pre-Breakout,💥 Pre-Breakout Coil,670.5,₹668.0 - ₹675.6 (🎯 ₹671.3),74,1124.8,50.0,+7.2%,0.7,655.3,687.9,700.9,719.1,67,,,0.0
+AARTIIND (↑),AARTIIND,Pre-Breakout,💥 Pre-Breakout Coil (+RSI Div),505.05,₹502.3 - ₹510.5 (🎯 ₹506.0),99,1618.65,55.6,+6.7%,0.88,488.7,521.7,534.3,551.9,66,,,0.0
