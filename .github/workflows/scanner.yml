@@ -34,7 +34,7 @@ jobs:
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git pull --rebase origin main
         git add all_setups.csv chart_data.csv portfolio.csv sent_alerts.json || true
         git commit -m "System: Update daily quant data and portfolio ledger" || true
+        git pull --rebase origin main
         git push origin main
