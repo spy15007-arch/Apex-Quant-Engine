@@ -2,8 +2,8 @@ name: Apex Quant Engine
 
 on:
   schedule:
-    # Automated run at 14:30 IST (09:00 UTC) Monday through Friday
-    - cron: '0 9 * * 1-5'
+    # Automated run at 14:45 IST (09:15 UTC) Monday through Friday
+    - cron: '15 9 * * 1-5'
   workflow_dispatch: 
     # This enables the manual "Run workflow" button in GitHub Actions
 
