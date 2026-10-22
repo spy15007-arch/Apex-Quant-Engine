@@ -1,7 +1,4 @@
 Stock,RawStock,Horizon,Tag,Entry,EntryZone,Qty,Risk,RSI,RS_Rating,Vol vs 50d,EqSL,EqT1,EqT2,EqT3,Score,TL_D1,TL_V1,TL_V2
-SUNTV (↑),SUNTV,Pre-Breakout,🗜️ VCP Contraction Dry-Up,627.15,₹623.3 - ₹634.9 (🎯 ₹628.4),159,3299.25,67.1,+32.4%,0.27,606.4,668.7,697.7,740.5,88,,,0.0
-COFORGE (↑),COFORGE,Pre-Breakout,💥 Pre-Breakout Coil,1951.0,₹1942.3 - ₹1968.4 (🎯 ₹1953.9),25,1302.5,78.4,+21.7%,0.89,1898.9,2015.0,2062.1,2129.0,80,,,0.0
-HAL (↑),HAL,Pre-Breakout,💥 Pre-Breakout Coil,4854.4,₹4837.6 - ₹4887.9 (🎯 ₹4860.0),10,1006.0,64.0,+6.8%,0.83,4753.8,4976.1,5065.7,5193.0,76,,,0.0
-KOTAKBANK (↑),KOTAKBANK,Pre-Breakout,💥 Pre-Breakout Coil,437.8,₹436.4 - ₹440.6 (🎯 ₹438.3),114,969.0,70.5,+13.5%,0.69,429.3,450.3,459.3,472.3,72,,,0.0
-LAURUSLABS (↑),LAURUSLABS,Swing,🔄 20-EMA Pullback Retest,2012.5,₹2004.3 - ₹2012.5 (🎯 ₹2014.7),24,1250.4,54.4,+12.5%,0.54,1960.4,2059.9,2095.9,2146.0,72,,,0.0
-FEDERALBNK (↑),FEDERALBNK,Pre-Breakout,💥 Pre-Breakout Coil,344.0,₹342.5 - ₹347.0 (🎯 ₹344.5),145,1319.5,69.1,+4.6%,0.91,334.9,355.0,363.0,374.5,71,,,0.0
+63MOONS (↑),63MOONS,Swing,🔄 20-EMA Pullback Retest,867.25,₹847.4 - ₹867.2 (🎯 ₹857.0),57,2750.25,60.5,+12.7%,0.73,819.0,918.7,956.7,1010.6,83,,,0.0
+SUNTV (↑),SUNTV,Swing,🔄 20-EMA Pullback Retest,600.3,₹591.4 - ₹600.3 (🎯 ₹596.7),83,2191.2,48.8,+27.4%,0.33,573.9,638.7,665.9,705.6,72,,,0.0
+HAL (↑),HAL,Pre-Breakout,💥 Pre-Breakout Coil,4875.0,₹4858.0 - ₹4909.1 (🎯 ₹4880.7),10,1022.0,60.4,+7.8%,1.08,4772.8,4997.7,5088.3,5216.7,68,,,0.0
