@@ -1,8 +1,12 @@
 Stock,RawStock,Horizon,Tag,Entry,EntryZone,Qty,Risk,RSI,RS_Rating,Vol vs 50d,EqSL,EqT1,EqT2,EqT3,Score,TL_D1,TL_V1,TL_V2
-KOTAKBANK (↑),KOTAKBANK,Pre-Breakout,💥 Pre-Breakout Coil,509.0,₹507.3 - ₹512.4 (🎯 ₹509.6),98,999.6,74.6,+7.2%,0.73,498.8,525.6,537.3,554.5,77,,,0.0
-INDHOTEL (↑),INDHOTEL,Pre-Breakout,💥 Pre-Breakout Coil,903.85,₹900.5 - ₹910.6 (🎯 ₹905.0),55,1108.25,68.5,+8.2%,0.89,883.7,933.3,954.4,985.0,74,,,0.0
-PVRINOX (↑),PVRINOX,Pre-Breakout,💥 Pre-Breakout Coil,1709.3,₹1700.2 - ₹1727.4 (🎯 ₹1712.3),29,1574.7,74.3,+17.2%,0.77,1655.0,1786.2,1841.6,1921.6,72,,,0.0
-ABCAPITAL (↑),ABCAPITAL,Pre-Breakout,💥 Pre-Breakout Coil,422.0,₹420.3 - ₹425.5 (🎯 ₹422.6),118,1227.2,72.3,+0.8%,0.8,411.6,438.1,449.6,466.2,71,,,0.0
-LAURUSLABS (↑),LAURUSLABS,BTST,🌙 High-Tight BTST,2460.0,₹2443.7 - ₹2468.1 (🎯 ₹2460.0),20,1626.0,59.2,+10.9%,1.35,2378.7,2558.5,2629.9,2732.5,68,,,0.0
-ULTRACEMCO (↑),ULTRACEMCO,Pre-Breakout,💥 Pre-Breakout Coil,12800.0,₹12759.7 - ₹12880.6 (🎯 ₹12813.4),3,725.4,71.6,+1.7%,0.98,12558.2,13199.7,13481.5,13894.6,66,,,0.0
-DLF (↑),DLF,Pre-Breakout,💥 Pre-Breakout Coil,795.0,₹792.3 - ₹800.4 (🎯 ₹795.9),62,1010.6,80.0,+7.7%,1.08,778.7,822.3,841.4,869.6,65,,,0.0
+INDHOTEL (↑),INDHOTEL,Pre-Breakout,💥 Pre-Breakout Coil,906.0,₹902.7 - ₹912.6 (🎯 ₹907.1),55,1089.0,69.3,+11.7%,0.89,886.2,937.3,959.6,992.0,81,,,0.0
+LICHSGFIN (↑),LICHSGFIN,Pre-Breakout,💥 Pre-Breakout Coil,606.0,₹603.3 - ₹611.5 (🎯 ₹606.9),82,1353.0,85.1,+10.6%,0.61,589.5,633.6,653.0,681.5,80,,,0.0
+PETRONET (↑),PETRONET,Pre-Breakout,🗜️ VCP Contraction Dry-Up,326.05,₹325.0 - ₹328.2 (🎯 ₹326.4),153,864.45,72.4,+6.8%,0.72,320.4,337.4,345.4,357.1,77,,,0.0
+360ONE (↑),360ONE,Pre-Breakout,💥 Pre-Breakout Coil,1201.15,₹1196.0 - ₹1211.4 (🎯 ₹1202.9),41,1264.85,81.1,+4.1%,0.7,1170.3,1252.6,1288.9,1342.1,73,,,0.0
+DLF (↑),DLF,Pre-Breakout,💥 Pre-Breakout Coil,794.1,₹791.4 - ₹799.6 (🎯 ₹795.0),62,1016.8,79.9,+10.9%,1.08,777.7,822.2,842.0,871.1,72,,,0.0
+PVRINOX (↑),PVRINOX,Pre-Breakout,💥 Pre-Breakout Coil,1699.7,₹1690.5 - ₹1718.1 (🎯 ₹1702.8),29,1603.7,73.7,+20.1%,0.77,1644.4,1778.4,1835.1,1916.9,72,,,0.0
+ABCAPITAL (↑),ABCAPITAL,Pre-Breakout,💥 Pre-Breakout Coil,415.8,₹414.1 - ₹419.3 (🎯 ₹416.4),120,1248.0,70.3,+1.5%,0.8,405.4,433.7,446.2,464.7,71,,,0.0
+ULTRACEMCO (↑),ULTRACEMCO,Pre-Breakout,💥 Pre-Breakout Coil,12650.0,₹12609.0 - ₹12731.9 (🎯 ₹12663.7),3,737.4,69.8,+2.5%,0.98,12404.2,13057.0,13343.9,13764.6,70,,,0.0
+NAVINFLUOR (↑),NAVINFLUOR,Pre-Breakout,💥 Pre-Breakout Coil,10154.0,₹10107.1 - ₹10247.8 (🎯 ₹10169.6),4,1126.0,83.9,+17.7%,1.2,9872.5,10678.7,11043.7,11584.0,67,,,0.0
+MARICO (↑),MARICO,Pre-Breakout,💥 Pre-Breakout Coil,919.5,₹916.6 - ₹925.2 (🎯 ₹920.5),54,928.8,65.2,+6.4%,1.07,902.3,950.7,972.5,1004.6,66,,,0.0
+GLENMARK (↑),GLENMARK,Pre-Breakout,💥 Pre-Breakout Coil,2657.0,₹2645.7 - ₹2679.7 (🎯 ₹2660.8),18,1225.8,75.3,+6.2%,1.15,2588.9,2770.9,2851.2,2968.9,65,,,0.0
